@@ -1,0 +1,120 @@
+  // ==========================================
+// 🚇 MTA 线路基础配置
+// ==========================================
+const LINE_MAP = {
+    "A": { feed: "ace", color: "#0039A6" }, 
+    "C": { feed: "ace", color: "#0039A6" }, 
+    "E": { feed: "ace", color: "#0039A6" },
+    "B": { feed: "bdfm", color: "#FF6319" }, 
+    "D": { feed: "bdfm", color: "#FF6319" }, 
+    "F": { feed: "bdfm", color: "#FF6319" }, 
+    "M": { feed: "bdfm", color: "#FF6319" },
+    "N": { feed: "nqrw", color: "#FCCC0A", textColor: "black" }, 
+    "Q": { feed: "nqrw", color: "#FCCC0A", textColor: "black" }, 
+    "R": { feed: "nqrw", color: "#FCCC0A", textColor: "black" }, 
+    "W": { feed: "nqrw", color: "#FCCC0A", textColor: "black" },
+    "1": { feed: "1234567", color: "#EE352E" }, 
+    "2": { feed: "1234567", color: "#EE352E" }, 
+    "3": { feed: "1234567", color: "#EE352E" }, 
+    "4": { feed: "1234567", color: "#00933C" }, 
+    "5": { feed: "1234567", color: "#00933C" }, 
+    "6": { feed: "1234567", color: "#00933C" }, 
+    "7": { feed: "1234567", color: "#B933AD" },
+    "L": { feed: "l", color: "#A7A9AC" }, 
+    "G": { feed: "g", color: "#6CBE45" }, 
+    "J": { feed: "jz", color: "#996633" }, 
+    "Z": { feed: "jz", color: "#996633" }
+};
+
+// ==========================================
+// 📍 MTA 车站物理字典
+// ==========================================
+const STATION_DICT = {
+    "A": [ 
+        { id: "A09", name: "59 St-Columbus Circle", borough: "Manhattan" }, 
+        { id: "A12", name: "W 4 St-Wash Sq", borough: "Manhattan" }, 
+        { id: "A24", name: "Fulton St", borough: "Manhattan" } 
+    ],
+    "1": [ 
+        { id: "120", name: "Times Sq-42 St", borough: "Manhattan" }, 
+        { id: "132", name: "14 St", borough: "Manhattan" } 
+    ],
+    // 🟨 N 线完整版 (Astoria - Coney Island)
+    "N": [
+        { id: "N02", name: "Astoria-Ditmars Blvd (总站)", borough: "Queens (皇后区)" },
+        { id: "N03", name: "Astoria Blvd", borough: "Queens (皇后区)" },
+        { id: "N04", name: "30 Av", borough: "Queens (皇后区)" },
+        { id: "N05", name: "Broadway", borough: "Queens (皇后区)" },
+        { id: "N06", name: "36 Av", borough: "Queens (皇后区)" },
+        { id: "N07", name: "39 Av-Dutch Kills", borough: "Queens (皇后区)" },
+        { id: "N08", name: "Queensboro Plaza", borough: "Queens (皇后区)" },
+        { id: "R11", name: "Lexington Av/59 St", borough: "Manhattan (曼哈顿)" },
+        { id: "R13", name: "5 Av/59 St", borough: "Manhattan (曼哈顿)" },
+        { id: "R14", name: "57 St-7 Av", borough: "Manhattan (曼哈顿)" },
+        { id: "R16", name: "Times Sq-42 St (时代广场)", borough: "Manhattan (曼哈顿)" },
+        { id: "R17", name: "34 St-Herald Sq (先驱广场)", borough: "Manhattan (曼哈顿)" },
+        { id: "R20", name: "14 St-Union Sq (联合广场)", borough: "Manhattan (曼哈顿)" },
+        { id: "R23", name: "Canal St (坚尼街)", borough: "Manhattan (曼哈顿)" },
+        { id: "R31", name: "Atlantic Av-Barclays Ctr", borough: "Brooklyn (布鲁克林)" },
+        { id: "R36", name: "36 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R41", name: "59 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "N51", name: "8 Av", borough: "Brooklyn (布鲁克林)" },
+        { id: "N52", name: "Fort Hamilton Pkwy", borough: "Brooklyn (布鲁克林)" },
+        { id: "N53", name: "New Utrecht Av", borough: "Brooklyn (布鲁克林)" },
+        { id: "N54", name: "18 Av", borough: "Brooklyn (布鲁克林)" },
+        { id: "N55", name: "20 Av", borough: "Brooklyn (布鲁克林)" },
+        { id: "N56", name: "Bay Pkwy", borough: "Brooklyn (布鲁克林)" },
+        { id: "N57", name: "Kings Hwy", borough: "Brooklyn (布鲁克林)" },
+        { id: "N58", name: "Avenue U", borough: "Brooklyn (布鲁克林)" },
+        { id: "N59", name: "86 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "D43", name: "Coney Island-Stillwell Av (总站)", borough: "Brooklyn (布鲁克林)" }
+    ],
+    // 🟨 R 线完整版 (Forest Hills - Bay Ridge)
+    "R": [
+        { id: "G08", name: "Forest Hills-71 Av (总站)", borough: "Queens (皇后区)" },
+        { id: "G09", name: "67 Av", borough: "Queens (皇后区)" },
+        { id: "G10", name: "63 Dr-Rego Park", borough: "Queens (皇后区)" },
+        { id: "G11", name: "Woodhaven Blvd", borough: "Queens (皇后区)" },
+        { id: "G12", name: "Grand Av-Newtown", borough: "Queens (皇后区)" },
+        { id: "G13", name: "Elmhurst Av", borough: "Queens (皇后区)" },
+        { id: "G14", name: "Jackson Hts-Roosevelt Av", borough: "Queens (皇后区)" },
+        { id: "G15", name: "65 St", borough: "Queens (皇后区)" },
+        { id: "G16", name: "Northern Blvd", borough: "Queens (皇后区)" },
+        { id: "G18", name: "46 St", borough: "Queens (皇后区)" },
+        { id: "G19", name: "Steinway St", borough: "Queens (皇后区)" },
+        { id: "G20", name: "36 St", borough: "Queens (皇后区)" },
+        { id: "G21", name: "Queens Plaza", borough: "Queens (皇后区)" },
+        { id: "R11", name: "Lexington Av/59 St", borough: "Manhattan (曼哈顿)" },
+        { id: "R13", name: "5 Av/59 St", borough: "Manhattan (曼哈顿)" },
+        { id: "R14", name: "57 St-7 Av", borough: "Manhattan (曼哈顿)" },
+        { id: "R15", name: "49 St", borough: "Manhattan (曼哈顿)" },
+        { id: "R16", name: "Times Sq-42 St (时代广场)", borough: "Manhattan (曼哈顿)" },
+        { id: "R17", name: "34 St-Herald Sq (先驱广场)", borough: "Manhattan (曼哈顿)" },
+        { id: "R18", name: "28 St", borough: "Manhattan (曼哈顿)" },
+        { id: "R19", name: "23 St", borough: "Manhattan (曼哈顿)" },
+        { id: "R20", name: "14 St-Union Sq (联合广场)", borough: "Manhattan (曼哈顿)" },
+        { id: "R21", name: "8 St-NYU (纽约大学)", borough: "Manhattan (曼哈顿)" },
+        { id: "R22", name: "Prince St", borough: "Manhattan (曼哈顿)" },
+        { id: "R23", name: "Canal St (坚尼街)", borough: "Manhattan (曼哈顿)" },
+        { id: "R24", name: "City Hall (市政厅)", borough: "Manhattan (曼哈顿)" },
+        { id: "R25", name: "Cortlandt St", borough: "Manhattan (曼哈顿)" },
+        { id: "R26", name: "Rector St", borough: "Manhattan (曼哈顿)" },
+        { id: "R27", name: "Whitehall St-South Ferry", borough: "Manhattan (曼哈顿)" },
+        { id: "R28", name: "Court St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R29", name: "Jay St-MetroTech", borough: "Brooklyn (布鲁克林)" },
+        { id: "B08", name: "DeKalb Av", borough: "Brooklyn (布鲁克林)" },
+        { id: "R31", name: "Atlantic Av-Barclays Ctr", borough: "Brooklyn (布鲁克林)" },
+        { id: "R32", name: "Union St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R33", name: "9 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R34", name: "Prospect Av", borough: "Brooklyn (布鲁克林)" },
+        { id: "R35", name: "25 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R36", name: "36 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R39", name: "45 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R40", name: "53 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R41", name: "59 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R42", name: "Bay Ridge Av", borough: "Brooklyn (布鲁克林)" },
+        { id: "R43", name: "77 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R44", name: "86 St", borough: "Brooklyn (布鲁克林)" },
+        { id: "R45", name: "Bay Ridge-95 St (总站)", borough: "Brooklyn (布鲁克林)" }
+    ]
+};

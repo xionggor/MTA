@@ -161,7 +161,7 @@
             syntax = "proto2";
             package transit_realtime;
             message FeedMessage { repeated FeedEntity entity = 2; }
-            message FeedEntity { optional TripUpdate trip_update = 2; optional Alert alert = 4; }
+            message FeedEntity { optional TripUpdate trip_update = 3; optional Alert alert = 5; }
             message TripUpdate { optional TripDescriptor trip = 1; repeated StopTimeUpdate stop_time_update = 2; }
             message TripDescriptor { optional string route_id = 5; }
             message StopTimeUpdate { optional StopTimeEvent arrival = 2; optional StopTimeEvent departure = 3; optional string stop_id = 4; }

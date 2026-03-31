@@ -2,666 +2,359 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTA 终极追踪器 (City Tech 专用版)</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MTA Tracker Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
-    
     <script src="stations.js"></script>
-
     <style>
-        /* ================= 基础排版 ================= */
-        body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background-color: #f2f2f7; color: #333; }
-        .app-header { background-color: #1c1c1e; color: white; padding: 15px 20px; text-align: center; font-size: 18px; font-weight: bold; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
-        .back-btn { background: none; border: none; color: #0a84ff; font-size: 16px; cursor: pointer; display: none; font-weight: bold; }
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        :root { --mta-blue: #0039A6; --dark-bg: #121212; --card-bg: #1c1c1e; --text-main: #ffffff; --text-dim: #8e8e93; --badge-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: var(--dark-bg); color: var(--text-main); -webkit-font-smoothing: antialiased; }
         
-        /* ================= 首页模块 ================= */
-        .line-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .subway-bullet { width: 50px; height: 50px; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; border: none; }
-        .subway-bullet:active { transform: scale(0.9); }
-        .bus-bullet { width: auto; min-width: 60px; padding: 0 10px; height: 40px; border-radius: 8px; background-color: #0039A6; color: white; display: flex; justify-content: center; align-items: center; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: none; }
-        .bullet-active { box-shadow: 0 0 0 4px #0a84ff, 0 2px 4px rgba(0,0,0,0.2); transform: scale(1.05); }
-
-        .main-btn { width: 100%; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 12px; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-alert { background-color: #fff0f0; color: #cc0000; border: 1px solid #ffcccc; }
-        .btn-fav { background-color: #fff8e6; color: #b28600; border: 1px solid #ffe699; }
-
-        /* ================= 模糊搜索建议 ================= */
-        .search-box { position: relative; display: flex; gap: 10px; margin-bottom: 25px; }
-        .search-input { flex: 1; padding: 15px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px; outline: none; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); text-transform: uppercase; }
-        .search-input:focus { border-color: #007aff; }
-        .search-btn { background: #007aff; color: white; border: none; padding: 0 20px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .search-btn:active { background: #005bb5; }
+        /* 顶部导航控制台 */
+        .header-fixed { position: sticky; top: 0; z-index: 1000; background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px); border-bottom: 0.5px solid #333; }
+        .app-title { padding: 12px 20px 5px 20px; font-size: 14px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
         
-        .search-suggestions { position: absolute; top: 55px; left: 0; right: 0; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 110; display: none; overflow: hidden; border: 1px solid #eee; }
-        .suggestion-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: bold; color: #0039A6; }
-        .suggestion-item:last-child { border: none; }
-        .suggestion-item:active { background: #f0f0f7; }
+        /* iOS 分段式导航栏 */
+        .tab-nav { display: flex; padding: 10px 15px; gap: 8px; }
+        .tab-item { flex: 1; padding: 8px; border-radius: 10px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .tab-item.active { background: #ffffff; color: #000000; }
 
-        /* ================= 悬浮工具栏 ================= */
-        .sticky-toolbar { 
-            position: sticky; top: 52px; z-index: 90; background-color: #f2f2f7; 
-            padding: 10px 0 15px 0; border-bottom: 1px solid #ddd; 
-            margin: -15px -15px 15px -15px; padding-left: 15px; padding-right: 15px;
-        }
-        .refresh-btn { width: 100%; padding: 12px; background-color: #007aff; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; margin-bottom: 10px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,122,255,0.3); transition: 0.2s; }
-        .refresh-btn:active { transform: scale(0.98); background-color: #005bb5; }
-        .anchor-nav { display: flex; gap: 10px; }
-        .anchor-btn { flex: 1; padding: 10px; background: white; border: 2px solid #0039A6; color: #0039A6; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .anchor-btn:active { background: #0039A6; color: white; }
-
-        /* ================= 车站列表与时刻表 ================= */
-        .direction-title { background: #0039A6; color: white; padding: 10px 15px; border-radius: 8px; font-size: 18px; font-weight: bold; margin-bottom: 15px; margin-top: 10px; }
-        .borough-divider { background-color: #e5e5ea; color: #666; padding: 6px 12px; font-size: 14px; font-weight: bold; text-transform: uppercase; border-radius: 6px; margin: 20px 0 10px 0; letter-spacing: 1px; }
-        .scroll-anchor { scroll-margin-top: 160px; } 
-
-        .station-card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); position: relative; }
-        .st-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .st-name { font-size: 17px; font-weight: bold; }
+        .container { padding: 15px; padding-bottom: 100px; }
         
-        /* 收藏按钮样式优化 */
-        .star-btn { font-size: 24px; cursor: pointer; color: #ccc; transition: 0.2s; user-select: none; padding: 0 10px; }
-        .star-btn.active { color: #f4c20d; }
+        /* 🚀 核心 UI：复刻版列表卡片 */
+        .info-row { background: var(--card-bg); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         
-        .times-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
-        .time-badge { background: #e5f0ff; color: #0039A6; padding: 5px 10px; border-radius: 6px; font-size: 15px; font-weight: bold; }
-        .no-data { color: #999; font-size: 14px; margin-top: 5px; }
+        /* 左侧线路方块 */
+        .route-block { min-width: 52px; height: 52px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: 900; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        
+        /* 右侧信息区 */
+        .info-content { flex: 1; min-width: 0; }
+        .dest-name { font-size: 17px; font-weight: 700; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        .station-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; font-weight: 500; }
+        
+        /* 时间徽章容器 */
+        .badge-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+        .time-badge { background: var(--badge-bg); padding: 8px 12px; border-radius: 8px; font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: baseline; gap: 2px; border: 0.5px solid #444; }
+        .time-badge .unit { font-size: 11px; font-weight: 500; color: var(--text-dim); }
+        .time-badge.approaching { background: #30d158; color: #000; border: none; } /* 即将进站绿色 */
+        .time-badge.urgent { color: #ff453a; border-color: #ff453a; } /* 2分钟内橙红色 */
 
-        .bus-tracker-item { background-color: #0039A6; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; box-shadow: 0 2px 4px rgba(0,57,166,0.3); animation: pulse 2.5s infinite; }
-        .bus-tracker-urgent { background-color: #cc0000; box-shadow: 0 2px 4px rgba(204,0,0,0.3); }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.85; transform: scale(0.98); } 100% { opacity: 1; } }
+        /* 搜索框 */
+        .search-container { margin-bottom: 20px; position: relative; }
+        .search-input { width: 100%; background: #1c1c1e; border: none; padding: 15px; border-radius: 12px; color: #fff; font-size: 16px; box-sizing: border-box; outline: none; border: 1px solid #333; }
+        .suggestions { position: absolute; top: 55px; left: 0; right: 0; background: #2c2c2e; border-radius: 12px; z-index: 2000; overflow: hidden; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .sug-item { padding: 15px; border-bottom: 1px solid #3d3d3f; font-weight: bold; }
 
-        /* ================= 极简收藏夹排版 ================= */
-        .fav-row { background: white; padding: 15px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.08); cursor: pointer; }
-        .fav-row:active { background: #f9f9f9; }
-        .fav-info { display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; }
-        .route-tag { padding: 4px 8px; border-radius: 8px; font-size: 14px; color: white; font-weight: bold; min-width: 30px; text-align: center; }
-        .fav-name { font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; }
-        .fav-time { font-weight: 900; color: #0039A6; font-size: 18px; min-width: 70px; text-align: right; }
-        .fav-time.urgent { color: #cc0000; }
-
-        /* ================= 警报模块 ================= */
-        .alert-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .alert-tab { flex: 1; padding: 12px; border-radius: 10px; border: none; background: #e5e5ea; font-size: 16px; font-weight: bold; cursor: pointer; color: #666; }
-        .alert-tab.active { background: #0039A6; color: white; }
-        .alert-card { background: white; border-left: 5px solid #cc0000; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .alert-title { font-weight: bold; font-size: 16px; margin-bottom: 8px; }
-        .alert-desc { font-size: 14px; color: #555; line-height: 1.5; white-space: pre-line; }
+        /* 悬浮刷新条 */
+        .refresh-bar { padding: 10px 15px; background: var(--dark-bg); position: sticky; top: 112px; z-index: 900; }
+        .refresh-btn { width: 100%; padding: 12px; background: var(--mta-blue); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; }
 
         .view { display: none; }
         .view.active { display: block; }
-        .loading { text-align: center; color: #666; padding: 40px; font-size: 16px; font-weight: bold; }
-        .section-title { font-size: 14px; color: #666; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
+        .loading-shimmer { text-align: center; color: var(--text-dim); padding: 50px; font-weight: bold; }
+        .star-icon { font-size: 22px; cursor: pointer; color: #3d3d3f; margin-left: auto; }
+        .star-icon.active { color: #ffd60a; }
+        
+        /* 地铁圆色标风格 */
+        .circle-bullet { border-radius: 50% !important; }
     </style>
 </head>
 <body>
 
-    <div class="app-header">
-        <button class="back-btn" id="backBtn" onclick="navigateBack()">◀ 返回首页</button>
-        <span id="headerTitle">MTA 实时导航</span>
-        <div style="width: 70px;"></div>
+    <div class="header-fixed">
+        <div class="app-title" id="topLabel">MTA Tracker Pro</div>
+        <div class="tab-nav">
+            <button class="tab-item active" onclick="switchTab('favs')">🌟 收藏</button>
+            <button class="tab-item" onclick="switchTab('subway')">🚇 地铁</button>
+            <button class="tab-item" onclick="switchTab('bus')">🚌 巴士</button>
+        </div>
     </div>
 
     <div class="container">
         
-        <div id="view-home" class="view active">
-            <button class="main-btn btn-alert" onclick="openAlerts()">⚠️ 官方服务警报 (动态播报)</button>
-            <button class="main-btn btn-fav" onclick="openFavs()">🌟 我的收藏夹</button>
-            
-            <div class="section-title" style="margin-top: 25px;">🚌 实时巴士追踪 (带模糊搜索)</div>
-            <div class="search-box">
-                <input type="text" id="busSearchInput" class="search-input" placeholder="输入线路，如 B70, S79" oninput="handleBusInput(this.value)" onkeypress="handleEnter(event)">
-                <button class="search-btn" onclick="executeBusSearch()">追踪</button>
-                <div id="search-suggestions" class="search-suggestions"></div>
-            </div>
-
-            <div class="section-title" style="margin-top: 15px;">🚇 实时地铁全网</div>
-            <div class="line-grid" id="lineGrid"></div>
-        </div>
-
-        <div id="view-stations" class="view">
-            <div class="sticky-toolbar" id="station-toolbar" style="display: none;">
-                <button id="refreshBtn" class="refresh-btn" onclick="refreshCurrentLine()">🔄 刷新实时数据</button>
-                <div class="anchor-nav" id="anchorButtons"></div>
-            </div>
-            <div id="stations-loading" class="loading" style="display: none;">⏳ 正在获取最新数据...</div>
-            <div id="stations-content"></div>
-        </div>
-
-        <div id="view-favs" class="view">
-            <div class="sticky-toolbar" id="fav-toolbar" style="display: none;">
-                <button class="refresh-btn" onclick="openFavs()">🔄 刷新全部时间</button>
-            </div>
-            <div id="favs-loading" class="loading" style="display:none;">⏳ 正在呼叫卫星同步车辆位置...</div>
+        <div id="view-favs" class="view active">
             <div id="favs-content"></div>
         </div>
 
-        <div id="view-alerts" class="view">
-            <div class="alert-tabs">
-                <button id="tab-subway" class="alert-tab active" onclick="switchAlertMode('subway')">🚇 地铁</button>
-                <button id="tab-bus" class="alert-tab" onclick="switchAlertMode('bus')">🚌 巴士</button>
+        <div id="view-subway" class="view">
+            <div id="subway-list">
+                <div class="loading-shimmer">请从下方选择线路</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 12px;" id="subwayGrid"></div>
             </div>
-            <div id="alerts-loading" class="loading">⏳ 同步中...</div>
-            <div id="alerts-main-content" style="display:none;">
-                <div class="section-title">出现警报的线路 (点击查看)</div>
-                <div class="line-grid" id="alerts-badge-grid" style="margin-bottom: 25px;"></div>
-                <div class="section-title" id="alert-detail-title" style="display:none;">警报详情</div>
-                <div id="alerts-detail-content"></div>
+            <div id="subway-detail" style="display:none;">
+                <div class="refresh-bar"><button class="refresh-btn" onclick="refreshSubway()">🔄 刷新地铁数据</button></div>
+                <div id="subway-detail-content"></div>
             </div>
         </div>
+
+        <div id="view-bus" class="view">
+            <div class="search-container">
+                <input type="text" id="busInput" class="search-input" placeholder="输入巴士号，如 B70, S79" oninput="busFuzzy(this.value)">
+                <div id="busSug" class="suggestions"></div>
+            </div>
+            <div id="bus-detail" style="display:none;">
+                <div class="refresh-bar"><button class="refresh-btn" onclick="refreshBus()">🔄 刷新 GPS 位置</button></div>
+                <div id="bus-detail-content"></div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // 👇 你的 Cloudflare Worker 服务地址
-        const WORKER_URL = "https://mta.zxc717209554.workers.dev"; 
-
-        // 🛡️ 终极防崩溃字典 (解决 404 和 N/R 车 NaN 错误)
-        const GTFS_PROTO_CODE = `
-            syntax = "proto2";
-            package transit_realtime;
-            message FeedMessage { repeated FeedEntity entity = 2; }
-            message FeedEntity { optional TripUpdate trip_update = 3; optional Alert alert = 5; }
-            message TripUpdate { optional TripDescriptor trip = 1; repeated StopTimeUpdate stop_time_update = 2; }
-            message TripDescriptor { optional string route_id = 5; }
-            message StopTimeUpdate { optional StopTimeEvent arrival = 2; optional StopTimeEvent departure = 3; optional string stop_id = 4; }
-            message StopTimeEvent { optional int64 time = 2; }
-            message Alert { repeated EntitySelector informed_entity = 1; optional TranslatedString header_text = 10; optional TranslatedString description_text = 11; }
-            message EntitySelector { optional string route_id = 2; }
-            message TranslatedString { repeated Translation translation = 1; }
-            message Translation { optional string text = 1; }
-        `;
-        const protoRoot = protobuf.parse(GTFS_PROTO_CODE).root;
+        const WORKER_URL = "https://mta.zxc717209554.workers.dev";
+        
+        // 🚨 修正后的字典：trip_update = 3 是关键！
+        const GTFS_PROTO = `syntax = "proto2"; package transit_realtime; message FeedMessage { repeated FeedEntity entity = 2; } message FeedEntity { optional TripUpdate trip_update = 3; } message TripUpdate { optional TripDescriptor trip = 1; repeated StopTimeUpdate stop_time_update = 2; } message TripDescriptor { optional string route_id = 5; } message StopTimeUpdate { optional StopTimeEvent arrival = 2; optional StopTimeEvent departure = 3; optional string stop_id = 4; } message StopTimeEvent { optional int64 time = 2; }`;
+        const protoRoot = protobuf.parse(GTFS_PROTO).root;
         const FeedMessage = protoRoot.lookupType("transit_realtime.FeedMessage");
 
-        let currentView = 'view-home';
-        let currentLine = ''; 
-        let isBusMode = false;
-        
-        let cachedSubwayData = {}; 
-        let busRouteData = null; 
-        let busRealtimeData = null; 
-        let favorites = JSON.parse(localStorage.getItem('mta_app_favs') || '[]');
-        
-        // 常用的巴士快速提示库
-        const COMMON_BUSES = ["S79-SBS", "S79+", "B70", "B63", "B1", "Q58", "M15-SBS", "B46-SBS"];
+        let favorites = JSON.parse(localStorage.getItem('mta_pro_favs') || '[]');
+        let currentSubwayLine = "";
+        let currentBusLine = "";
 
-        function initHome() {
-            const grid = document.getElementById('lineGrid');
-            if (typeof LINE_MAP === 'undefined') {
-                grid.innerHTML = '<div style="color:red; font-weight:bold;">❌ 无法加载 stations.js 字典文件，请确保它与 index.html 在同一文件夹内。</div>';
+        // ==========================================
+        // 🌟 核心：收藏夹渲染 (截图风格)
+        // ==========================================
+        async function loadFavorites() {
+            const container = document.getElementById('favs-content');
+            if (favorites.length === 0) {
+                container.innerHTML = `<div class="loading-shimmer">暂无收藏。去地铁或巴士页面点亮 ★ 吧！</div>`;
                 return;
             }
-            for (let line in LINE_MAP) {
-                const conf = LINE_MAP[line];
-                grid.innerHTML += `<button class="subway-bullet" style="background-color: ${conf.color}; color: ${conf.textColor||'white'};" onclick="openSubwayLine('${line}')">${line}</button>`;
-            }
-        }
-        window.onload = initHome;
+            container.innerHTML = `<div class="loading-shimmer">正在同步全城数据...</div>`;
 
-        function switchView(viewId, title) {
-            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            document.getElementById('headerTitle').innerText = title;
-            document.getElementById('backBtn').style.display = viewId === 'view-home' ? 'none' : 'block';
-            currentView = viewId;
-            window.scrollTo(0,0);
-        }
+            // 并发获取所有数据
+            const subwayLines = [...new Set(favorites.filter(f => f.type === 'subway').map(f => f.line))];
+            let subwayData = {};
+            await Promise.all(subwayLines.map(async line => {
+                subwayData[line] = await fetchSubwayData(line);
+            }));
 
-        function navigateBack() { switchView('view-home', 'MTA 实时导航'); }
+            let html = '';
+            for (const fav of favorites) {
+                let times = [];
+                let dest = fav.name;
+                let color = "#333";
 
-        // ==========================================
-        // 🌟 统一收藏引擎 (支持巴士和地铁)
-        // ==========================================
-        function toggleFav(type, line, stationId, stationName) {
-            const favKey = `${type}_${line}_${stationId}`;
-            const existingIdx = favorites.findIndex(f => f.key === favKey);
-            
-            if (existingIdx > -1) {
-                favorites.splice(existingIdx, 1);
-            } else {
-                favorites.push({ key: favKey, type: type, line: line, id: stationId, name: stationName });
-            }
-            localStorage.setItem('mta_app_favs', JSON.stringify(favorites));
-            
-            // 实时更新当前列表上的星星状态
-            if (currentView === 'view-stations') {
-                const btn = event.currentTarget;
-                btn.classList.toggle('active');
-            }
-        }
-
-        async function openFavs() {
-            switchView('view-favs', '我的收藏夹');
-            const container = document.getElementById('favs-content');
-            document.getElementById('fav-toolbar').style.display = favorites.length > 0 ? 'block' : 'none';
-            
-            if (favorites.length === 0) { 
-                container.innerHTML = '<div class="loading">暂无收藏。去线路页点亮 ★ 吧！</div>'; 
-                return; 
-            }
-            
-            document.getElementById('favs-loading').style.display = 'block'; 
-            container.innerHTML = '';
-            
-            try {
-                // 将收藏按地铁线路分组，减少请求次数
-                let subwayDataCache = {}; 
-                const subwayLinesToFetch = [...new Set(favorites.filter(f => f.type === 'subway').map(f => f.line))];
-                await Promise.all(subwayLinesToFetch.map(async line => { 
-                    subwayDataCache[line] = await fetchSubwayProtobuf(LINE_MAP[line].feed, line); 
-                }));
-
-                let html = '';
-                
-                // 并发或循环渲染所有收藏项目
-                for (const fav of favorites) {
-                    let timeText = "等待中...";
-                    let isUrgent = false;
-                    let bgColor = '#333';
-
-                    if (fav.type === 'subway') {
-                        bgColor = LINE_MAP[fav.line]?.color || '#333';
-                        const stData = subwayDataCache[fav.line]?.[fav.id];
-                        if (stData) {
-                            // 极简模式：只取最快到达的那一辆车 (合并南北向)
-                            const allTimes = [...stData.N, ...stData.S].sort((a,b) => a-b);
-                            if (allTimes.length > 0) {
-                                timeText = `${allTimes[0]} 分钟`;
-                                if (allTimes[0] <= 2) isUrgent = true;
-                            } else {
-                                timeText = "无车";
-                            }
-                        } else {
-                            timeText = "无车";
-                        }
-                    } 
-                    else if (fav.type === 'bus') {
-                        bgColor = '#0039A6';
-                        try {
-                            // 针对单个巴士站点请求数据
-                            const res = await fetch(`${WORKER_URL}/?type=bus-stop-monitoring&stopId=${fav.id}`);
-                            const data = await res.json();
-                            const visits = data.Siri?.ServiceDelivery?.StopMonitoringDelivery[0]?.MonitoredStopVisit;
-                            if (visits && visits.length > 0) {
-                                const expectedTime = visits[0].MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime;
-                                if (expectedTime) {
-                                    const diffMins = Math.round((new Date(expectedTime) - new Date()) / 60000);
-                                    if (diffMins <= 0) { timeText = "即将进站"; isUrgent = true; }
-                                    else { timeText = `${diffMins} 分钟`; if (diffMins <= 2) isUrgent = true; }
-                                } else {
-                                    timeText = "行驶中";
-                                }
-                            } else {
-                                timeText = "无车";
-                            }
-                        } catch (e) {
-                            timeText = "获取失败";
-                        }
+                if (fav.type === 'subway') {
+                    color = LINE_MAP[fav.line]?.color || "#333";
+                    const data = subwayData[fav.line]?.[fav.id];
+                    if (data) {
+                        times = [...(data.N || []), ...(data.S || [])].sort((a,b) => a-b).slice(0, 3);
                     }
+                    dest = (fav.dir === 'N' ? 'Uptown / Queens' : 'Downtown / Brooklyn');
+                } else {
+                    color = "#0039A6";
+                    times = await fetchBusStopTimes(fav.id);
+                    dest = "实时到站预测";
+                }
 
-                    // 极简一行式 UI
-                    html += `
-                    <div class="fav-row" onclick="quickJump('${fav.type}', '${fav.line}')">
-                        <div class="fav-info">
-                            <div class="route-tag" style="background:${bgColor}">${fav.line}</div>
-                            <div class="fav-name">${fav.name}</div>
+                html += `
+                <div class="info-row">
+                    <div class="route-block ${fav.type==='subway'?'circle-bullet':''}" style="background:${color}">${fav.line}</div>
+                    <div class="info-content">
+                        <div class="dest-name">${fav.name}</div>
+                        <div class="station-sub">${dest}</div>
+                        <div class="badge-grid">
+                            ${times.length > 0 ? times.map(t => {
+                                const isApproaching = t <= 1;
+                                const isUrgent = t <= 3;
+                                return `<div class="time-badge ${isApproaching?'approaching':''} ${isUrgent?'urgent':''}">
+                                    ${isApproaching ? '即将进站' : t}<span class="unit">${isApproaching ? '' : 'm'}</span>
+                                </div>`;
+                            }).join('') : '<div class="station-sub">暂无到站信息</div>'}
                         </div>
-                        <div class="fav-time ${isUrgent ? 'urgent' : ''}">${timeText}</div>
-                    </div>`;
-                }
-
-                document.getElementById('favs-loading').style.display = 'none';
-                container.innerHTML = html;
-            } catch (err) { 
-                document.getElementById('favs-loading').style.display = 'none'; 
-                container.innerHTML = '❌ 卫星同步失败，请刷新。'; 
+                    </div>
+                    <div class="star-icon active" onclick="toggleFav('${fav.type}','${fav.line}','${fav.id}','${fav.name}','${fav.dir}')">★</div>
+                </div>`;
             }
-        }
-
-        function quickJump(type, line) {
-            if (type === 'subway') openSubwayLine(line);
-            else if (type === 'bus') {
-                document.getElementById('busSearchInput').value = line;
-                executeBusSearch();
-            }
-        }
-
-        // ==========================================
-        // 🚇 核心系统一：地铁解析 (修复 NaN 和始发站问题)
-        // ==========================================
-        async function openSubwayLine(line) {
-            isBusMode = false;
-            currentLine = line;
-            switchView('view-stations', `🚇 ${line} 线时刻表`);
-            document.getElementById('station-toolbar').style.display = 'none';
-            document.getElementById('stations-content').innerHTML = '';
-            document.getElementById('stations-loading').style.display = 'block';
-
-            if (!STATION_DICT[line]) {
-                document.getElementById('stations-loading').innerHTML = `❌ 尚未配置 ${line} 线的字典，请在 stations.js 中添加。`; return;
-            }
-            await executeSubwayFetch();
-        }
-
-        async function executeSubwayFetch() {
-            try {
-                cachedSubwayData = await fetchSubwayProtobuf(LINE_MAP[currentLine].feed, currentLine);
-                document.getElementById('stations-loading').style.display = 'none';
-                document.getElementById('station-toolbar').style.display = 'block';
-                document.getElementById('refreshBtn').innerText = `🔄 刷新实时数据 (上次: ${new Date().toLocaleTimeString('zh-CN', {hour12:false})})`;
-                renderSubwayUI();
-            } catch (err) { document.getElementById('stations-loading').innerHTML = `❌ 拉取失败: ${err.message}`; }
-        }
-
-        function renderSubwayUI() {
-            const stations = STATION_DICT[currentLine] || [];
-            const directions = [
-                { id: 'N', label: '⬆️ 北行 (Uptown)', stList: [...stations].reverse() },
-                { id: 'S', label: '⬇️ 南行 (Downtown)', stList: [...stations] }
-            ];
-
-            let anchorsHtml = '';
-            directions.forEach(d => {
-                anchorsHtml += `<button class="anchor-btn" onclick="document.getElementById('section-${d.id}').scrollIntoView({behavior:'smooth'})">前往 ${d.label.split(' ')[1]}</button>`;
-            });
-            document.getElementById('anchorButtons').innerHTML = anchorsHtml;
-
-            let html = '';
-            directions.forEach(d => {
-                html += `<div id="section-${d.id}" class="scroll-anchor">`;
-                html += `<div class="direction-title">${d.label}</div>`;
-                
-                let currentBorough = "";
-                d.stList.forEach(st => {
-                    if (st.borough && st.borough !== currentBorough) {
-                        html += `<div class="borough-divider">${st.borough}</div>`;
-                        currentBorough = st.borough;
-                    }
-                    
-                    const favKey = `subway_${currentLine}_${st.id}`;
-                    const isFav = favorites.some(f => f.key === favKey);
-                    const starClass = isFav ? 'active' : '';
-                    
-                    let timeHtml = '<div class="no-data">暂无近期列车</div>';
-                    if (cachedSubwayData[st.id] && cachedSubwayData[st.id][d.id] && cachedSubwayData[st.id][d.id].length > 0) {
-                        timeHtml = cachedSubwayData[st.id][d.id].slice(0, 5).map(m => `<div class="time-badge">${m} 分钟</div>`).join('');
-                    }
-
-                    html += `<div class="station-card">
-                        <div class="st-header">
-                            <div class="st-name">${st.name}</div>
-                            <div class="star-btn ${starClass}" onclick="toggleFav('subway', '${currentLine}', '${st.id}', '${st.name}')">★</div>
-                        </div>
-                        <div class="times-row">${timeHtml}</div>
-                    </div>`;
-                });
-                html += `</div>`; 
-            });
-            document.getElementById('stations-content').innerHTML = html;
-        }
-
-        // 🚨 终极修复：longs:String + arrival/departure 联合校验
-        async function fetchSubwayProtobuf(feedName, targetLine) {
-            const response = await fetch(`${WORKER_URL}/?route=${feedName}`);
-            if (!response.ok) throw new Error(`Worker 后端连接失败 (状态码: ${response.status})`);
-            
-            const buffer = await response.arrayBuffer();
-            const message = FeedMessage.decode(new Uint8Array(buffer));
-            
-            // 关键：强制将大数字转为 String，防止 NaN 崩溃
-            const data = FeedMessage.toObject(message, { enums: String, longs: String, defaults: true });
-
-            let processed = {}; 
-            const now = Math.floor(Date.now() / 1000);
-            
-            (data.entity || []).forEach(entity => {
-                if (entity.tripUpdate && entity.tripUpdate.stopTimeUpdate) {
-                    const routeId = entity.tripUpdate.trip.routeId;
-                    if (routeId !== targetLine && routeId !== targetLine + 'X') return; 
-                    
-                    entity.tripUpdate.stopTimeUpdate.forEach(stop => {
-                        const baseId = stop.stopId.substring(0, stop.stopId.length - 1);
-                        const dir = stop.stopId.slice(-1);
-                        
-                        // 关键：无论是到达时间还是发车时间，只要有就抓（拯救始发站）
-                        const timeObj = stop.arrival || stop.departure;
-                        
-                        if (timeObj && timeObj.time) {
-                            // 将安全的 String 转换回安全的 Int
-                            const timeSecs = parseInt(timeObj.time, 10);
-                            const mins = Math.round((timeSecs - now) / 60);
-                            
-                            if (mins >= 0 && mins <= 120) {
-                                if (!processed[baseId]) processed[baseId] = { N: [], S: [] };
-                                processed[baseId][dir].push(mins);
-                            }
-                        }
-                    });
-                }
-            });
-            for(let id in processed) { processed[id].N.sort((a,b) => a - b); processed[id].S.sort((a,b) => a - b); }
-            return processed;
-        }
-
-        // ==========================================
-        // 🚌 核心系统二：巴士智能搜索与 URL 编码修复
-        // ==========================================
-        function handleBusInput(val) {
-            val = val.toUpperCase().trim();
-            const sugBox = document.getElementById('search-suggestions');
-            
-            if (val.length < 2) { 
-                sugBox.style.display = 'none'; 
-                return; 
-            }
-            
-            // 模糊匹配逻辑
-            const matches = COMMON_BUSES.filter(r => r.includes(val));
-            let html = '';
-            
-            matches.forEach(m => {
-                html += `<div class="suggestion-item" onclick="selectBusSuggestion('${m}')">👉 ${m}</div>`;
-            });
-            
-            // 兜底提示：即使用户搜的非常冷门，也允许直接搜索
-            if (!matches.includes(val) && val !== "S79") {
-                html += `<div class="suggestion-item" style="color:#666;" onclick="selectBusSuggestion('${val}')">搜索 "${val}"</div>`;
-            }
-            // 修复 S79 痛点
-            if (val === "S79" && !matches.includes("S79-SBS")) {
-                html += `<div class="suggestion-item" onclick="selectBusSuggestion('S79-SBS')">👉 您是否在找 S79-SBS?</div>`;
-            }
-
-            sugBox.innerHTML = html;
-            sugBox.style.display = 'block';
-        }
-
-        function selectBusSuggestion(route) {
-            document.getElementById('busSearchInput').value = route;
-            document.getElementById('search-suggestions').style.display = 'none';
-            executeBusSearch();
-        }
-
-        function handleEnter(e) { if (e.key === 'Enter') executeBusSearch(); }
-
-        async function executeBusSearch() {
-            document.getElementById('search-suggestions').style.display = 'none';
-            const input = document.getElementById('busSearchInput').value.trim().toUpperCase();
-            if (!input) return;
-            
-            isBusMode = true; 
-            currentLine = input;
-            switchView('view-stations', `🚌 ${currentLine} 追踪`);
-            document.getElementById('station-toolbar').style.display = 'none';
-            document.getElementById('stations-content').innerHTML = '';
-            document.getElementById('stations-loading').style.display = 'block';
-
-            try {
-                // 🚨 终极修复：使用 encodeURIComponent 保护 URL 中的 + 号等特殊字符
-                const encodedRoute = encodeURIComponent(currentLine);
-                let res = await fetch(`${WORKER_URL}/?type=bus-stops&route=${encodedRoute}`);
-                let data = await res.json();
-                
-                if (data.code === 404 || !data.data || !data.data.entry) {
-                    throw new Error(`未找到线路。如果是 SBS 巴士，请尝试加上 -SBS 后缀 (如 S79-SBS)`);
-                }
-                busRouteData = data.data;
-
-                await executeBusRealtimeFetch();
-            } catch (err) {
-                document.getElementById('stations-loading').innerHTML = `❌ ${err.message}`;
-            }
-        }
-
-        async function executeBusRealtimeFetch() {
-            try {
-                // 同样进行编码保护
-                const encodedRoute = encodeURIComponent(currentLine);
-                const res = await fetch(`${WORKER_URL}/?type=bus-realtime&route=${encodedRoute}`);
-                const data = await res.json();
-                busRealtimeData = data.Siri?.ServiceDelivery?.VehicleMonitoringDelivery[0]?.VehicleActivity || [];
-            } catch (err) { busRealtimeData = []; }
-
-            document.getElementById('stations-loading').style.display = 'none';
-            document.getElementById('station-toolbar').style.display = 'block';
-            document.getElementById('refreshBtn').innerText = `🔄 刷新数据 (上次: ${new Date().toLocaleTimeString('zh-CN', {hour12:false})})`;
-            
-            renderBusUI();
-        }
-
-        function renderBusUI() {
-            const stopGroupings = busRouteData.entry.stopGroupings[0].stopGroups;
-            const stopsDict = {}; busRouteData.references.stops.forEach(s => stopsDict[s.id] = s.name);
-
-            let anchorsHtml = '';
-            stopGroupings.forEach((group, idx) => {
-                anchorsHtml += `<button class="anchor-btn" onclick="document.getElementById('bus-dir-${idx}').scrollIntoView({behavior:'smooth'})">前往 ${group.name.name.slice(0, 10)}</button>`;
-            });
-            document.getElementById('anchorButtons').innerHTML = anchorsHtml;
-
-            const vehiclesAtStops = {};
-            busRealtimeData.forEach(vehicle => {
-                const journey = vehicle.MonitoredVehicleJourney;
-                if (!journey.MonitoredCall) return; 
-
-                const stopRef = journey.MonitoredCall.StopPointRef;
-                let distanceText = journey.MonitoredCall.Extensions?.Distances?.PresentableDistance || "行驶中";
-                distanceText = distanceText.replace("stops away", "站").replace("stop away", "站").replace("approaching", "即将进站").replace("at stop", "已到站");
-
-                const expectedTime = journey.MonitoredCall.ExpectedArrivalTime;
-                let timePrefix = "";
-                let isUrgent = false; 
-
-                if (expectedTime) {
-                    const diffMins = Math.round((new Date(expectedTime) - new Date()) / 60000);
-                    if (diffMins <= 0) { timePrefix = "即将进站"; isUrgent = true; }
-                    else { timePrefix = `预计 ${diffMins} 分钟`; if (diffMins <= 2) isUrgent = true; }
-                }
-
-                const finalStatus = timePrefix ? `${timePrefix} (${distanceText})` : distanceText;
-                if (!vehiclesAtStops[stopRef]) vehiclesAtStops[stopRef] = [];
-                vehiclesAtStops[stopRef].push({ text: finalStatus, isUrgent: isUrgent });
-            });
-
-            let html = '';
-            stopGroupings.forEach((group, idx) => {
-                html += `<div id="bus-dir-${idx}" class="scroll-anchor">`;
-                html += `<div class="direction-title">🚌 前往: ${group.name.name}</div>`;
-                
-                group.stopIds.forEach(stopId => {
-                    const stopName = stopsDict[stopId];
-                    
-                    const favKey = `bus_${currentLine}_${stopId}`;
-                    const isFav = favorites.some(f => f.key === favKey);
-                    const starClass = isFav ? 'active' : '';
-
-                    let vehicleHtml = '';
-                    if (vehiclesAtStops[stopId]) {
-                        vehiclesAtStops[stopId].forEach(v => {
-                            const cls = v.isUrgent ? 'bus-tracker-urgent' : '';
-                            vehicleHtml += `<div class="bus-tracker-item ${cls}">🚌 ${v.text}</div>`;
-                        });
-                    }
-
-                    html += `<div class="station-card">
-                        <div class="st-header">
-                            <div class="st-name">${stopName}</div>
-                            <div class="star-btn ${starClass}" onclick="toggleFav('bus', '${currentLine}', '${stopId}', '${stopName}')">★</div>
-                        </div>
-                        ${vehicleHtml}
-                    </div>`;
-                });
-                html += `</div>`;
-            });
-            document.getElementById('stations-content').innerHTML = html;
-        }
-
-        async function refreshCurrentLine() {
-            const btn = document.getElementById('refreshBtn');
-            btn.innerText = "⏳ 正在联系 MTA 服务器刷新..."; btn.disabled = true;
-            if (isBusMode) { await executeBusRealtimeFetch(); } 
-            else { await executeSubwayFetch(); }
-            btn.disabled = false;
-        }
-
-        // ==========================================
-        // 动态警报模块
-        // ==========================================
-        let currentAlertMode = 'subway'; let parsedAlerts = { subway: {}, bus: {} }; 
-        async function openAlerts() { switchView('view-alerts', '动态服务警报'); switchAlertMode('subway'); }
-        async function switchAlertMode(mode) {
-            currentAlertMode = mode;
-            document.getElementById('tab-subway').classList.toggle('active', mode === 'subway');
-            document.getElementById('tab-bus').classList.toggle('active', mode === 'bus');
-            document.getElementById('alerts-loading').style.display = 'block';
-            document.getElementById('alerts-main-content').style.display = 'none';
-            document.getElementById('alert-detail-title').style.display = 'none';
-            document.getElementById('alerts-detail-content').innerHTML = '';
-
-            try {
-                const response = await fetch(`${WORKER_URL}/?type=alerts-${mode}`);
-                const data = await response.json(); parsedAlerts[mode] = {}; 
-                (data.entity || []).forEach(item => {
-                    const alertData = item.alert; if (!alertData || !alertData.informedEntity) return;
-                    let header = ""; let desc = "";
-                    if (alertData.headerText && alertData.headerText.translation) header = alertData.headerText.translation[0].text;
-                    if (alertData.descriptionText && alertData.descriptionText.translation) desc = alertData.descriptionText.translation[0].text;
-                    if (!header) return; 
-                    alertData.informedEntity.forEach(entity => {
-                        if (entity.routeId) {
-                            let rId = entity.routeId; if (rId.includes('_')) rId = rId.split('_')[1]; 
-                            if (!parsedAlerts[mode][rId]) parsedAlerts[mode][rId] = [];
-                            const fullText = desc ? `${header}\n${desc}` : header;
-                            if (!parsedAlerts[mode][rId].includes(fullText)) parsedAlerts[mode][rId].push(fullText);
-                        }
-                    });
-                });
-                document.getElementById('alerts-loading').style.display = 'none'; document.getElementById('alerts-main-content').style.display = 'block';
-                const grid = document.getElementById('alerts-badge-grid'); const routesWithAlerts = Object.keys(parsedAlerts[mode]).sort();
-                if (routesWithAlerts.length === 0) { grid.innerHTML = '<div class="no-data">✅ 当前没有生效的警报。</div>'; return; }
-                let html = '';
-                routesWithAlerts.forEach(route => {
-                    if (mode === 'subway') html += `<button class="subway-bullet alert-badge-btn" id="badge-${route}" style="background-color: #333; color: white;" onclick="showAlertDetails('${route}')">${route}</button>`;
-                    else html += `<button class="bus-bullet alert-badge-btn" id="badge-${route}" onclick="showAlertDetails('${route}')">${route}</button>`;
-                });
-                grid.innerHTML = html;
-            } catch (err) { document.getElementById('alerts-loading').innerHTML = `❌ 无法加载警报。`; }
-        }
-        function showAlertDetails(routeId) {
-            document.querySelectorAll('.alert-badge-btn').forEach(b => b.classList.remove('bullet-active'));
-            document.getElementById(`badge-${routeId}`).classList.add('bullet-active');
-            const container = document.getElementById('alerts-detail-content');
-            document.getElementById('alert-detail-title').style.display = 'block'; document.getElementById('alert-detail-title').innerText = `⚠️ ${routeId} 线通知`;
-            const alertsTextArray = parsedAlerts[currentAlertMode][routeId] || [];
-            if (alertsTextArray.length === 0) { container.innerHTML = '<div class="alert-card">无具体信息。</div>'; return; }
-            let html = '';
-            alertsTextArray.forEach(text => {
-                const parts = text.split('\n'); const title = parts[0]; const body = parts.slice(1).join('\n');
-                html += `<div class="alert-card"><div class="alert-title">${title}</div>${body ? `<div class="alert-desc">${body}</div>` : ''}</div>`;
-            });
             container.innerHTML = html;
         }
+
+        // ==========================================
+        // 🚌 巴士处理逻辑
+        // ==========================================
+        function busFuzzy(val) {
+            val = val.toUpperCase().trim();
+            const sug = document.getElementById('busSug');
+            if (val.length < 2) { sug.style.display = 'none'; return; }
+            const routes = ["B70", "S79-SBS", "S93", "B63", "B1", "Q58", "M15-SBS"];
+            const matches = routes.filter(r => r.includes(val));
+            sug.innerHTML = matches.map(m => `<div class="sug-item" onclick="selectBus('${m}')">${m}</div>`).join('');
+            sug.style.display = 'block';
+        }
+
+        async function selectBus(line) {
+            document.getElementById('busSug').style.display = 'none';
+            currentBusLine = line;
+            document.getElementById('bus-detail').style.display = 'block';
+            await refreshBus();
+        }
+
+        async function fetchBusStopTimes(stopId) {
+            try {
+                const res = await fetch(`${WORKER_URL}/?type=bus-stop-monitoring&stopId=${stopId}`);
+                const data = await res.json();
+                const visits = data.Siri?.ServiceDelivery?.StopMonitoringDelivery[0]?.MonitoredStopVisit || [];
+                return visits.map(v => {
+                    const eta = v.MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime;
+                    return Math.round((new Date(eta) - new Date()) / 60000);
+                }).filter(m => m >= 0).slice(0, 3);
+            } catch { return []; }
+        }
+
+        async function refreshBus() {
+            const content = document.getElementById('bus-detail-content');
+            content.innerHTML = `<div class="loading-shimmer">正在拦截卫星信号...</div>`;
+            try {
+                const res = await fetch(`${WORKER_URL}/?type=bus-stops&route=${currentBusLine}`);
+                const data = await res.json();
+                const stopGroups = data.data.entry.stopGroupings[0].stopGroups;
+                const stopsRef = data.data.references.stops.reduce((acc, s) => ({...acc, [s.id]: s.name}), {});
+                
+                const rtRes = await fetch(`${WORKER_URL}/?type=bus-realtime&route=${currentBusLine}`);
+                const rtData = await rtRes.json();
+                const vehicles = rtData.Siri?.ServiceDelivery?.VehicleMonitoringDelivery[0]?.VehicleActivity || [];
+                const vMap = vehicles.reduce((acc, v) => {
+                    const sid = v.MonitoredVehicleJourney.MonitoredCall.StopPointRef;
+                    const eta = v.MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime;
+                    const mins = Math.round((new Date(eta) - new Date()) / 60000);
+                    if(!acc[sid]) acc[sid] = [];
+                    acc[sid].push(mins);
+                    return acc;
+                }, {});
+
+                let html = '';
+                stopGroups.forEach(g => {
+                    html += `<div class="direction-title" style="margin:20px 0 10px 0; color:#8e8e93; font-size:13px;">前往: ${g.name.name}</div>`;
+                    g.stopIds.forEach(sid => {
+                        const isFav = favorites.some(f => f.id === sid);
+                        const times = (vMap[sid] || []).filter(m => m >= 0).sort((a,b)=>a-b);
+                        html += `
+                        <div class="info-row">
+                            <div class="route-block" style="background:#0039A6; font-size:14px;">BUS</div>
+                            <div class="info-content">
+                                <div class="dest-name">${stopsRef[sid]}</div>
+                                <div class="badge-grid">
+                                    ${times.length > 0 ? times.map(t => `<div class="time-badge ${t<=1?'approaching':''}">${t<=1?'即将进站':t+'m'}</div>`).join('') : '<div class="station-sub">暂无预测数据</div>'}
+                                </div>
+                            </div>
+                            <div class="star-icon ${isFav?'active':''}" onclick="toggleFav('bus','${currentBusLine}','${sid}','${stopsRef[sid]}','')">★</div>
+                        </div>`;
+                    });
+                });
+                content.innerHTML = html;
+            } catch { content.innerHTML = "数据同步失败"; }
+        }
+
+        // ==========================================
+        // 🚇 地铁处理逻辑 (修复 NaN)
+        // ==========================================
+        async function fetchSubwayData(line) {
+            try {
+                const res = await fetch(`${WORKER_URL}/?route=${LINE_MAP[line].feed}`);
+                const buffer = await res.arrayBuffer();
+                const message = FeedMessage.decode(new Uint8Array(buffer));
+                const data = FeedMessage.toObject(message, { longs: String });
+                const now = Math.floor(Date.now() / 1000);
+                
+                let processed = {};
+                (data.entity || []).forEach(ent => {
+                    if (ent.tripUpdate && ent.tripUpdate.trip.routeId === line) {
+                        ent.tripUpdate.stopTimeUpdate.forEach(stu => {
+                            const stopId = stu.stopId.slice(0, -1);
+                            const dir = stu.stopId.slice(-1);
+                            const tObj = stu.arrival || stu.departure;
+                            if (tObj && tObj.time) {
+                                const mins = Math.round((parseInt(tObj.time) - now) / 60);
+                                if (mins >= 0 && mins <= 60) {
+                                    if(!processed[stopId]) processed[stopId] = { N:[], S:[] };
+                                    processed[stopId][dir].push(mins);
+                                }
+                            }
+                        });
+                    }
+                });
+                return processed;
+            } catch { return {}; }
+        }
+
+        async function openSubwayLine(line) {
+            currentSubwayLine = line;
+            document.getElementById('subwayGrid').style.display = 'none';
+            document.getElementById('subway-detail').style.display = 'block';
+            await refreshSubway();
+        }
+
+        async function refreshSubway() {
+            const content = document.getElementById('subway-detail-content');
+            content.innerHTML = `<div class="loading-shimmer">正在解密轨道数据...</div>`;
+            const data = await fetchSubwayData(currentSubwayLine);
+            const stations = STATION_DICT[currentSubwayLine] || [];
+            
+            let html = '';
+            ['N', 'S'].forEach(dir => {
+                html += `<div class="direction-title" style="margin:20px 0 10px 0; color:#8e8e93; font-size:13px;">${dir==='N'?'UPTOWN / QUEENS':'DOWNTOWN / BROOKLYN'}</div>`;
+                stations.forEach(st => {
+                    const isFav = favorites.some(f => f.id === st.id && f.line === currentSubwayLine);
+                    const times = (data[st.id]?.[dir] || []).sort((a,b)=>a-b).slice(0,3);
+                    html += `
+                    <div class="info-row">
+                        <div class="route-block circle-bullet" style="background:${LINE_MAP[currentSubwayLine].color}">${currentSubwayLine}</div>
+                        <div class="info-content">
+                            <div class="dest-name">${st.name}</div>
+                            <div class="badge-grid">
+                                ${times.length > 0 ? times.map(t => `<div class="time-badge ${t<=1?'approaching':''}">${t<=1?'即将进站':t+'m'}</div>`).join('') : '<div class="no-data" style="color:#444; font-size:12px;">暂无列车</div>'}
+                            </div>
+                        </div>
+                        <div class="star-icon ${isFav?'active':''}" onclick="toggleFav('subway','${currentSubwayLine}','${st.id}','${st.name}','${dir}')">★</div>
+                    </div>`;
+                });
+            });
+            content.innerHTML = html;
+        }
+
+        // ==========================================
+        // 🛠️ 基础架构
+        // ==========================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.getElementById(`view-${tabId}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(tabId === 'favs') loadFavorites();
+            if(tabId === 'subway') initSubwayGrid();
+        }
+
+        function initSubwayGrid() {
+            const grid = document.getElementById('subwayGrid');
+            grid.innerHTML = '';
+            for (let line in LINE_MAP) {
+                const conf = LINE_MAP[line];
+                grid.innerHTML += `<button class="subway-bullet" style="background:${conf.color}; width:50px; height:50px; border-radius:50%; border:none; color:white; font-weight:bold; font-size:18px;" onclick="openSubwayLine('${line}')">${line}</button>`;
+            }
+            grid.style.display = 'grid';
+            document.getElementById('subway-detail').style.display = 'none';
+        }
+
+        function toggleFav(type, line, id, name, dir) {
+            const idx = favorites.findIndex(f => f.id === id && f.line === line);
+            if (idx > -1) favorites.splice(idx, 1);
+            else favorites.push({ type, line, id, name, dir });
+            localStorage.setItem('mta_pro_favs', JSON.stringify(favorites));
+            if (currentView === 'view-stations') event.currentTarget.classList.toggle('active');
+            if (currentView === 'view-favs') loadFavorites();
+        }
+
+        function switchView(id) { /* 兼容旧逻辑 */ }
+        function navigateBack() { 
+            document.getElementById('subwayGrid').style.display = 'grid';
+            document.getElementById('subway-detail').style.display = 'none';
+        }
+
+        window.onload = () => {
+            loadFavorites(); // 默认进入收藏夹
+        };
     </script>
 </body>
 </html>

@@ -12,66 +12,73 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: #000; color: var(--text-main); -webkit-font-smoothing: antialiased; display: flex; justify-content: center; overscroll-behavior-y: none; }
         .app-wrapper { width: 100%; max-width: 800px; min-height: 100vh; background-color: var(--dark-bg); box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; }
 
+        /* 全局导航放大 */
         .header-global { position: sticky; top: 0; z-index: 2000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); }
-        .app-title { padding: 12px 20px 5px 20px; font-size: 14px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-        .tab-nav { display: flex; padding: 10px 15px; gap: 8px; border-bottom: 0.5px solid #333; }
-        .tab-item { flex: 1; padding: 8px; border-radius: 10px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .app-title { padding: 16px 20px 8px 20px; font-size: 16px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .tab-nav { display: flex; padding: 12px 15px; gap: 10px; border-bottom: 0.5px solid #333; }
+        .tab-item { flex: 1; padding: 12px; border-radius: 12px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .tab-item.active { background: #ffffff; color: #000000; }
 
-        .sticky-toolbar { position: sticky; top: 76px; z-index: 1000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 10px 15px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
-        .toolbar-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; }
+        /* 悬浮控制台放大 */
+        .sticky-toolbar { position: sticky; top: 88px; z-index: 1000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 12px 15px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 12px; }
+        .toolbar-btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: bold; font-size: 17px; cursor: pointer; }
         .btn-back { background: #2c2c2e; color: #fff; flex: 0.4; }
         .btn-action { background: var(--mta-blue); color: #fff; }
 
-        .container { padding: 15px; padding-bottom: 80px; }
+        .container { padding: 18px; padding-bottom: 100px; }
         
         .layer-view { display: none; animation: fadeIn 0.3s ease; }
         .layer-view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* UI 组件 */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 15px; padding: 10px 0; }
-        .route-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: 900; color: white; cursor: pointer; }
+        /* UI 组件整体放大 */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 18px; padding: 15px 0; }
+        .route-circle { width: 68px; height: 68px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: 900; color: white; cursor: pointer; }
         
-        .list-row { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        /* 列表行加厚 */
+        .list-row { background: var(--card-bg); border-radius: 14px; padding: 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .list-row:active { background: #2c2c2e; }
-        .row-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
-        .row-title { font-size: 17px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .row-icon { color: var(--text-dim); font-size: 18px; margin-left: 10px; }
-        .mini-route { width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; font-weight: 900; flex-shrink: 0; }
+        .row-left { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 0; }
+        .row-title { font-size: 19px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .row-icon { color: var(--text-dim); font-size: 22px; margin-left: 10px; }
+        .mini-route { width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 900; flex-shrink: 0; }
 
-        /* 收藏夹实时看板区域 */
-        .live-dash { display: flex; gap: 6px; }
-        .dash-badge { background: #2c2c2e; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 3px; border: 1px solid #444; }
+        /* 收藏夹实时看板字体放大 */
+        .live-dash { display: flex; gap: 8px; }
+        .dash-badge { background: #2c2c2e; padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 3px; border: 1px solid #444; }
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
 
-        .station-card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .dir-header { font-size: 14px; font-weight: 800; color: var(--text-dim); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #333; padding-bottom: 8px; }
-        .route-times-row { display: flex; align-items: center; margin-bottom: 15px; gap: 15px; }
-        .times-flex { display: flex; gap: 10px; flex-wrap: wrap; flex: 1; }
-        .time-box { background: #2c2c2e; padding: 8px 12px; border-radius: 8px; font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 2px; }
-        .time-box .unit { font-size: 12px; font-weight: 500; color: var(--text-dim); }
+        /* 详情卡片与时间组件放大 */
+        .station-card { background: var(--card-bg); border-radius: 16px; padding: 24px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .dir-header { font-size: 16px; font-weight: 800; color: var(--text-dim); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .route-times-row { display: flex; align-items: center; margin-bottom: 18px; gap: 15px; }
+        .times-flex { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
+        .time-box { background: #2c2c2e; padding: 10px 14px; border-radius: 10px; font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 2px; }
+        .time-box .unit { font-size: 14px; font-weight: 500; color: var(--text-dim); }
         .time-box.arriving { background: #30d158; color: #000; }
 
-        .borough-btn { background: #1c1c1e; border: 1px solid #333; border-radius: 12px; padding: 20px; text-align: center; font-size: 18px; font-weight: bold; color: #fff; cursor: pointer; margin-bottom: 12px; }
+        /* 巴士地区按钮与搜索框放大 */
+        .borough-btn { background: #1c1c1e; border: 1px solid #333; border-radius: 14px; padding: 24px; text-align: center; font-size: 20px; font-weight: bold; color: #fff; cursor: pointer; margin-bottom: 15px; }
         .borough-btn:active { background: #2c2c2e; }
 
-        .search-container { margin-bottom: 20px; position: relative; }
-        .search-input { width: 100%; background: #1c1c1e; border: none; padding: 15px; border-radius: 12px; color: #fff; font-size: 16px; box-sizing: border-box; outline: none; border: 1px solid #333; }
-        .suggestions { position: absolute; top: 55px; left: 0; right: 0; background: #2c2c2e; border-radius: 12px; z-index: 2000; overflow: hidden; display: none; }
-        .sug-item { padding: 15px; border-bottom: 1px solid #3d3d3f; font-weight: bold; cursor: pointer; }
+        .search-container { margin-bottom: 24px; position: relative; }
+        .search-input { width: 100%; background: #1c1c1e; border: none; padding: 18px; border-radius: 14px; color: #fff; font-size: 18px; box-sizing: border-box; outline: none; border: 1px solid #333; }
+        .suggestions { position: absolute; top: 62px; left: 0; right: 0; background: #2c2c2e; border-radius: 14px; z-index: 2000; overflow: hidden; display: none; }
+        .sug-item { padding: 18px; border-bottom: 1px solid #3d3d3f; font-size: 17px; font-weight: bold; cursor: pointer; }
 
-        .loading-shimmer { text-align: center; color: var(--text-dim); padding: 40px; font-weight: bold; }
-        .error-msg { color: #ff453a; font-size: 14px; margin-top: 10px; }
-        .fav-btn { font-size: 26px; cursor: pointer; color: #3d3d3f; transition: 0.2s; }
-        .fav-btn.active { color: #ffd60a; text-shadow: 0 0 10px rgba(255, 214, 10, 0.4); }
+        .loading-shimmer { text-align: center; color: var(--text-dim); padding: 50px; font-size: 16px; font-weight: bold; }
+        .error-msg { color: #ff453a; font-size: 15px; margin-top: 12px; }
+        .fav-btn { font-size: 32px; cursor: pointer; color: #3d3d3f; transition: 0.2s; }
+        .fav-btn.active { color: #ffd60a; text-shadow: 0 0 12px rgba(255, 214, 10, 0.4); }
+        
+        #station-detail-title, #route-title, #borough-title, #bus-detail-title { font-size: 22px; }
     </style>
 </head>
 <body>
 
     <div class="app-wrapper">
         <div class="header-global">
-            <div class="app-title">MTA Tracker Pro <span style="font-size: 10px; color: #30d158;">● 实时同步</span></div>
+            <div class="app-title">MTA Tracker Pro <span style="font-size: 12px; color: #30d158;">● 实时同步</span></div>
             <div class="tab-nav">
                 <button class="tab-item active" onclick="switchMainTab('favs', this)">🌟 收藏</button>
                 <button class="tab-item" onclick="switchMainTab('subway', this)">🚇 地铁</button>
@@ -101,17 +108,17 @@
             <div id="layer-bus-routes" class="layer-view">
                 <div class="sticky-toolbar">
                     <button class="toolbar-btn btn-back" onclick="navTo('home')">← 返回</button>
-                    <div style="flex:1; font-weight:900; font-size:18px; text-align:center;" id="borough-title"></div>
+                    <div style="flex:1; font-weight:900; text-align:center;" id="borough-title"></div>
                 </div>
-                <div id="bus-routes-content" style="margin-top: 15px;"></div>
+                <div id="bus-routes-content" style="margin-top: 18px;"></div>
             </div>
 
             <div id="layer-stops" class="layer-view">
                 <div class="sticky-toolbar">
                     <button class="toolbar-btn btn-back" id="stops-back-btn" onclick="navTo('home')">← 返回</button>
-                    <div style="flex:1; font-weight:900; font-size:18px; text-align:center;" id="route-title"></div>
+                    <div style="flex:1; font-weight:900; text-align:center;" id="route-title"></div>
                 </div>
-                <div id="stops-list-content" style="margin-top: 15px;"></div>
+                <div id="stops-list-content" style="margin-top: 18px;"></div>
             </div>
 
             <div id="layer-station" class="layer-view">
@@ -119,8 +126,8 @@
                     <button class="toolbar-btn btn-back" onclick="navTo('stops')">← 站名</button>
                     <button class="toolbar-btn btn-action" onclick="fetchStationRealtime()">🔄 刷新时间</button>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 5px;">
-                    <h2 id="station-detail-title" style="margin: 0;"></h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 5px;">
+                    <h2 id="station-detail-title" style="margin: 0; color:#fff;"></h2>
                     <div id="station-fav-btn" class="fav-btn" onclick="toggleFav()">☆</div>
                 </div>
                 <div id="station-detail-content"></div>
@@ -134,13 +141,7 @@
         const protoRoot = protobuf.parse(GTFS_PROTO).root;
         const FeedMessage = protoRoot.lookupType("transit_realtime.FeedMessage");
 
-        let state = { 
-            activeTab: 'favs', 
-            currentLayer: 'home', 
-            mode: 'subway', // 'subway' or 'bus'
-            selectedLine: null, 
-            selectedStation: { id: null, name: null } 
-        };
+        let state = { activeTab: 'favs', currentLayer: 'home', mode: 'subway', selectedLine: null, selectedStation: { id: null, name: null } };
         let favorites = JSON.parse(localStorage.getItem('mta_pro_favs_v3') || '[]');
 
         function switchMainTab(tabId, btn) {
@@ -162,9 +163,6 @@
             window.scrollTo(0, 0); 
         }
 
-        // ==========================================
-        // 🌟 收藏夹看板 (核心功能)
-        // ==========================================
         function renderFavorites() {
             const container = document.getElementById('favs-content');
             if (favorites.length === 0) {
@@ -180,7 +178,7 @@
                 html += `
                 <div class="list-row" onclick="openStationLayer('${fav.id}', '${fav.name}', '${fav.line}', '${fav.type}')">
                     <div class="row-left">
-                        <div class="mini-route" style="background:${conf.color}; color:${conf.textColor}; font-size:${isSubway?'16px':'10px'};">${iconTxt}</div>
+                        <div class="mini-route" style="background:${conf.color}; color:${conf.textColor}; font-size:${isSubway?'18px':'12px'};">${iconTxt}</div>
                         <div class="row-title">${titleTxt}</div>
                     </div>
                     <div class="live-dash" id="fav-dash-${fav.id}">
@@ -189,18 +187,16 @@
                 </div>`;
             });
             container.innerHTML = html;
-            updateFavoritesRealtime(); // 渲染完立刻去后台拉取时间
+            updateFavoritesRealtime(); 
         }
 
         async function updateFavoritesRealtime() {
             if (state.activeTab !== 'favs') return;
             const now = Math.floor(Date.now() / 1000);
 
-            // 分类获取数据
             const subwayFavs = favorites.filter(f => f.type === 'subway');
             const busFavs = favorites.filter(f => f.type === 'bus');
 
-            // 1. 处理巴士收藏
             busFavs.forEach(async (fav) => {
                 try {
                     const fullStopId = fav.id.includes('_') ? fav.id : `MTA_${fav.id}`;
@@ -224,7 +220,6 @@
                 } catch(e) {}
             });
 
-            // 2. 处理地铁收藏 (按 Feed 聚合请求，防止超额)
             let feedMap = {};
             subwayFavs.forEach(fav => {
                 const feed = LINE_MAP[fav.line]?.feed;
@@ -239,7 +234,7 @@
                     const message = FeedMessage.decode(new Uint8Array(buffer));
                     const data = FeedMessage.toObject(message, { longs: String });
 
-                    let parsedTimes = {}; // { 'A24': { 'N': 1, 'S': 5 } }
+                    let parsedTimes = {}; 
                     (data.entity || []).forEach(ent => {
                         const stopTimes = ent.tripUpdate?.stopTimeUpdate || [];
                         stopTimes.forEach(stu => {
@@ -272,9 +267,6 @@
             }
         }
 
-        // ==========================================
-        // 🚇 地铁逻辑
-        // ==========================================
         function renderSubwayGrid() {
             const grid = document.getElementById('subwayGrid');
             if (grid.innerHTML !== '') return; 
@@ -284,9 +276,6 @@
             }
         }
 
-        // ==========================================
-        // 🚌 巴士逻辑
-        // ==========================================
         function busFuzzy(val) {
             val = val.toUpperCase().trim();
             const sug = document.getElementById('busSug');
@@ -304,20 +293,17 @@
             document.getElementById('borough-title').innerText = `${borough} Buses`;
             const routes = BUS_BOROUGHS[borough] || [];
             let html = '';
-            routes.forEach(r => html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route" style="background:var(--mta-blue); color:#fff; font-size:12px;">BUS</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`);
+            routes.forEach(r => html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route" style="background:var(--mta-blue); color:#fff; font-size:14px;">BUS</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`);
             document.getElementById('bus-routes-content').innerHTML = html;
             navTo('bus-routes');
         }
 
-        // ==========================================
-        // 🚉 通用站名列表 (Layer 2)
-        // ==========================================
         async function openRouteStops(line, mode) {
             state.selectedLine = line; state.mode = mode;
             document.getElementById('route-title').innerText = `${line} Line`;
             document.getElementById('stops-back-btn').onclick = () => {
                 if(mode === 'subway') navTo('home');
-                else if(document.getElementById('busInput').value) navTo('home'); // 从搜索进来的
+                else if(document.getElementById('busInput').value) navTo('home'); 
                 else navTo('bus-routes');
             };
             const content = document.getElementById('stops-list-content');
@@ -344,11 +330,10 @@
                     
                     let html = '';
                     stopGroups.forEach(g => {
-                        html += `<div class="dir-header" style="margin-top:20px; color:var(--text-dim);">前往: ${g.name?.name || '未知方向'}</div>`;
+                        html += `<div class="dir-header" style="margin-top:24px; color:var(--text-dim);">前往: ${g.name?.name || '未知方向'}</div>`;
                         const stopIds = g.stopIds || [];
                         stopIds.forEach(sid => {
                             const sName = stopsRef[sid] || '未知站点';
-                            // 传入方向名字以便后续详情页使用
                             html += `<div class="list-row" onclick="openStationLayer('${sid}', '${sName}', '${g.name?.name}')"><div class="row-title">${sName}</div><div class="row-icon">›</div></div>`;
                         });
                     });
@@ -357,9 +342,6 @@
             }
         }
 
-        // ==========================================
-        // 🕒 通用详情页 (Layer 3)
-        // ==========================================
         function openStationLayer(id, name, overrideLineOrDir = null, modeOverride = null) {
             if(modeOverride) state.mode = modeOverride;
             if(state.mode === 'subway' && overrideLineOrDir) state.selectedLine = overrideLineOrDir;
@@ -368,7 +350,6 @@
             document.getElementById('station-detail-title').innerText = name;
             updateFavStarUI(); navTo('station'); 
             
-            // 如果是巴士，把方向存起来，免得详情页不知道往哪开
             if(state.mode === 'bus') state.selectedStation.dirName = overrideLineOrDir || '实时定位';
             fetchStationRealtime();
         }
@@ -412,7 +393,7 @@
                         const dirTitle = dir === 'N' ? '⬆️ 北行 (Uptown / Queens)' : '⬇️ 南行 (Downtown / Brooklyn)';
                         html += `<div class="station-card"><div class="dir-header">${dirTitle}</div>`;
                         const routesAtDir = Object.keys(parsedData[dir]).sort();
-                        if (routesAtDir.length === 0) html += `<div style="font-size:13px; color:#8e8e93; margin-top:10px;">暂无列车</div>`;
+                        if (routesAtDir.length === 0) html += `<div style="font-size:15px; color:#8e8e93; margin-top:12px;">暂无列车</div>`;
                         else {
                             routesAtDir.forEach(rId => {
                                 if (!LINE_MAP[rId]) return; 
@@ -444,11 +425,11 @@
                     times = times.sort((a,b)=>a-b).slice(0, 4);
 
                     let html = `<div class="station-card">
-                        <div class="dir-header">前往: ${state.selectedStation.dirName || '沿线目的地'}</div>
-                        <div class="route-times-row" style="margin-top:20px;">
-                            <div class="mini-route" style="background:var(--mta-blue); color:#fff; width:46px; height:46px; font-size:18px;">${state.selectedLine}</div>
+                        <div class="dir-header" style="font-size: 17px;">前往: ${state.selectedStation.dirName || '沿线目的地'}</div>
+                        <div class="route-times-row" style="margin-top:24px;">
+                            <div class="mini-route" style="background:var(--mta-blue); color:#fff; width:52px; height:52px; font-size:20px;">${state.selectedLine}</div>
                             <div class="times-flex">
-                                ${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="font-size:14px; color:#8e8e93; font-weight:bold;">暂无定位数据</div>'}
+                                ${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="font-size:16px; color:#8e8e93; font-weight:bold;">暂无定位数据</div>'}
                             </div>
                         </div>
                     </div>`;
@@ -457,9 +438,6 @@
             }
         }
 
-        // ==========================================
-        // 🛠️ 收藏控制与工具
-        // ==========================================
         function toggleFav() {
             const sid = state.selectedStation.id; const line = state.selectedLine;
             const idx = favorites.findIndex(f => f.id === sid && f.line === line);

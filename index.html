@@ -12,15 +12,14 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: #000; color: var(--text-main); -webkit-font-smoothing: antialiased; display: flex; justify-content: center; overscroll-behavior-y: none; }
         .app-wrapper { width: 100%; max-width: 1000px; min-height: 100vh; background-color: var(--dark-bg); box-shadow: 0 0 40px rgba(0,0,0,0.5); position: relative; }
 
-        /* 全局导航巨幅放大 (2x) */
+        /* 全局导航巨幅放大 */
         .header-global { position: sticky; top: 0; z-index: 2000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); }
         .app-title { padding: 32px 40px 16px 40px; font-size: 32px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
         .tab-nav { display: flex; padding: 24px 30px; gap: 20px; border-bottom: 0.5px solid #333; }
         .tab-item { flex: 1; padding: 24px; border-radius: 20px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 32px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .tab-item.active { background: #ffffff; color: #000000; }
 
-        /* 悬浮控制台巨幅放大 (2x) */
-        /* 根据新的 Header 高度重新计算顶距 */
+        /* 悬浮控制台巨幅放大 */
         .sticky-toolbar { position: sticky; top: 180px; z-index: 1000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 24px 30px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 20px; }
         .toolbar-btn { flex: 1; padding: 28px; border-radius: 20px; border: none; font-weight: bold; font-size: 32px; cursor: pointer; }
         .btn-back { background: #2c2c2e; color: #fff; flex: 0.4; }
@@ -32,30 +31,30 @@
         .layer-view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* UI 组件整体放大 (2x) */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 40px; padding: 15px 0; }
         .route-circle { width: 140px; height: 140px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 56px; font-weight: 900; color: white; cursor: pointer; }
         
-        /* 列表行巨幅放大 */
+        /* 列表行与线路徽标极巨化 */
         .list-row { background: var(--card-bg); border-radius: 24px; padding: 44px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .list-row:active { background: #2c2c2e; }
         .row-left { display: flex; align-items: center; gap: 28px; flex: 1; min-width: 0; }
         .row-title { font-size: 36px; font-weight: 700; color: #fff; white-space: normal; line-height: 1.3; }
         .row-icon { color: var(--text-dim); font-size: 48px; margin-left: 10px; }
-        .mini-route { width: 90px; height: 90px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 36px; font-weight: 900; flex-shrink: 0; }
+        .mini-route { width: 90px; height: 90px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; flex-shrink: 0; }
 
-        /* 看板字体巨幅放大 */
+        /* 🔥 看板时间方块与方向箭头深度优化 */
         .live-dash { display: flex; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
-        .dash-badge { background: #2c2c2e; padding: 14px 20px; border-radius: 14px; font-size: 28px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 6px; border: 1px solid #444; }
+        .dash-badge { background: #2c2c2e; padding: 18px 26px; border-radius: 16px; font-size: 32px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; border: 1px solid #444; }
+        .dash-icon { font-size: 1.5em; /* 箭头单独放大 1.5倍 */ display: inline-block; transform: translateY(-2px); } 
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
         @keyframes pulse-bg { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* 详情卡片放大 (2x) */
+        /* 详情卡片放大 */
         .station-card { background: var(--card-bg); border-radius: 28px; padding: 50px; margin-bottom: 36px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .dir-header { font-size: 32px; font-weight: 800; color: var(--text-dim); margin-bottom: 36px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #333; padding-bottom: 20px; }
         .route-times-row { display: flex; align-items: center; margin-bottom: 36px; gap: 28px; }
         .times-flex { display: flex; gap: 20px; flex-wrap: wrap; flex: 1; }
-        .time-box { background: #2c2c2e; padding: 20px 30px; border-radius: 20px; font-size: 44px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 4px; }
+        .time-box { background: #2c2c2e; padding: 20px 30px; border-radius: 20px; font-size: 44px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 6px; }
         .time-box .unit { font-size: 28px; font-weight: 500; color: var(--text-dim); }
         .time-box.arriving { background: #30d158; color: #000; }
 
@@ -65,7 +64,6 @@
 
         .search-container { margin-bottom: 50px; position: relative; }
         .search-input { width: 100%; background: #1c1c1e; border: none; padding: 40px; border-radius: 24px; color: #fff; font-size: 36px; box-sizing: border-box; outline: none; border: 1px solid #333; }
-        /* 搜索框加大，建议也需要重新校准顶距 */
         .suggestions { position: absolute; top: 130px; left: 0; right: 0; background: #2c2c2e; border-radius: 24px; z-index: 2000; overflow: hidden; display: none; }
         .sug-item { padding: 36px; border-bottom: 1px solid #3d3d3f; font-size: 32px; font-weight: bold; cursor: pointer; }
 
@@ -139,7 +137,6 @@
     </div>
 
     <script>
-        // JS 逻辑保持不变，确保功能依然完美。
         const WORKER_URL = "https://mta.zxc717209554.workers.dev";
         const GTFS_PROTO = `syntax = "proto2"; package transit_realtime; message FeedMessage { repeated FeedEntity entity = 2; } message FeedEntity { optional TripUpdate trip_update = 3; } message TripUpdate { optional TripDescriptor trip = 1; repeated StopTimeUpdate stop_time_update = 2; } message TripDescriptor { optional string route_id = 5; } message StopTimeUpdate { optional StopTimeEvent arrival = 2; optional StopTimeEvent departure = 3; optional string stop_id = 4; } message StopTimeEvent { optional int64 time = 2; }`;
         const protoRoot = protobuf.parse(GTFS_PROTO).root;
@@ -175,6 +172,9 @@
             state.currentLayer = layerId; window.scrollTo(0, 0); 
         }
 
+        // ==========================================
+        // 🌟 收藏夹渲染：加入巨大字母和指示箭头
+        // ==========================================
         function renderFavorites() {
             const container = document.getElementById('favs-content');
             if (favorites.length === 0) {
@@ -187,10 +187,13 @@
                 const iconTxt = isSubway ? fav.line : 'BUS';
                 const titleTxt = isSubway ? fav.name : `${fav.line} - ${fav.name}`;
                 
+                // 🔥 核心更新：强行注入超大字号 font-size 到 mini-route
+                const fontSize = isSubway ? '44px' : '26px';
+                
                 html += `
                 <div class="list-row" onclick="openStationLayer('${fav.id}', '${fav.name}', '${fav.line}', '${fav.type}')">
                     <div class="row-left">
-                        <div class="mini-route" style="background:${conf.color}; color:${conf.textColor}; font-size:${isSubway?'20px':'14px'};">${iconTxt}</div>
+                        <div class="mini-route" style="background:${conf.color}; color:${conf.textColor}; font-size:${fontSize};">${iconTxt}</div>
                         <div class="row-title">${titleTxt}</div>
                     </div>
                     <div class="live-dash" id="fav-dash-${fav.id}">
@@ -225,8 +228,8 @@
                     const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                     if(dashEl) {
                         if(minTime === 999) dashEl.innerHTML = `<div class="dash-badge">无车</div>`;
-                        else if (minTime <= 0) dashEl.innerHTML = `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;">停靠中</div>`;
-                        else dashEl.innerHTML = `<div class="dash-badge">约 ${minTime}m</div>`;
+                        else if (minTime <= 0) dashEl.innerHTML = `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;"><span class="dash-icon">🚌</span> 停靠中</div>`;
+                        else dashEl.innerHTML = `<div class="dash-badge"><span class="dash-icon">🚌</span> 约 ${minTime}m</div>`;
                     }
                 } catch(e) {}
             });
@@ -269,8 +272,9 @@
                         const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                         if(dashEl) {
                             let h = '';
-                            if(times.N !== 999) h += `<div class="dash-badge ${times.N<=0?'arr':''}">⬆ ${times.N<=0?'Due':times.N+'m'}</div>`;
-                            if(times.S !== 999) h += `<div class="dash-badge ${times.S<=0?'arr':''}">⬇ ${times.S<=0?'Due':times.S+'m'}</div>`;
+                            // 🔥 核心更新：使用专门的 dash-icon 类放大箭头
+                            if(times.N !== 999) h += `<div class="dash-badge ${times.N<=0?'arr':''}"><span class="dash-icon">⬆</span> ${times.N<=0?'Due':times.N+'m'}</div>`;
+                            if(times.S !== 999) h += `<div class="dash-badge ${times.S<=0?'arr':''}"><span class="dash-icon">⬇</span> ${times.S<=0?'Due':times.S+'m'}</div>`;
                             dashEl.innerHTML = h || `<div class="dash-badge">无车</div>`;
                         }
                     });
@@ -303,7 +307,7 @@
             document.getElementById('borough-title').innerText = `${borough} Buses`;
             const routes = BUS_BOROUGHS[borough] || [];
             let html = '';
-            routes.forEach(r => html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route" style="background:var(--mta-blue); color:#fff; font-size:16px;">BUS</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`);
+            routes.forEach(r => html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route" style="background:var(--mta-blue); color:#fff; font-size:24px;">BUS</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`);
             document.getElementById('bus-routes-content').innerHTML = html;
             navTo('bus-routes');
         }
@@ -340,7 +344,7 @@
                     
                     let html = '';
                     stopGroups.forEach(g => {
-                        html += `<div class="dir-header" style="margin-top:28px; color:var(--text-dim);">前往: ${g.name?.name || '未知方向'}</div>`;
+                        html += `<div class="dir-header" style="margin-top:40px; color:var(--text-dim);">前往: ${g.name?.name || '未知方向'}</div>`;
                         const stopIds = g.stopIds || [];
                         stopIds.forEach(sid => {
                             const sName = stopsRef[sid] || '未知站点';
@@ -450,7 +454,7 @@
                         
                         html += `<div class="station-card"><div class="dir-header">${dirTitle}</div>`;
                         const routesAtDir = Object.keys(parsedData[dir]).sort();
-                        if (routesAtDir.length === 0) html += `<div style="font-size:16px; color:#8e8e93; margin-top:12px;">暂无列车</div>`;
+                        if (routesAtDir.length === 0) html += `<div style="font-size:24px; color:#8e8e93; margin-top:20px;">暂无列车</div>`;
                         else {
                             routesAtDir.forEach(rId => {
                                 if (!LINE_MAP[rId]) return; 
@@ -482,11 +486,11 @@
                     times = times.sort((a,b)=>a-b).slice(0, 4);
 
                     let html = `<div class="station-card">
-                        <div class="dir-header" style="font-size: 18px;">前往: ${state.selectedStation.dirName || '沿线目的地'}</div>
-                        <div class="route-times-row" style="margin-top:24px;">
-                            <div class="mini-route" style="background:var(--mta-blue); color:#fff; width:56px; height:56px; font-size:22px;">${state.selectedLine}</div>
+                        <div class="dir-header" style="font-size: 26px;">前往: ${state.selectedStation.dirName || '沿线目的地'}</div>
+                        <div class="route-times-row" style="margin-top:36px;">
+                            <div class="mini-route" style="background:var(--mta-blue); color:#fff; width:90px; height:90px; font-size:36px;">${state.selectedLine}</div>
                             <div class="times-flex">
-                                ${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="font-size:18px; color:#8e8e93; font-weight:bold;">暂无定位数据</div>'}
+                                ${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="font-size:24px; color:#8e8e93; font-weight:bold;">暂无定位数据</div>'}
                             </div>
                         </div>
                     </div>`;

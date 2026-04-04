@@ -12,65 +12,66 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: #000; color: var(--text-main); -webkit-font-smoothing: antialiased; display: flex; justify-content: center; overscroll-behavior-y: none; }
         .app-wrapper { width: 100%; max-width: 800px; min-height: 100vh; background-color: var(--dark-bg); box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; }
 
-        /* 全局导航 */
+        /* 全局导航巨幅放大 */
         .header-global { position: sticky; top: 0; z-index: 2000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); }
-        .app-title { padding: 16px 20px 8px 20px; font-size: 16px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-        .tab-nav { display: flex; padding: 12px 15px; gap: 10px; border-bottom: 0.5px solid #333; }
-        .tab-item { flex: 1; padding: 12px; border-radius: 12px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .app-title { padding: 18px 22px 10px 22px; font-size: 18px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .tab-nav { display: flex; padding: 14px 18px; gap: 12px; border-bottom: 0.5px solid #333; }
+        .tab-item { flex: 1; padding: 14px; border-radius: 12px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .tab-item.active { background: #ffffff; color: #000000; }
 
-        /* 悬浮控制台 */
-        .sticky-toolbar { position: sticky; top: 88px; z-index: 1000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 12px 15px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 12px; }
-        .toolbar-btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: bold; font-size: 17px; cursor: pointer; }
+        /* 悬浮控制台巨幅放大 */
+        .sticky-toolbar { position: sticky; top: 96px; z-index: 1000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 14px 18px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 14px; }
+        .toolbar-btn { flex: 1; padding: 16px; border-radius: 12px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; }
         .btn-back { background: #2c2c2e; color: #fff; flex: 0.4; }
         .btn-action { background: var(--mta-blue); color: #fff; }
 
-        .container { padding: 18px; padding-bottom: 100px; }
+        .container { padding: 20px; padding-bottom: 120px; }
         
         .layer-view { display: none; animation: fadeIn 0.3s ease; }
         .layer-view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* UI 组件 */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 18px; padding: 15px 0; }
-        .route-circle { width: 68px; height: 68px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: 900; color: white; cursor: pointer; }
+        /* UI 组件整体放大 */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 20px; padding: 15px 0; }
+        .route-circle { width: 76px; height: 76px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: 900; color: white; cursor: pointer; }
         
-        .list-row { background: var(--card-bg); border-radius: 14px; padding: 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        /* 列表行加厚放大 */
+        .list-row { background: var(--card-bg); border-radius: 16px; padding: 24px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .list-row:active { background: #2c2c2e; }
-        .row-left { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 0; }
-        .row-title { font-size: 18px; font-weight: 700; color: #fff; white-space: normal; line-height: 1.3; }
-        .row-icon { color: var(--text-dim); font-size: 22px; margin-left: 10px; }
-        .mini-route { width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 900; flex-shrink: 0; }
+        .row-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+        .row-title { font-size: 20px; font-weight: 700; color: #fff; white-space: normal; line-height: 1.3; }
+        .row-icon { color: var(--text-dim); font-size: 26px; margin-left: 10px; }
+        .mini-route { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
 
-        /* 实时看板字体 */
+        /* 实时看板字体放大 */
         .live-dash { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-        .dash-badge { background: #2c2c2e; padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 3px; border: 1px solid #444; }
+        .dash-badge { background: #2c2c2e; padding: 8px 12px; border-radius: 8px; font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 3px; border: 1px solid #444; }
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
         @keyframes pulse-bg { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* 详情卡片 */
-        .station-card { background: var(--card-bg); border-radius: 16px; padding: 24px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .dir-header { font-size: 16px; font-weight: 800; color: var(--text-dim); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .route-times-row { display: flex; align-items: center; margin-bottom: 18px; gap: 15px; }
-        .times-flex { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
-        .time-box { background: #2c2c2e; padding: 10px 14px; border-radius: 10px; font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 2px; }
-        .time-box .unit { font-size: 14px; font-weight: 500; color: var(--text-dim); }
+        /* 详情卡片放大 */
+        .station-card { background: var(--card-bg); border-radius: 18px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .dir-header { font-size: 18px; font-weight: 800; color: var(--text-dim); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #333; padding-bottom: 12px; }
+        .route-times-row { display: flex; align-items: center; margin-bottom: 20px; gap: 18px; }
+        .times-flex { display: flex; gap: 14px; flex-wrap: wrap; flex: 1; }
+        .time-box { background: #2c2c2e; padding: 12px 18px; border-radius: 12px; font-size: 24px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 3px; }
+        .time-box .unit { font-size: 16px; font-weight: 500; color: var(--text-dim); }
         .time-box.arriving { background: #30d158; color: #000; }
 
-        /* 巴士地区按钮与搜索 */
-        .borough-btn { background: #1c1c1e; border: 1px solid #333; border-radius: 14px; padding: 24px; text-align: center; font-size: 20px; font-weight: bold; color: #fff; cursor: pointer; margin-bottom: 15px; }
+        /* 巴士地区按钮与搜索框放大 */
+        .borough-btn { background: #1c1c1e; border: 1px solid #333; border-radius: 16px; padding: 28px; text-align: center; font-size: 22px; font-weight: bold; color: #fff; cursor: pointer; margin-bottom: 18px; }
         .borough-btn:active { background: #2c2c2e; }
-        .search-container { margin-bottom: 24px; position: relative; }
-        .search-input { width: 100%; background: #1c1c1e; border: none; padding: 18px; border-radius: 14px; color: #fff; font-size: 18px; box-sizing: border-box; outline: none; border: 1px solid #333; }
-        .suggestions { position: absolute; top: 62px; left: 0; right: 0; background: #2c2c2e; border-radius: 14px; z-index: 2000; overflow: hidden; display: none; }
-        .sug-item { padding: 18px; border-bottom: 1px solid #3d3d3f; font-size: 17px; font-weight: bold; cursor: pointer; }
+        .search-container { margin-bottom: 28px; position: relative; }
+        .search-input { width: 100%; background: #1c1c1e; border: none; padding: 22px; border-radius: 16px; color: #fff; font-size: 20px; box-sizing: border-box; outline: none; border: 1px solid #333; }
+        .suggestions { position: absolute; top: 72px; left: 0; right: 0; background: #2c2c2e; border-radius: 16px; z-index: 2000; overflow: hidden; display: none; }
+        .sug-item { padding: 20px; border-bottom: 1px solid #3d3d3f; font-size: 18px; font-weight: bold; cursor: pointer; }
 
-        .loading-shimmer { text-align: center; color: var(--text-dim); padding: 50px; font-size: 16px; font-weight: bold; }
-        .error-msg { color: #ff453a; font-size: 15px; margin-top: 12px; }
-        .fav-btn { font-size: 32px; cursor: pointer; color: #3d3d3f; transition: 0.2s; }
+        .loading-shimmer { text-align: center; color: var(--text-dim); padding: 50px; font-size: 18px; font-weight: bold; }
+        .error-msg { color: #ff453a; font-size: 16px; margin-top: 12px; }
+        .fav-btn { font-size: 36px; cursor: pointer; color: #3d3d3f; transition: 0.2s; }
         .fav-btn.active { color: #ffd60a; text-shadow: 0 0 12px rgba(255, 214, 10, 0.4); }
         
-        #station-detail-title, #route-title, #borough-title, #bus-detail-title { font-size: 22px; }
+        #station-detail-title, #route-title, #borough-title, #bus-detail-title { font-size: 24px; }
     </style>
 </head>
 <body>
@@ -140,7 +141,6 @@
         const protoRoot = protobuf.parse(GTFS_PROTO).root;
         const FeedMessage = protoRoot.lookupType("transit_realtime.FeedMessage");
 
-        // 🚇 地铁各线南北行终点站字典
         const SUBWAY_TERMINALS = {
             "1": { "N": "Van Cortlandt Pk", "S": "South Ferry" }, "2": { "N": "Wakefield", "S": "Flatbush Av" }, "3": { "N": "Harlem", "S": "New Lots Av" },
             "4": { "N": "Woodlawn", "S": "Crown Hts" }, "5": { "N": "Eastchester", "S": "Flatbush Av" }, "6": { "N": "Pelham Bay Pk", "S": "Brooklyn Bridge" },
@@ -189,7 +189,7 @@
                 html += `
                 <div class="list-row" onclick="openStationLayer('${fav.id}', '${fav.name}', '${fav.line}', '${fav.type}')">
                     <div class="row-left">
-                        <div class="mini-route" style="background:${conf.color}; color:${conf.textColor}; font-size:${isSubway?'18px':'12px'};">${iconTxt}</div>
+                        <div class="mini-route" style="background:${conf.color}; color:${conf.textColor}; font-size:${isSubway?'20px':'14px'};">${iconTxt}</div>
                         <div class="row-title">${titleTxt}</div>
                     </div>
                     <div class="live-dash" id="fav-dash-${fav.id}">
@@ -306,13 +306,13 @@
             document.getElementById('borough-title').innerText = `${borough} Buses`;
             const routes = BUS_BOROUGHS[borough] || [];
             let html = '';
-            routes.forEach(r => html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route" style="background:var(--mta-blue); color:#fff; font-size:14px;">BUS</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`);
+            routes.forEach(r => html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route" style="background:var(--mta-blue); color:#fff; font-size:16px;">BUS</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`);
             document.getElementById('bus-routes-content').innerHTML = html;
             navTo('bus-routes');
         }
 
         // ==========================================
-        // 🚉 站名列表页 (含巴士实时全线地图)
+        // 🚉 站名列表页 (含巴士实时全线推算)
         // ==========================================
         async function openRouteStops(line, mode) {
             state.selectedLine = line; state.mode = mode;
@@ -329,7 +329,7 @@
                 if (stations.length === 0) content.innerHTML = `<div class="loading-shimmer">字典中暂无数据</div>`;
                 else {
                     let html = '';
-                    stations.forEach(st => html += `<div class="list-row" onclick="openStationLayer('${st.id}', '${st.name}')"><div class="row-title">${st.name}</div><div class="row-icon">›</div></div>`);
+                    stations.forEach(st => html += `<div class="list-row" onclick="openStationLayer('${st.id}', '${st.name}')"><div class="row-left"><div class="row-title">${st.name}</div></div><div class="row-icon">›</div></div>`);
                     content.innerHTML = html;
                 }
                 navTo('stops');
@@ -337,9 +337,8 @@
             else if (mode === 'bus') {
                 document.getElementById('busSug').style.display = 'none';
                 navTo('stops');
-                content.innerHTML = `<div class="loading-shimmer">正在获取 ${line} 线站台与车辆定位...</div>`;
+                content.innerHTML = `<div class="loading-shimmer">正在获取 ${line} 线级联定位...</div>`;
                 try {
-                    // 1. 获取站点骨架
                     const res = await fetch(`${WORKER_URL}/?type=bus-stops&route=${line}`);
                     const data = await res.json();
                     const stopGroups = data.data?.entry?.stopGroupings?.[0]?.stopGroups || [];
@@ -347,11 +346,10 @@
                     
                     let html = '';
                     stopGroups.forEach(g => {
-                        html += `<div class="dir-header" style="margin-top:24px; color:var(--text-dim);">前往: ${g.name?.name || '未知方向'}</div>`;
+                        html += `<div class="dir-header" style="margin-top:28px; color:var(--text-dim);">前往: ${g.name?.name || '未知方向'}</div>`;
                         const stopIds = g.stopIds || [];
                         stopIds.forEach(sid => {
                             const sName = stopsRef[sid] || '未知站点';
-                            // 移除 › 箭头，加入 live-dash 容器用于注入实时状态
                             html += `
                             <div class="list-row" onclick="openStationLayer('${sid}', '${sName}', '${g.name?.name}')">
                                 <div class="row-left"><div class="row-title">${sName}</div></div>
@@ -361,20 +359,36 @@
                     });
                     content.innerHTML = html || `<div class="loading-shimmer">未找到路线数据。</div>`;
 
-                    // 2. 异步拉取全线车辆位置并注入
+                    // 🔥 核心更新：拉取所有车辆，并且解析 OnwardCalls（后续站点级联倒数）
                     const rtRes = await fetch(`${WORKER_URL}/?type=bus-realtime&route=${line}`);
                     const rtData = await rtRes.json();
                     const vehicles = rtData.Siri?.ServiceDelivery?.VehicleMonitoringDelivery?.[0]?.VehicleActivity || [];
                     
                     const vMap = {};
                     vehicles.forEach(v => {
-                        const sid = v.MonitoredVehicleJourney?.MonitoredCall?.StopPointRef;
-                        const eta = v.MonitoredVehicleJourney?.MonitoredCall?.ExpectedArrivalTime;
+                        const journey = v.MonitoredVehicleJourney;
+                        if (!journey) return;
+
+                        // 1. 获取当前站/下一站时间
+                        const sid = journey.MonitoredCall?.StopPointRef;
+                        const eta = journey.MonitoredCall?.ExpectedArrivalTime;
                         if (sid && eta) {
                             const mins = Math.round((new Date(eta) - new Date()) / 60000);
                             if(!vMap[sid]) vMap[sid] = [];
                             vMap[sid].push(mins);
                         }
+
+                        // 2. 🔥 智能级联：获取这辆车后续所有站点的推算时间
+                        const onwardCalls = journey.OnwardCalls?.OnwardCall || [];
+                        onwardCalls.forEach(oc => {
+                            const osid = oc.StopPointRef;
+                            const oeta = oc.ExpectedArrivalTime;
+                            if (osid && oeta) {
+                                const mins = Math.round((new Date(oeta) - new Date()) / 60000);
+                                if(!vMap[osid]) vMap[osid] = [];
+                                vMap[osid].push(mins);
+                            }
+                        });
                     });
 
                     stopGroups.forEach(g => {
@@ -382,7 +396,6 @@
                             const times = (vMap[sid] || []).filter(m => m >= -5).sort((a,b)=>a-b);
                             const el = document.getElementById(`bus-live-${sid}`);
                             if (el && times.length > 0) {
-                                // 最多显示前2辆车防止拥挤
                                 el.innerHTML = times.slice(0, 2).map(t => {
                                     if (t <= 0) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;">停靠中</div>`;
                                     if (t === 1) return `<div class="dash-badge arr">即将进站</div>`;
@@ -446,13 +459,12 @@
 
                     let html = '';
                     ['N', 'S'].forEach(dir => {
-                        // 提取总站名字 (Uptown/Downtown Fallback)
                         const termName = SUBWAY_TERMINALS[state.selectedLine]?.[dir] || (dir === 'N' ? 'Uptown' : 'Downtown');
                         const dirTitle = dir === 'N' ? `⬆️ 北行 (${termName})` : `⬇️ 南行 (${termName})`;
                         
                         html += `<div class="station-card"><div class="dir-header">${dirTitle}</div>`;
                         const routesAtDir = Object.keys(parsedData[dir]).sort();
-                        if (routesAtDir.length === 0) html += `<div style="font-size:15px; color:#8e8e93; margin-top:12px;">暂无列车</div>`;
+                        if (routesAtDir.length === 0) html += `<div style="font-size:16px; color:#8e8e93; margin-top:12px;">暂无列车</div>`;
                         else {
                             routesAtDir.forEach(rId => {
                                 if (!LINE_MAP[rId]) return; 
@@ -484,11 +496,11 @@
                     times = times.sort((a,b)=>a-b).slice(0, 4);
 
                     let html = `<div class="station-card">
-                        <div class="dir-header" style="font-size: 17px;">前往: ${state.selectedStation.dirName || '沿线目的地'}</div>
+                        <div class="dir-header" style="font-size: 18px;">前往: ${state.selectedStation.dirName || '沿线目的地'}</div>
                         <div class="route-times-row" style="margin-top:24px;">
-                            <div class="mini-route" style="background:var(--mta-blue); color:#fff; width:52px; height:52px; font-size:20px;">${state.selectedLine}</div>
+                            <div class="mini-route" style="background:var(--mta-blue); color:#fff; width:56px; height:56px; font-size:22px;">${state.selectedLine}</div>
                             <div class="times-flex">
-                                ${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="font-size:16px; color:#8e8e93; font-weight:bold;">暂无定位数据</div>'}
+                                ${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="font-size:18px; color:#8e8e93; font-weight:bold;">暂无定位数据</div>'}
                             </div>
                         </div>
                     </div>`;
@@ -521,7 +533,6 @@
             if (document.visibilityState === 'visible') {
                 if (state.currentLayer === 'station') fetchStationRealtime();
                 if (state.currentLayer === 'home' && state.activeTab === 'favs') updateFavoritesRealtime();
-                // 巴士实时全线状态也会静默刷新
                 if (state.currentLayer === 'stops' && state.mode === 'bus') openRouteStops(state.selectedLine, 'bus');
             }
         }, 30000); 

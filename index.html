@@ -203,7 +203,7 @@
             content.innerHTML = `<div class="loading-shimmer">正在同步轨道信号...</div>`;
             try {
                 const res = await fetch(`${WORKER_URL}/?route=${LINE_MAP[state.selectedLine].feed}`);
-                if (!res.ok) throw new Error(`Worker HTTP Error: ${res.status}`); // 强行拦截错误
+                if (!res.ok) throw new Error(`Worker HTTP Error: ${res.status}`); 
 
                 const buffer = await res.arrayBuffer();
                 const message = FeedMessage.decode(new Uint8Array(buffer));
@@ -211,12 +211,15 @@
                 const now = Math.floor(Date.now() / 1000);
                 
                 let parsedData = { 'N': {}, 'S': {} }; 
+                // 🛠️ 终极防御：如果 data.entity 为 undefined，则默认为空数组
                 (data.entity || []).forEach(ent => {
                     if (ent.tripUpdate && ent.tripUpdate.trip) {
                         const routeId = ent.tripUpdate.trip.routeId;
-                        ent.tripUpdate.stopTimeUpdate.forEach(stu => {
+                        // 🛠️ 终极防御：如果列车尚未发布未来的停靠站，stopTimeUpdate 为空
+                        const stopTimes = ent.tripUpdate.stopTimeUpdate || []; 
+                        
+                        stopTimes.forEach(stu => {
                             const fullStopId = stu.stopId;
-                            // 核心修复：预防 fullStopId 为空导致的崩溃
                             if (fullStopId && fullStopId.startsWith(state.selectedStation.id)) { 
                                 const dir = fullStopId.slice(-1); 
                                 const tObj = stu.arrival || stu.departure;
@@ -291,21 +294,27 @@
             content.innerHTML = `<div class="loading-shimmer">定位数据获取中...</div>`;
             try {
                 const res = await fetch(`${WORKER_URL}/?type=bus-stops&route=${state.selectedBus}`);
-                if (!res.ok) throw new Error("Worker Error");
+                if (!res.ok) throw new Error("Worker HTTP Error");
                 
                 const data = await res.json();
                 if(!data.data || !data.data.entry) throw new Error("MTA 返回空数据");
 
-                const stopGroups = data.data.entry.stopGroupings[0].stopGroups;
-                const stopsRef = data.data.references.stops.reduce((acc, s) => ({...acc, [s.id]: s.name}), {});
+                // 🛠️ 终极防御：防止没有站点数据时抛出 forEach 错误
+                const stopGroupings = data.data.entry.stopGroupings || [];
+                const stopGroups = stopGroupings[0]?.stopGroups || [];
+                const stopsRef = (data.data.references?.stops || []).reduce((acc, s) => ({...acc, [s.id]: s.name}), {});
                 
                 const rtRes = await fetch(`${WORKER_URL}/?type=bus-realtime&route=${state.selectedBus}`);
                 const rtData = await rtRes.json();
-                const vehicles = rtData.Siri?.ServiceDelivery?.VehicleMonitoringDelivery[0]?.VehicleActivity || [];
+                
+                // 🛠️ 终极防御：安全解析车辆数据
+                const vehicleDelivery = rtData.Siri?.ServiceDelivery?.VehicleMonitoringDelivery || [];
+                const vehicles = vehicleDelivery[0]?.VehicleActivity || [];
+                
                 const vMap = vehicles.reduce((acc, v) => {
-                    const sid = v.MonitoredVehicleJourney.MonitoredCall.StopPointRef;
-                    const eta = v.MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime;
-                    if (eta) {
+                    const sid = v.MonitoredVehicleJourney?.MonitoredCall?.StopPointRef;
+                    const eta = v.MonitoredVehicleJourney?.MonitoredCall?.ExpectedArrivalTime;
+                    if (sid && eta) {
                         const mins = Math.round((new Date(eta) - new Date()) / 60000);
                         if(!acc[sid]) acc[sid] = [];
                         acc[sid].push(mins);
@@ -315,15 +324,17 @@
 
                 let html = '';
                 stopGroups.forEach(g => {
-                    html += `<div style="font-size:14px; font-weight:bold; color:var(--text-dim); margin:20px 0 10px 5px; border-bottom:1px solid #333; padding-bottom:5px;">前往: ${g.name.name}</div>`;
-                    g.stopIds.forEach(sid => {
+                    html += `<div style="font-size:14px; font-weight:bold; color:var(--text-dim); margin:20px 0 10px 5px; border-bottom:1px solid #333; padding-bottom:5px;">前往: ${g.name?.name || '未知方向'}</div>`;
+                    
+                    const stopIds = g.stopIds || [];
+                    stopIds.forEach(sid => {
                         const isFav = favorites.some(f => f.id === sid);
                         const times = (vMap[sid] || []).filter(m => m >= -5).sort((a,b)=>a-b).slice(0,3);
                         html += `
                         <div class="bus-row">
                             <div class="bus-route-block">BUS</div>
                             <div class="bus-info">
-                                <div class="bus-dest">${stopsRef[sid]}</div>
+                                <div class="bus-dest">${stopsRef[sid] || '未知站点'}</div>
                                 <div class="times-flex">${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="font-size:13px; color:#8e8e93;">暂无定位</div>'}</div>
                             </div>
                             <div class="fav-btn ${isFav?'active':''}" onclick="toggleBusFav('${state.selectedBus}', '${sid}', '${stopsRef[sid]}', this)">${isFav?'★':'☆'}</div>

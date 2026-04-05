@@ -34,7 +34,6 @@
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 40px; padding: 15px 0; }
         .route-circle { width: 140px; height: 140px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 56px; font-weight: 900; color: white; cursor: pointer; }
         
-        /* 列表行与线路徽标极巨化 */
         .list-row { background: var(--card-bg); border-radius: 24px; padding: 44px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .list-row:active { background: #2c2c2e; }
         .row-left { display: flex; align-items: center; gap: 28px; flex: 1; min-width: 0; }
@@ -42,14 +41,12 @@
         .row-icon { color: var(--text-dim); font-size: 48px; margin-left: 10px; }
         .mini-route { width: 90px; height: 90px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; flex-shrink: 0; }
 
-        /* 🔥 看板时间方块与方向箭头深度优化 */
         .live-dash { display: flex; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
         .dash-badge { background: #2c2c2e; padding: 18px 26px; border-radius: 16px; font-size: 32px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; border: 1px solid #444; }
-        .dash-icon { font-size: 1.5em; /* 箭头单独放大 1.5倍 */ display: inline-block; transform: translateY(-2px); } 
+        .dash-icon { font-size: 1.5em; display: inline-block; transform: translateY(-2px); } 
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
         @keyframes pulse-bg { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* 详情卡片放大 */
         .station-card { background: var(--card-bg); border-radius: 28px; padding: 50px; margin-bottom: 36px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .dir-header { font-size: 32px; font-weight: 800; color: var(--text-dim); margin-bottom: 36px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #333; padding-bottom: 20px; }
         .route-times-row { display: flex; align-items: center; margin-bottom: 36px; gap: 28px; }
@@ -58,7 +55,6 @@
         .time-box .unit { font-size: 28px; font-weight: 500; color: var(--text-dim); }
         .time-box.arriving { background: #30d158; color: #000; }
 
-        /* 巴士按钮与搜索巨幅放大 */
         .borough-btn { background: #1c1c1e; border: 1px solid #333; border-radius: 24px; padding: 50px; text-align: center; font-size: 40px; font-weight: bold; color: #fff; cursor: pointer; margin-bottom: 30px; }
         .borough-btn:active { background: #2c2c2e; }
 
@@ -124,7 +120,7 @@
 
             <div id="layer-station" class="layer-view">
                 <div class="sticky-toolbar">
-                    <button class="toolbar-btn btn-back" onclick="navTo('stops')">← 站名</button>
+                    <button class="toolbar-btn btn-back" id="station-back-btn" onclick="navTo('stops')">← 站名</button>
                     <button class="toolbar-btn btn-action" onclick="fetchStationRealtime()">🔄 刷新时间</button>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 48px 5px;">
@@ -152,7 +148,8 @@
             "L": { "N": "8 Av", "S": "Canarsie" }, "G": { "N": "Court Sq", "S": "Church Av" }, "J": { "N": "Jamaica Ctr", "S": "Broad St" }, "Z": { "N": "Jamaica Ctr", "S": "Broad St" }
         };
 
-        let state = { activeTab: 'favs', currentLayer: 'home', mode: 'subway', selectedLine: null, selectedStation: { id: null, name: null } };
+        // 核心状态管理：增加了 dirName 记录
+        let state = { activeTab: 'favs', currentLayer: 'home', mode: 'subway', selectedLine: null, selectedStation: { id: null, name: null, dirName: null } };
         let favorites = JSON.parse(localStorage.getItem('mta_pro_favs_v3') || '[]');
 
         function switchMainTab(tabId, btn) {
@@ -173,7 +170,7 @@
         }
 
         // ==========================================
-        // 🌟 收藏夹渲染：加入巨大字母和指示箭头
+        // 🌟 收藏夹渲染：动态绑定正确参数
         // ==========================================
         function renderFavorites() {
             const container = document.getElementById('favs-content');
@@ -187,11 +184,13 @@
                 const iconTxt = isSubway ? fav.line : 'BUS';
                 const titleTxt = isSubway ? fav.name : `${fav.line} - ${fav.name}`;
                 
-                // 🔥 核心更新：强行注入超大字号 font-size 到 mini-route
                 const fontSize = isSubway ? '44px' : '26px';
+                const safeName = fav.name ? fav.name.replace(/'/g, "\\'") : '';
+                const safeDir = fav.dirName ? fav.dirName.replace(/'/g, "\\'") : '';
                 
+                // 参数顺序：(id, name, line, mode, dirName, fromFav)
                 html += `
-                <div class="list-row" onclick="openStationLayer('${fav.id}', '${fav.name}', '${fav.line}', '${fav.type}')">
+                <div class="list-row" onclick="openStationLayer('${fav.id}', '${safeName}', '${fav.line}', '${fav.type}', '${safeDir}', true)">
                     <div class="row-left">
                         <div class="mini-route" style="background:${conf.color}; color:${conf.textColor}; font-size:${fontSize};">${iconTxt}</div>
                         <div class="row-title">${titleTxt}</div>
@@ -272,7 +271,6 @@
                         const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                         if(dashEl) {
                             let h = '';
-                            // 🔥 核心更新：使用专门的 dash-icon 类放大箭头
                             if(times.N !== 999) h += `<div class="dash-badge ${times.N<=0?'arr':''}"><span class="dash-icon">⬆</span> ${times.N<=0?'Due':times.N+'m'}</div>`;
                             if(times.S !== 999) h += `<div class="dash-badge ${times.S<=0?'arr':''}"><span class="dash-icon">⬇</span> ${times.S<=0?'Due':times.S+'m'}</div>`;
                             dashEl.innerHTML = h || `<div class="dash-badge">无车</div>`;
@@ -327,7 +325,10 @@
                 if (stations.length === 0) content.innerHTML = `<div class="loading-shimmer">字典中暂无数据</div>`;
                 else {
                     let html = '';
-                    stations.forEach(st => html += `<div class="list-row" onclick="openStationLayer('${st.id}', '${st.name}')"><div class="row-left"><div class="row-title">${st.name}</div></div><div class="row-icon">›</div></div>`);
+                    stations.forEach(st => {
+                        const safeName = st.name.replace(/'/g, "\\'");
+                        html += `<div class="list-row" onclick="openStationLayer('${st.id}', '${safeName}', '${line}', 'subway')"><div class="row-left"><div class="row-title">${st.name}</div></div><div class="row-icon">›</div></div>`;
+                    });
                     content.innerHTML = html;
                 }
                 navTo('stops');
@@ -344,12 +345,15 @@
                     
                     let html = '';
                     stopGroups.forEach(g => {
-                        html += `<div class="dir-header" style="margin-top:40px; color:var(--text-dim);">前往: ${g.name?.name || '未知方向'}</div>`;
+                        const rawDirName = g.name?.name || '';
+                        const safeDir = rawDirName.replace(/'/g, "\\'");
+                        html += `<div class="dir-header" style="margin-top:40px; color:var(--text-dim);">前往: ${rawDirName || '未知方向'}</div>`;
                         const stopIds = g.stopIds || [];
                         stopIds.forEach(sid => {
                             const sName = stopsRef[sid] || '未知站点';
+                            const safeName = sName.replace(/'/g, "\\'");
                             html += `
-                            <div class="list-row" onclick="openStationLayer('${sid}', '${sName}', '${g.name?.name}')">
+                            <div class="list-row" onclick="openStationLayer('${sid}', '${safeName}', '${line}', 'bus', '${safeDir}')">
                                 <div class="row-left"><div class="row-title">${sName}</div></div>
                                 <div class="live-dash" id="bus-live-${sid}"></div>
                             </div>`;
@@ -401,15 +405,28 @@
             }
         }
 
-        function openStationLayer(id, name, overrideLineOrDir = null, modeOverride = null) {
-            if(modeOverride) state.mode = modeOverride;
-            if(state.mode === 'subway' && overrideLineOrDir) state.selectedLine = overrideLineOrDir;
+        // ==========================================
+        // 🕒 终极单站详情页：动态处理返回路由及线路锁定
+        // ==========================================
+        function openStationLayer(id, name, line, mode, dirName, fromFav = false) {
+            state.mode = mode || state.mode;
+            state.selectedLine = line || state.selectedLine;
+            state.selectedStation = { id, name, dirName: dirName || '沿线目的地' };
             
-            state.selectedStation = { id, name };
             document.getElementById('station-detail-title').innerText = name;
-            updateFavStarUI(); navTo('station'); 
+            updateFavStarUI();
             
-            if(state.mode === 'bus') state.selectedStation.dirName = overrideLineOrDir || '实时定位';
+            // 🔥 核心修复：根据入口动态改变“返回”按钮
+            const backBtn = document.getElementById('station-back-btn');
+            if (state.currentLayer === 'home' || fromFav) {
+                backBtn.innerText = '← 收藏夹';
+                backBtn.onclick = () => navTo('home');
+            } else {
+                backBtn.innerText = '← 站名';
+                backBtn.onclick = () => navTo('stops');
+            }
+            
+            navTo('station');
             fetchStationRealtime();
         }
 
@@ -499,11 +516,20 @@
             }
         }
 
+        // ==========================================
+        // 🛠️ 收藏存取：补充保存 dirName 字段
+        // ==========================================
         function toggleFav() {
             const sid = state.selectedStation.id; const line = state.selectedLine;
             const idx = favorites.findIndex(f => f.id === sid && f.line === line);
             if (idx > -1) favorites.splice(idx, 1);
-            else favorites.push({ type: state.mode, id: sid, line: line, name: state.selectedStation.name });
+            else favorites.push({ 
+                type: state.mode, 
+                id: sid, 
+                line: line, 
+                name: state.selectedStation.name,
+                dirName: state.selectedStation.dirName // 🔥 核心修复：存入方向
+            });
             localStorage.setItem('mta_pro_favs_v3', JSON.stringify(favorites)); updateFavStarUI();
         }
 

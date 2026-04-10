@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>纽约通勤瑞士军刀PRO MAX</title>
+    <title>SB MTA Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="stations.js"></script>
@@ -14,7 +14,9 @@
         .app-wrapper { width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; background-color: var(--dark-bg); box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; }
 
         .header-global { position: sticky; top: 0; z-index: 2000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); }
-        .app-title { padding: 16px 20px 8px 20px; font-size: 15px; font-weight: 800; color: var(--text-dim); display: flex; justify-content: space-between; align-items: center; }
+        /* ⚙️ 隐藏的设置入口：点击标题即可触发 */
+        .app-title { padding: 16px 20px 8px 20px; font-size: 16px; font-weight: 900; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .app-title:active { opacity: 0.5; }
         
         .tab-nav { display: flex; padding: 10px 16px; gap: 8px; border-bottom: 0.5px solid #333; }
         .tab-item { flex: 1; padding: 12px 0; border-radius: 12px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
@@ -39,13 +41,20 @@
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 16px; padding: 10px 0; }
         .route-circle-wrapper { position: relative; display: inline-block; }
         .route-circle { width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: 900; color: white; cursor: pointer; }
-        
-        /* 🚨 警报微标 */
         .alert-dot { position: absolute; top: -2px; right: -2px; background: #ff3b30; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--dark-bg); z-index: 5; box-shadow: 0 0 10px rgba(255,59,48,0.5); }
         
-        /* 🚨 战术情报板 (详情页横幅) */
-        .alert-banner { background: #1c1c1e; border-left: 5px solid #ff3b30; padding: 18px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .alert-banner strong { font-size: 16px; display: block; margin-bottom: 8px; line-height: 1.4; }
+        /* 🚨 折叠式战术情报板 */
+        .alert-banner { background: #1c1c1e; border-left: 5px solid #ff3b30; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); overflow: hidden; transition: all 0.3s ease; }
+        .alert-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+        .alert-header strong { font-size: 15px; line-height: 1.4; flex: 1; padding-right: 10px; }
+        .alert-arrow { font-size: 12px; color: var(--text-dim); transition: transform 0.3s; }
+        .alert-arrow.up { transform: rotate(180deg); }
+        .alert-content { display: none; padding: 0 16px 16px 16px; font-size: 14px; color: #ddd; line-height: 1.6; border-top: 1px solid #333; margin-top: 5px; padding-top: 12px; }
+        .alert-content.show { display: block; animation: fadeIn 0.3s ease; }
+        
+        /* 💥 停运级别的呼吸灯特效 */
+        @keyframes flash-border { 0% { box-shadow: 0 0 5px rgba(255,59,48,0.2); } 50% { box-shadow: 0 0 20px rgba(255,59,48,0.8); } 100% { box-shadow: 0 0 5px rgba(255,59,48,0.2); } }
+        .alert-severe { animation: flash-border 2s infinite; }
 
         .list-row { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; }
         .list-row:active { background: #2c2c2e; }
@@ -68,7 +77,6 @@
         .dash-badge { background: #2c2c2e; padding: 8px 12px; border-radius: 10px; font-size: 15px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 4px; border: 1px solid #444; }
         .dash-icon { font-size: 1.3em; display: inline-block; transform: translateY(-1px); } 
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
-        @keyframes pulse-bg { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         .timeline-wrapper { display: flex; margin-bottom: 12px; cursor: pointer; }
         .timeline-wrapper:active .list-row { background: #2c2c2e; }
@@ -104,18 +112,30 @@
         .fav-btn.active { color: #ffd60a; text-shadow: 0 0 16px rgba(255, 214, 10, 0.4); }
         
         #station-detail-title, #route-title, #borough-title, #bus-detail-title { font-size: 24px; }
+        
+        /* ⚙️ 设置页专属 UI */
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #333; }
+        .setting-row:last-child { border-bottom: none; }
+        .lang-btn { background: #2c2c2e; color: #fff; border: 1px solid #444; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .lang-btn.active { background: var(--mta-blue); border-color: var(--mta-blue); }
+        .changelog-item { margin-bottom: 15px; }
+        .changelog-version { font-weight: 900; color: #fff; margin-bottom: 5px; font-size: 16px; }
+        .changelog-desc { color: var(--text-dim); font-size: 14px; line-height: 1.5; padding-left: 10px; border-left: 2px solid #444; }
     </style>
 </head>
 <body>
 
     <div class="app-wrapper">
         <div class="header-global">
-            <div class="app-title">纽约通勤瑞士军刀PRO MAX <span style="font-size: 10px; color: #30d158; margin-left: 8px;">● 实时同步</span></div>
-            <div class="tab-nav">
-                <button class="tab-item active" onclick="switchMainTab('favs', this)">🌟 收藏</button>
-                <button class="tab-item" onclick="switchMainTab('subway', this)">🚇 地铁</button>
-                <button class="tab-item" onclick="switchMainTab('bus', this)">🚌 巴士</button>
-                <button class="tab-item" onclick="switchMainTab('ferry', this)">⛴️ 渡轮</button>
+            <div class="app-title" onclick="navTo('settings')">
+                <span>SB MTA <span style="font-size: 11px; color: var(--text-dim); font-weight: normal; margin-left:5px;">V2.0</span></span>
+                <span style="font-size: 10px; color: #30d158;">● <span data-i18n="live_sync">实时同步</span></span>
+            </div>
+            <div class="tab-nav" id="main-tabs">
+                <button class="tab-item active" onclick="switchMainTab('favs', this)" data-i18n="tab_favs">🌟 收藏</button>
+                <button class="tab-item" onclick="switchMainTab('subway', this)" data-i18n="tab_subway">🚇 地铁</button>
+                <button class="tab-item" onclick="switchMainTab('bus', this)" data-i18n="tab_bus">🚌 巴士</button>
+                <button class="tab-item" onclick="switchMainTab('ferry', this)" data-i18n="tab_ferry">⛴️ 渡轮</button>
             </div>
         </div>
 
@@ -123,8 +143,8 @@
             <div id="layer-home" class="layer-view active">
                 <div id="home-favs">
                     <div class="favs-header-bar">
-                        <h2 class="favs-header-title">我的收藏</h2>
-                        <button class="favs-refresh-btn" id="favs-refresh-btn" onclick="manualRefreshFavs()">🔄 刷新</button>
+                        <h2 class="favs-header-title" data-i18n="my_favs">我的收藏</h2>
+                        <button class="favs-refresh-btn" id="favs-refresh-btn" onclick="manualRefreshFavs()">🔄 <span data-i18n="refresh">刷新</span></button>
                     </div>
                     <div id="favs-content"></div>
                 </div>
@@ -133,7 +153,7 @@
                 
                 <div id="home-bus" style="display:none;">
                     <div class="search-container">
-                        <input type="text" id="busInput" class="search-input" placeholder="输入线路如 B70, M15" oninput="busFuzzy(this.value)" autocomplete="off">
+                        <input type="text" id="busInput" class="search-input" data-i18n-placeholder="bus_placeholder" placeholder="输入线路如 B70, M15" oninput="busFuzzy(this.value)" autocomplete="off">
                         <div id="busSug" class="suggestions"></div>
                     </div>
                     <div id="bus-borough-grid">
@@ -148,18 +168,18 @@
                 <div id="home-ferry" style="display:none;">
                     <div class="borough-btn" onclick="openFerrySchedules('StatenIsland')" style="background:#ff8c00;">
                         ⛴️ Staten Island<br>
-                        <span style="font-size:0.65em; color:rgba(255,255,255,0.8); font-weight:normal;">Departing St. George Terminal</span>
+                        <span style="font-size:0.65em; color:rgba(255,255,255,0.8); font-weight:normal;" data-i18n="dep_stgeorge">Departing St. George Terminal</span>
                     </div>
                     <div class="borough-btn" onclick="openFerrySchedules('Manhattan')" style="background:#0039A6;">
                         🗽 Manhattan<br>
-                        <span style="font-size:0.65em; color:rgba(255,255,255,0.8); font-weight:normal;">Departing Whitehall Terminal</span>
+                        <span style="font-size:0.65em; color:rgba(255,255,255,0.8); font-weight:normal;" data-i18n="dep_whitehall">Departing Whitehall Terminal</span>
                     </div>
                 </div>
             </div>
 
             <div id="layer-bus-routes" class="layer-view">
                 <div class="sticky-toolbar">
-                    <button class="toolbar-btn btn-back" onclick="navTo('home')">← 返回</button>
+                    <button class="toolbar-btn btn-back" onclick="navTo('home')">← <span data-i18n="back">返回</span></button>
                     <div style="flex:1; font-weight:900; text-align:center;" id="borough-title"></div>
                 </div>
                 <div id="bus-routes-content" style="margin-top: 18px;"></div>
@@ -167,7 +187,7 @@
 
             <div id="layer-stops" class="layer-view">
                 <div class="sticky-toolbar">
-                    <button class="toolbar-btn btn-back" id="stops-back-btn" onclick="navTo('home')">← 返回</button>
+                    <button class="toolbar-btn btn-back" id="stops-back-btn" onclick="navTo('home')">← <span data-i18n="back">返回</span></button>
                     <div style="flex:1; font-weight:900; text-align:center;" id="route-title"></div>
                 </div>
                 <div id="stops-alert-banner"></div>
@@ -176,8 +196,8 @@
 
             <div id="layer-station" class="layer-view">
                 <div class="sticky-toolbar">
-                    <button class="toolbar-btn btn-back" id="station-back-btn" onclick="navTo('stops')">← 站名</button>
-                    <button class="toolbar-btn btn-action" onclick="fetchStationRealtime()">🔄 刷新时间</button>
+                    <button class="toolbar-btn btn-back" id="station-back-btn" onclick="navTo('stops')">← <span data-i18n="stations">站名</span></button>
+                    <button class="toolbar-btn btn-action" onclick="fetchStationRealtime()">🔄 <span data-i18n="refresh_time">刷新时间</span></button>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 5px;">
                     <h2 id="station-detail-title" style="margin: 0; color:#fff;"></h2>
@@ -186,10 +206,127 @@
                 <div id="station-alert-banner"></div>
                 <div id="station-detail-content"></div>
             </div>
+
+            <div id="layer-settings" class="layer-view">
+                <div class="sticky-toolbar">
+                    <button class="toolbar-btn btn-back" onclick="navTo('home')">← <span data-i18n="back">返回</span></button>
+                    <div style="flex:1; font-weight:900; text-align:center;" data-i18n="settings">系统设置</div>
+                </div>
+                
+                <div class="station-card" style="margin-top: 20px;">
+                    <h3 style="margin-top:0; color:#fff;" data-i18n="lang_pref">🌐 语言偏好 / Language</h3>
+                    <div class="setting-row">
+                        <button class="lang-btn" id="btn-lang-zh" onclick="setLanguage('zh')">中文 (简体)</button>
+                        <button class="lang-btn" id="btn-lang-en" onclick="setLanguage('en')">English</button>
+                    </div>
+                </div>
+
+                <div class="station-card">
+                    <h3 style="margin-top:0; color:#fff;" data-i18n="about_title">📖 关于 SB MTA</h3>
+                    <p style="color:var(--text-dim); font-size:14px; line-height:1.6;" data-i18n="about_desc">
+                        SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约通勤者打造的极速、精准的第三方交通追踪引擎。<br><br>
+                        我们摒弃了臃肿的冗余功能，直击通勤痛点：从破除官方接口延迟、实现全网秒级定位，到深度的“海陆联动”渡轮时刻表；从丝滑的自定义拖拽收藏夹，到直连 MTA 核心情报库的“战术级警报系统”。<br><br>
+                        SB MTA 致力于用最极简的 UI，为你提供最强大的数据掌控力。在钢铁丛林中，做你最可靠的通勤瑞士军刀。
+                    </p>
+                </div>
+
+                <div class="station-card">
+                    <h3 style="margin-top:0; color:#fff;" data-i18n="changelog_title">🚀 版本更新日志</h3>
+                    <div class="changelog-item">
+                        <div class="changelog-version">V2.0 PRO MAX (Current)</div>
+                        <div class="changelog-desc" data-i18n="cl_v2">
+                            - 深度重构 i18n 中英双语系统<br>
+                            - 引入 MTA 官方 JSON 警报数据流<br>
+                            - 新增“战术情报板”折叠面板与熔断级红点提醒<br>
+                            - 隐藏式高级设置大厅
+                        </div>
+                    </div>
+                    <div class="changelog-item">
+                        <div class="changelog-version">V1.0 Stable</div>
+                        <div class="changelog-desc" data-i18n="cl_v1">
+                            - 引入 SortableJS 物理拖拽引擎<br>
+                            - 新增 Staten Island 渡轮全天候智能时刻表<br>
+                            - 统一原生 App 级巨幅自适应排版比例<br>
+                            - Cloudflare Worker 跨域防护与 SBS 纠错引擎
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // 🌐 i18n 国际化引擎
+        // ==========================================
+        const i18nDict = {
+            "zh": {
+                live_sync: "实时同步", tab_favs: "🌟 收藏", tab_subway: "🚇 地铁", tab_bus: "🚌 巴士", tab_ferry: "⛴️ 渡轮",
+                my_favs: "我的收藏", refresh: "刷新", refreshing: "刷新中...", bus_placeholder: "输入线路如 B70, M15",
+                dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
+                back: "返回", stations: "站名", refresh_time: "刷新时间", settings: "系统设置", lang_pref: "🌐 语言偏好 / Language",
+                about_title: "📖 关于 SB MTA",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约通勤者打造的极速、精准的第三方交通追踪引擎。<br><br>我们摒弃了臃肿的冗余功能，直击通勤痛点：从破除官方接口延迟、实现全网秒级定位，到深度的“海陆联动”渡轮时刻表；从丝滑的自定义拖拽收藏夹，到直连 MTA 核心情报库的“战术级警报系统”。<br><br>SB MTA 致力于用最极简的 UI，为你提供最强大的数据掌控力。在钢铁丛林中，做你最可靠的通勤瑞士军刀。",
+                changelog_title: "🚀 版本更新日志",
+                cl_v2: "- 深度重构 i18n 中英双语系统<br>- 引入 MTA 官方 JSON 警报数据流<br>- 新增“战术情报板”折叠面板与熔断级红点提醒<br>- 隐藏式高级设置大厅",
+                cl_v1: "- 引入 SortableJS 物理拖拽引擎<br>- 新增 Staten Island 渡轮全天候智能时刻表<br>- 统一原生 App 级巨幅自适应排版比例<br>- Cloudflare Worker 跨域防护与 SBS 纠错引擎",
+                t_calc: "测算中...", t_no_fav: "暂无收藏<br><br>去查地铁或巴士点亮 ☆ 添加", t_no_bus: "无车", t_arr: "进站", t_due: "即刻",
+                t_no_train: "暂无列车", t_no_data: "暂无定位数据", t_search_data: "正在获取线级联定位...", t_req_fail: "请求失败",
+                f_sys_time: "🕒 系统时间", f_weekend: "🎈 周末时刻表", f_weekday: "💼 工作日", f_depart: "🚢 即将启航", f_rush: "🔥 高峰班次",
+                d_north: "⬆️ 北行", d_south: "⬇️ 南行", a_updated: "MTA 更新于", a_today: "今天"
+            },
+            "en": {
+                live_sync: "Live Sync", tab_favs: "🌟 Favs", tab_subway: "🚇 Subway", tab_bus: "🚌 Bus", tab_ferry: "⛴️ Ferry",
+                my_favs: "My Favorites", refresh: "Refresh", refreshing: "Refreshing...", bus_placeholder: "e.g. B70, M15",
+                dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
+                back: "Back", stations: "Stops", refresh_time: "Refresh", settings: "Settings", lang_pref: "🌐 Language / 语言偏好",
+                about_title: "📖 About SB MTA",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an ultra-fast, precise third-party transit tracking engine built specifically for NYC commuters.<br><br>We stripped away the bloat to focus on what matters: bypassing official API delays for second-level tracking, integrating Staten Island Ferry schedules, enabling silky-smooth draggable favorites, and hooking directly into the MTA's tactical Service Alert database.<br><br>SB MTA uses a minimalist UI to give you maximum data control. It's your ultimate commuter Swiss Army knife in the concrete jungle.",
+                changelog_title: "🚀 Changelog",
+                cl_v2: "- Deep i18n bilingual system integration<br>- MTA JSON Alert feeds integration<br>- Tactical Alert accordions & red-dot UI<br>- Hidden Advanced Settings Layer",
+                cl_v1: "- SortableJS physics drag engine<br>- Staten Island Ferry 24/7 schedules<br>- Native App-level responsive UI scaling<br>- Cloudflare Worker CORS & SBS correction",
+                t_calc: "Calculating...", t_no_fav: "No Favorites<br><br>Star ☆ a route to add it here", t_no_bus: "No Bus", t_arr: "Arriving", t_due: "Due",
+                t_no_train: "No Trains", t_no_data: "No GPS Data", t_search_data: "Fetching route data...", t_req_fail: "Request Failed",
+                f_sys_time: "🕒 Local Time", f_weekend: "🎈 Weekend Sched", f_weekday: "💼 Weekday", f_depart: "🚢 Departing", f_rush: "🔥 Rush Hour",
+                d_north: "⬆️ Uptown", d_south: "⬇️ Downtown", a_updated: "MTA Updated", a_today: "Today"
+            }
+        };
+
+        let currentLang = localStorage.getItem('sb_mta_lang') || 'zh';
+
+        function t(key) { return i18nDict[currentLang][key] || key; }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('sb_mta_lang', lang);
+            
+            // 更新静态 DOM 元素
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18nDict[lang][key]) el.innerHTML = i18nDict[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (i18nDict[lang][key]) el.placeholder = i18nDict[lang][key];
+            });
+
+            // 更新按钮状态
+            document.getElementById('btn-lang-zh').classList.remove('active');
+            document.getElementById('btn-lang-en').classList.remove('active');
+            document.getElementById(`btn-lang-${lang}`).classList.add('active');
+
+            // 重新渲染动态内容
+            if(state.activeTab === 'favs') renderFavorites();
+            if(state.currentLayer === 'stops' && state.mode === 'bus') openRouteStops(state.selectedLine, 'bus');
+            if(state.currentLayer === 'stops' && state.mode === 'ferry') openFerrySchedules(state.selectedLine === 'Manhattan' ? 'Manhattan' : 'StatenIsland');
+            if(state.currentLayer === 'station') fetchStationRealtime();
+        }
+
+
+        // ==========================================
+        // 核心常量与配置
+        // ==========================================
         const WORKER_URL = "https://mta.zxc717209554.workers.dev";
         const GTFS_PROTO = `syntax = "proto2"; package transit_realtime; message FeedMessage { repeated FeedEntity entity = 2; } message FeedEntity { optional TripUpdate trip_update = 3; } message TripUpdate { optional TripDescriptor trip = 1; repeated StopTimeUpdate stop_time_update = 2; } message TripDescriptor { optional string route_id = 5; } message StopTimeUpdate { optional StopTimeEvent arrival = 2; optional StopTimeEvent departure = 3; optional string stop_id = 4; } message StopTimeEvent { optional int64 time = 2; }`;
         const protoRoot = protobuf.parse(GTFS_PROTO).root;
@@ -218,13 +355,34 @@
 
         let state = { activeTab: 'favs', currentLayer: 'home', mode: 'subway', selectedLine: null, selectedStation: { id: null, name: null, dirName: null } };
         let favorites = JSON.parse(localStorage.getItem('mta_pro_favs_v5') || '[]');
-        
-        // 🚨 全局警报存储池 (格式升级：存储对象数组)
         let globalAlerts = { subway: {}, bus: {} };
 
-        // ==========================================
-        // 🚨 核心警报引擎：全息数据解析
-        // ==========================================
+        // 绑定全局点击事件，点击空白处收起折叠面板
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.alert-banner')) {
+                document.querySelectorAll('.alert-content.show').forEach(content => {
+                    content.classList.remove('show');
+                    content.previousElementSibling.querySelector('.alert-arrow').classList.remove('up');
+                });
+            }
+        });
+
+        function toggleAlert(headerEl) {
+            const content = headerEl.nextElementSibling;
+            const arrow = headerEl.querySelector('.alert-arrow');
+            
+            // 先关闭其他的
+            document.querySelectorAll('.alert-content.show').forEach(c => {
+                if (c !== content) {
+                    c.classList.remove('show');
+                    c.previousElementSibling.querySelector('.alert-arrow').classList.remove('up');
+                }
+            });
+
+            content.classList.toggle('show');
+            arrow.classList.toggle('up');
+        }
+
         async function fetchSystemAlerts() {
             try {
                 const [subRes, busRes] = await Promise.all([
@@ -239,15 +397,12 @@
                         const alert = ent.alert;
                         if (!alert) return;
                         
-                        // 1. 抓取主标题
                         const titleObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
                         const alertTitle = titleObj ? titleObj.text : 'Service Change';
 
-                        // 2. 抓取详细说明 (自带换行与富文本)
                         const descObj = alert.description_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
                         const alertDesc = descObj ? descObj.text : '';
 
-                        // 3. 抓取警报类型与更新时间
                         const mercuryInfo = alert['transit_realtime.mercury_alert'];
                         const alertType = mercuryInfo?.alert_type || 'Alert';
                         const updatedAt = mercuryInfo?.updated_at;
@@ -259,13 +414,7 @@
                                 if (rId.endsWith('+')) rId = rId.replace('+', '-SBS');
 
                                 if (!globalAlerts[type][rId]) globalAlerts[type][rId] = [];
-                                // 保存完整的警报对象
-                                globalAlerts[type][rId].push({
-                                    title: alertTitle,
-                                    desc: alertDesc,
-                                    type: alertType,
-                                    updated: updatedAt
-                                });
+                                globalAlerts[type][rId].push({ title: alertTitle, desc: alertDesc, type: alertType, updated: updatedAt });
                             }
                         });
                     });
@@ -280,58 +429,48 @@
             } catch (e) { console.error("警报获取失败:", e); }
         }
 
-        // ==========================================
-        // 🚨 渲染辅助：生成“战术情报板”横幅
-        // ==========================================
         function getAlertBannerHtml(line, mode) {
             const alerts = globalAlerts[mode][line] || [];
             if (alerts.length > 0) {
-                const alert = alerts[0]; // 提取最相关的一条
+                const alert = alerts[0]; 
                 
-                // 根据类型智能匹配 UI 颜色
-                let typeColor = '#8e8e93'; 
-                let typeIcon = 'ℹ️';
-                let typeText = alert.type;
+                let typeColor = '#8e8e93'; let typeIcon = 'ℹ️'; let typeText = alert.type;
+                let severeClass = '';
                 
-                if (alert.type === 'Delays' || alert.type === 'Severe Delays') { typeColor = '#ff9f0a'; typeIcon = '💥'; typeText = '延误 / Delays'; }
-                else if (alert.type === 'Suspended') { typeColor = '#ff3b30'; typeIcon = '⛔'; typeText = '停运 / Suspended'; }
-                else if (alert.type === 'Planned Work') { typeColor = '#0a84ff'; typeIcon = '🚧'; typeText = '计划施工 / Planned Work'; }
-                else if (alert.type === 'Service Change') { typeColor = '#bf5af2'; typeIcon = '🔀'; typeText = '服务变更 / Service Change'; }
+                if (alert.type.includes('Delays')) { typeColor = '#ff9f0a'; typeIcon = '💥'; }
+                else if (alert.type.includes('Suspended')) { typeColor = '#ff3b30'; typeIcon = '⛔'; severeClass = 'alert-severe'; }
+                else if (alert.type.includes('Planned Work')) { typeColor = '#0a84ff'; typeIcon = '🚧'; }
+                else if (alert.type.includes('Service Change')) { typeColor = '#bf5af2'; typeIcon = '🔀'; }
 
-                // 格式化时间戳
                 let timeStr = '';
                 if (alert.updated) {
                     const d = new Date(parseInt(alert.updated) * 1000);
                     timeStr = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                     const today = new Date();
-                    if (d.getDate() === today.getDate()) timeStr = `今天 ${timeStr}`;
-                    else timeStr = `${d.getMonth()+1}月${d.getDate()}日 ${timeStr}`;
+                    if (d.getDate() === today.getDate()) timeStr = `${t('a_today')} ${timeStr}`;
+                    else timeStr = `${d.getMonth()+1}/${d.getDate()} ${timeStr}`;
                 }
 
-                // 输出战术情报板 HTML
+                // 🚨 抽屉式折叠面板 (Accordion)
                 return `
-                <div class="alert-banner" style="border-left-color: ${typeColor}; background: rgba(255,255,255,0.05);">
-                    <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="background: ${typeColor}22; border: 1px solid ${typeColor}; color: ${typeColor}; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold;">
-                            ${typeIcon} ${typeText}
-                        </span>
+                <div class="alert-banner ${severeClass}" style="border-left-color: ${typeColor}; background: rgba(255,255,255,0.05);">
+                    <div class="alert-header" onclick="toggleAlert(this)">
+                        <strong style="color: ${typeColor};">${typeIcon} ${alert.title}</strong>
+                        <span class="alert-arrow">▼</span>
                     </div>
-                    <strong style="color: ${typeColor};">${alert.title}</strong>
-                    
-                    ${alert.desc ? `
-                    <div style="font-size: 14px; color: #ddd; margin-top: 10px; line-height: 1.6; max-height: 200px; overflow-y: auto; padding-right: 5px;">
-                        ${alert.desc}
-                    </div>` : ''}
-                    
-                    ${timeStr ? `<div style="text-align: right; font-size: 11px; color: #8e8e93; margin-top: 12px; border-top: 1px solid #333; padding-top: 8px;"><i>MTA 更新于: ${timeStr}</i></div>` : ''}
+                    <div class="alert-content">
+                        ${alert.desc ? alert.desc : ''}
+                        ${timeStr ? `<div style="text-align: right; font-size: 11px; color: #8e8e93; margin-top: 16px;"><i>${t('a_updated')}: ${timeStr}</i></div>` : ''}
+                    </div>
                 </div>`;
             }
             return '';
         }
 
         function switchMainTab(tabId, btn) {
-            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active'); state.activeTab = tabId;
+            document.querySelectorAll('#main-tabs .tab-item').forEach(t => t.classList.remove('active'));
+            if(btn) btn.classList.add('active'); 
+            state.activeTab = tabId;
             document.getElementById('home-favs').style.display = tabId === 'favs' ? 'block' : 'none';
             document.getElementById('home-subway').style.display = tabId === 'subway' ? 'block' : 'none';
             document.getElementById('home-bus').style.display = tabId === 'bus' ? 'block' : 'none';
@@ -345,23 +484,28 @@
             document.querySelectorAll('.layer-view').forEach(v => v.classList.remove('active'));
             document.getElementById(`layer-${layerId}`).classList.add('active');
             state.currentLayer = layerId; window.scrollTo(0, 0); 
+            
+            // 每次切换页面时重置折叠面板
+            document.querySelectorAll('.alert-content.show').forEach(c => {
+                c.classList.remove('show');
+                c.previousElementSibling.querySelector('.alert-arrow').classList.remove('up');
+            });
         }
 
         async function manualRefreshFavs() {
             const btn = document.getElementById('favs-refresh-btn');
-            const originalText = btn.innerText;
-            btn.innerText = '🔄 刷新中...';
+            btn.innerHTML = `🔄 ${t('refreshing')}`;
             btn.style.opacity = '0.5';
             await fetchSystemAlerts(); 
             await updateFavoritesRealtime();
-            btn.innerText = '🔄 刷新';
+            btn.innerHTML = `🔄 ${t('refresh')}`;
             btn.style.opacity = '1';
         }
 
         function renderFavorites() {
             const container = document.getElementById('favs-content');
             if (favorites.length === 0) {
-                container.innerHTML = `<div class="loading-shimmer">暂无收藏<br><br>去查地铁或巴士点亮 ☆ 添加</div>`; return;
+                container.innerHTML = `<div class="loading-shimmer">${t('t_no_fav')}</div>`; return;
             }
             let html = '';
             favorites.forEach(fav => {
@@ -369,7 +513,6 @@
                 const conf = isSubway ? (LINE_MAP[fav.line] || { color: '#333', textColor: '#fff' }) : { color: 'var(--mta-blue)', textColor: '#fff' };
                 const iconTxt = isSubway ? fav.line : 'BUS';
                 
-                // 🚨 收藏夹红点熔断提示
                 const hasAlert = globalAlerts[fav.type][fav.line] && globalAlerts[fav.type][fav.line].length > 0;
                 const alertIcon = hasAlert ? `<span style="color:#ff3b30; font-size:18px; margin-left:6px; animation: pulse-bg 2s infinite;">⚠️</span>` : '';
                 
@@ -386,7 +529,7 @@
                         <div class="row-title">${titleTxt}</div>
                     </div>
                     <div class="live-dash" id="fav-dash-${fav.id}">
-                        <div class="dash-badge" style="color:#8e8e93; border:none;">测算中...</div>
+                        <div class="dash-badge" style="color:#8e8e93; border:none;">${t('t_calc')}</div>
                     </div>
                 </div>`;
             });
@@ -395,9 +538,7 @@
 
             if(window.favSortable) window.favSortable.destroy();
             window.favSortable = Sortable.create(container, {
-                animation: 200,          
-                delay: 200,              
-                delayOnTouchOnly: true,  
+                animation: 200, delay: 200, delayOnTouchOnly: true,  
                 onEnd: function (evt) {
                     const newKeys = Array.from(container.children).map(el => el.getAttribute('data-key'));
                     const newFavs = [];
@@ -437,12 +578,12 @@
                     const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                     if(dashEl) {
                         if(times.length === 0) {
-                            dashEl.innerHTML = `<div class="dash-badge">无车</div>`;
+                            dashEl.innerHTML = `<div class="dash-badge">${t('t_no_bus')}</div>`;
                         } else {
-                            dashEl.innerHTML = times.map(t => {
-                                if (t <= 0) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;"><span class="dash-icon">🚌</span> 进站</div>`;
-                                if (t === 1) return `<div class="dash-badge arr"><span class="dash-icon">🚌</span> 即刻</div>`;
-                                return `<div class="dash-badge"><span class="dash-icon">🚌</span> ${t}m</div>`;
+                            dashEl.innerHTML = times.map(time => {
+                                if (time <= 0) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;"><span class="dash-icon">🚌</span> ${t('t_arr')}</div>`;
+                                if (time === 1) return `<div class="dash-badge arr"><span class="dash-icon">🚌</span> ${t('t_due')}</div>`;
+                                return `<div class="dash-badge"><span class="dash-icon">🚌</span> ${time}m</div>`;
                             }).join('');
                         }
                     }
@@ -487,18 +628,15 @@
                         const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                         if(dashEl) {
                             let h = '';
-                            if(times.N !== 999) h += `<div class="dash-badge ${times.N<=0?'arr':''}"><span class="dash-icon">⬆</span> ${times.N<=0?'进站':times.N+'m'}</div>`;
-                            if(times.S !== 999) h += `<div class="dash-badge ${times.S<=0?'arr':''}"><span class="dash-icon">⬇</span> ${times.S<=0?'进站':times.S+'m'}</div>`;
-                            dashEl.innerHTML = h || `<div class="dash-badge">无车</div>`;
+                            if(times.N !== 999) h += `<div class="dash-badge ${times.N<=0?'arr':''}"><span class="dash-icon">⬆</span> ${times.N<=0?t('t_due'):times.N+'m'}</div>`;
+                            if(times.S !== 999) h += `<div class="dash-badge ${times.S<=0?'arr':''}"><span class="dash-icon">⬇</span> ${times.S<=0?t('t_due'):times.S+'m'}</div>`;
+                            dashEl.innerHTML = h || `<div class="dash-badge">${t('t_no_bus')}</div>`;
                         }
                     });
                 } catch(e) {}
             }
         }
 
-        // ==========================================
-        // 🚇 导航大厅 (🚨 增加红点微标)
-        // ==========================================
         function renderSubwayGrid() {
             const grid = document.getElementById('subwayGrid');
             grid.innerHTML = ''; 
@@ -538,7 +676,6 @@
             routes.forEach(r => {
                 const hasAlert = globalAlerts.bus[r] && globalAlerts.bus[r].length > 0;
                 const alertIcon = hasAlert ? `<span style="color:#ff3b30; margin-left:6px;">⚠️</span>` : '';
-                
                 html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route bus" style="background:var(--mta-blue); color:#fff;">BUS</div><div class="row-title">${r} ${alertIcon}</div></div><div class="row-icon">›</div></div>`
             });
             document.getElementById('bus-routes-content').innerHTML = html;
@@ -546,31 +683,27 @@
         }
 
         function openFerrySchedules(terminal) {
+            state.selectedLine = terminal;
             state.mode = 'ferry';
             document.getElementById('route-title').innerText = terminal === 'Manhattan' ? 'Departing Manhattan' : 'Departing Staten Island';
             document.getElementById('stops-back-btn').onclick = () => navTo('home');
 
             const content = document.getElementById('stops-list-content');
-            
             const now = new Date();
             const isWeekend = now.getDay() === 0 || now.getDay() === 6;
             const dayType = isWeekend ? 'weekend' : 'weekday';
             const schedule = FERRY_SCHEDULES[terminal][dayType];
-
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
             let html = `<div class="dir-header" style="margin-top:20px; display:flex; justify-content:space-between;">
-                            <span>🕒 系统时间: ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            <span style="color:#fff; background:#333; padding:4px 10px; border-radius:8px; font-size:12px;">${isWeekend ? '🎈 周末时刻表' : '💼 工作日'}</span>
+                            <span>${t('f_sys_time')}: ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            <span style="color:#fff; background:#333; padding:4px 10px; border-radius:8px; font-size:12px;">${isWeekend ? t('f_weekend') : t('f_weekday')}</span>
                         </div>`;
 
             let nextIdx = -1;
             for (let i = 0; i < schedule.length; i++) {
                 const [h, m] = schedule[i].split(':').map(Number);
-                const schedMins = h * 60 + m;
-                if (schedMins >= currentMinutes && nextIdx === -1) {
-                    nextIdx = i;
-                }
+                if ((h * 60 + m) >= currentMinutes && nextIdx === -1) nextIdx = i;
             }
             if (nextIdx === -1) nextIdx = 0;
 
@@ -589,11 +722,8 @@
                 const isRushHour = !isWeekend && ((schedMins >= 360 && schedMins <= 570) || (schedMins >= 930 && schedMins <= 1140));
 
                 let badgeHtml = '';
-                if (isNext) {
-                    badgeHtml = `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite; color:#000; border-color:#000;">🚢 即将启航</div>`;
-                } else if (isRushHour) {
-                    badgeHtml = `<div class="dash-badge" style="color:#ff9f0a; border-color:#ff9f0a; background:rgba(255,159,10,0.1);">🔥 高峰班次</div>`;
-                }
+                if (isNext) badgeHtml = `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite; color:#000; border-color:#000;">${t('f_depart')}</div>`;
+                else if (isRushHour) badgeHtml = `<div class="dash-badge" style="color:#ff9f0a; border-color:#ff9f0a; background:rgba(255,159,10,0.1);">${t('f_rush')}</div>`;
 
                 html += `
                 <div ${idAttr} class="${rowClass}" style="cursor:default;">
@@ -625,14 +755,13 @@
             };
             const content = document.getElementById('stops-list-content');
             
-            // 🚨 注入顶部横幅警报
             document.getElementById('stops-alert-banner').innerHTML = getAlertBannerHtml(line, mode);
             
             if (mode === 'subway') {
                 const stations = STATION_DICT[line] || [];
                 const routeColor = LINE_MAP[line]?.color || '#fff'; 
 
-                if (stations.length === 0) content.innerHTML = `<div class="loading-shimmer">字典中暂无数据</div>`;
+                if (stations.length === 0) content.innerHTML = `<div class="loading-shimmer">${t('t_no_data')}</div>`;
                 else {
                     let html = '';
                     stations.forEach((st, idx) => {
@@ -661,7 +790,7 @@
             else if (mode === 'bus') {
                 document.getElementById('busSug').style.display = 'none';
                 navTo('stops');
-                content.innerHTML = `<div class="loading-shimmer">正在获取 ${line} 线级联定位...</div>`;
+                content.innerHTML = `<div class="loading-shimmer">${t('t_search_data')}</div>`;
                 try {
                     const res = await fetch(`${WORKER_URL}/?type=bus-stops&route=${line}`);
                     const data = await res.json();
@@ -697,7 +826,7 @@
                             </div>`;
                         });
                     });
-                    content.innerHTML = html || `<div class="loading-shimmer">未找到路线数据。</div>`;
+                    content.innerHTML = html || `<div class="loading-shimmer">${t('t_no_data')}</div>`;
 
                     const rtRes = await fetch(`${WORKER_URL}/?type=bus-realtime&route=${line}`);
                     const rtData = await rtRes.json();
@@ -731,15 +860,15 @@
                             const times = (vMap[sid] || []).filter(m => m >= -5).sort((a,b)=>a-b);
                             const el = document.getElementById(`bus-live-${sid}`);
                             if (el && times.length > 0) {
-                                el.innerHTML = times.slice(0, 2).map(t => {
-                                    if (t <= 0) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;">停靠中</div>`;
-                                    if (t === 1) return `<div class="dash-badge arr">即将进站</div>`;
-                                    return `<div class="dash-badge">${t}m</div>`;
+                                el.innerHTML = times.slice(0, 2).map(time => {
+                                    if (time <= 0) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;">${t('t_arr')}</div>`;
+                                    if (time === 1) return `<div class="dash-badge arr">${t('t_due')}</div>`;
+                                    return `<div class="dash-badge">${time}m</div>`;
                                 }).join('');
                             }
                         });
                     });
-                } catch(e) { content.innerHTML = `<div class="loading-shimmer">请求失败: ${e.message}</div>`; }
+                } catch(e) { content.innerHTML = `<div class="loading-shimmer">${t('t_req_fail')}: ${e.message}</div>`; }
             }
         }
 
@@ -753,14 +882,13 @@
             
             const backBtn = document.getElementById('station-back-btn');
             if (fromFav) {
-                backBtn.innerText = '← 收藏夹';
+                backBtn.innerHTML = `← ${t('tab_favs').replace('🌟 ', '')}`;
                 backBtn.onclick = () => navTo('home');
             } else {
-                backBtn.innerText = '← 站名';
+                backBtn.innerHTML = `← ${t('stations')}`;
                 backBtn.onclick = () => navTo('stops');
             }
             
-            // 🚨 注入详情页顶部横幅警报
             document.getElementById('station-alert-banner').innerHTML = getAlertBannerHtml(line, mode);
             
             navTo('station');
@@ -769,7 +897,7 @@
 
         async function fetchStationRealtime() {
             const content = document.getElementById('station-detail-content');
-            content.innerHTML = `<div class="loading-shimmer">正在同步定位数据...</div>`;
+            content.innerHTML = `<div class="loading-shimmer">${t('t_calc')}</div>`;
             const now = Math.floor(Date.now() / 1000);
 
             if (state.mode === 'subway') {
@@ -804,23 +932,27 @@
                     let html = '';
                     ['N', 'S'].forEach(dir => {
                         const termName = SUBWAY_TERMINALS[state.selectedLine]?.[dir] || (dir === 'N' ? 'Uptown' : 'Downtown');
-                        const dirTitle = dir === 'N' ? `⬆️ 北行 (${termName})` : `⬇️ 南行 (${termName})`;
+                        const dirTitle = dir === 'N' ? `${t('d_north')} (${termName})` : `${t('d_south')} (${termName})`;
                         
                         html += `<div class="station-card"><div class="dir-header">${dirTitle}</div>`;
                         const routesAtDir = Object.keys(parsedData[dir]).sort();
-                        if (routesAtDir.length === 0) html += `<div style="color:#8e8e93; margin-top:10px; font-size:14px;">暂无列车</div>`;
+                        if (routesAtDir.length === 0) html += `<div style="color:#8e8e93; margin-top:10px; font-size:14px;">${t('t_no_train')}</div>`;
                         else {
                             routesAtDir.forEach(rId => {
                                 if (!LINE_MAP[rId]) return; 
                                 const tc = LINE_MAP[rId].textColor || "white";
                                 const times = parsedData[dir][rId].sort((a,b)=>a-b).slice(0,4); 
-                                html += `<div class="route-times-row"><div class="mini-route sub" style="background:${LINE_MAP[rId].color}; color:${tc};">${rId}</div><div class="times-flex">${times.map(t => formatTime(t)).join('')}</div></div>`;
+                                html += `<div class="route-times-row"><div class="mini-route sub" style="background:${LINE_MAP[rId].color}; color:${tc};">${rId}</div><div class="times-flex">${times.map(time => {
+                                    if (time <= 0) return `<div class="time-box arriving" style="animation: pulse-bg 2s infinite;">${t('t_arr')}</div>`;
+                                    if (time === 1) return `<div class="time-box arriving">${t('t_due')}</div>`;
+                                    return `<div class="time-box">${time}<span class="unit">m</span></div>`;
+                                }).join('')}</div></div>`;
                             });
                         }
                         html += `</div>`;
                     });
                     content.innerHTML = html;
-                } catch (e) { content.innerHTML = `<div class="loading-shimmer"><div class="error-msg">请求失败: ${e.message}</div></div>`; }
+                } catch (e) { content.innerHTML = `<div class="loading-shimmer"><div class="error-msg">${t('t_req_fail')}: ${e.message}</div></div>`; }
             } 
             else if (state.mode === 'bus') {
                 try {
@@ -844,12 +976,16 @@
                         <div class="route-times-row" style="margin-top:20px;">
                             <div class="mini-route bus" style="background:var(--mta-blue); color:#fff; font-size: 16px;">${state.selectedLine}</div>
                             <div class="times-flex">
-                                ${times.length > 0 ? times.map(t => formatTime(t)).join('') : '<div style="color:#8e8e93; font-weight:bold; font-size:14px;">暂无定位数据</div>'}
+                                ${times.length > 0 ? times.map(time => {
+                                    if (time <= 0) return `<div class="time-box arriving" style="animation: pulse-bg 2s infinite;">${t('t_arr')}</div>`;
+                                    if (time === 1) return `<div class="time-box arriving">${t('t_due')}</div>`;
+                                    return `<div class="time-box">${time}<span class="unit">m</span></div>`;
+                                }).join('') : `<div style="color:#8e8e93; font-weight:bold; font-size:14px;">${t('t_no_data')}</div>`}
                             </div>
                         </div>
                     </div>`;
                     content.innerHTML = html;
-                } catch (e) { content.innerHTML = `<div class="loading-shimmer"><div class="error-msg">请求失败: ${e.message}</div></div>`; }
+                } catch (e) { content.innerHTML = `<div class="loading-shimmer"><div class="error-msg">${t('t_req_fail')}: ${e.message}</div></div>`; }
             }
         }
 
@@ -867,12 +1003,6 @@
             if (isFav) { btn.classList.add('active'); btn.innerText = '★'; } else { btn.classList.remove('active'); btn.innerText = '☆'; }
         }
 
-        function formatTime(mins) {
-            if (mins <= 0) return `<div class="time-box arriving" style="animation: pulse-bg 2s infinite;">进站</div>`;
-            if (mins === 1) return `<div class="time-box arriving">即将进站</div>`;
-            return `<div class="time-box">${mins}<span class="unit">m</span></div>`;
-        }
-
         setInterval(() => {
             if (document.visibilityState === 'visible') {
                 if (state.currentLayer === 'station') fetchStationRealtime();
@@ -882,7 +1012,7 @@
         }, 30000); 
 
         window.onload = () => { 
-            // 页面加载时自动拉取全局警报，然后渲染收藏夹
+            setLanguage(currentLang); 
             fetchSystemAlerts().then(() => renderFavorites()); 
         };
     </script>

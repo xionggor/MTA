@@ -43,9 +43,9 @@
         /* 🚨 警报微标 */
         .alert-dot { position: absolute; top: -2px; right: -2px; background: #ff3b30; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--dark-bg); z-index: 5; box-shadow: 0 0 10px rgba(255,59,48,0.5); }
         
-        /* 🚨 横幅警报 */
-        .alert-banner { background: rgba(255, 59, 48, 0.15); border-left: 4px solid #ff3b30; padding: 14px 16px; margin-bottom: 18px; border-radius: 12px; color: #ffeb3b; font-size: 14px; line-height: 1.5; }
-        .alert-banner strong { color: #ff3b30; font-size: 15px; display: block; margin-bottom: 6px; }
+        /* 🚨 战术情报板 (详情页横幅) */
+        .alert-banner { background: #1c1c1e; border-left: 5px solid #ff3b30; padding: 18px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .alert-banner strong { font-size: 16px; display: block; margin-bottom: 8px; line-height: 1.4; }
 
         .list-row { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; }
         .list-row:active { background: #2c2c2e; }
@@ -219,11 +219,11 @@
         let state = { activeTab: 'favs', currentLayer: 'home', mode: 'subway', selectedLine: null, selectedStation: { id: null, name: null, dirName: null } };
         let favorites = JSON.parse(localStorage.getItem('mta_pro_favs_v5') || '[]');
         
-        // 🚨 全局警报存储池
+        // 🚨 全局警报存储池 (格式升级：存储对象数组)
         let globalAlerts = { subway: {}, bus: {} };
 
         // ==========================================
-        // 🚨 核心警报引擎：静默拉取并解析 JSON
+        // 🚨 核心警报引擎：全息数据解析
         // ==========================================
         async function fetchSystemAlerts() {
             try {
@@ -239,19 +239,33 @@
                         const alert = ent.alert;
                         if (!alert) return;
                         
-                        // 提取最易读的英文警报文本
-                        const textObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
-                        const alertText = textObj ? textObj.text : 'Service Change';
+                        // 1. 抓取主标题
+                        const titleObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
+                        const alertTitle = titleObj ? titleObj.text : 'Service Change';
+
+                        // 2. 抓取详细说明 (自带换行与富文本)
+                        const descObj = alert.description_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
+                        const alertDesc = descObj ? descObj.text : '';
+
+                        // 3. 抓取警报类型与更新时间
+                        const mercuryInfo = alert['transit_realtime.mercury_alert'];
+                        const alertType = mercuryInfo?.alert_type || 'Alert';
+                        const updatedAt = mercuryInfo?.updated_at;
 
                         (alert.informed_entity || []).forEach(ie => {
                             if (ie.route_id) {
-                                // 智能剥离 MTA 前缀 (如 MTABC_B70 -> B70)
                                 let rId = ie.route_id;
                                 if (rId.includes('_')) rId = rId.split('_')[1];
-                                if (rId.endsWith('+')) rId = rId.replace('+', '-SBS'); // 兼容 SBS
+                                if (rId.endsWith('+')) rId = rId.replace('+', '-SBS');
 
                                 if (!globalAlerts[type][rId]) globalAlerts[type][rId] = [];
-                                globalAlerts[type][rId].push(alertText);
+                                // 保存完整的警报对象
+                                globalAlerts[type][rId].push({
+                                    title: alertTitle,
+                                    desc: alertDesc,
+                                    type: alertType,
+                                    updated: updatedAt
+                                });
                             }
                         });
                     });
@@ -260,7 +274,6 @@
                 if (subRes.entity) processAlerts(subRes, 'subway');
                 if (busRes.entity) processAlerts(busRes, 'bus');
                 
-                // 拉取完后静默刷新大厅，挂载红点
                 if (state.currentLayer === 'home' && state.activeTab === 'subway') renderSubwayGrid();
                 if (state.currentLayer === 'home' && state.activeTab === 'favs') renderFavorites();
                 
@@ -268,20 +281,53 @@
         }
 
         // ==========================================
-        // 渲染辅助：生成横幅 HTML
+        // 🚨 渲染辅助：生成“战术情报板”横幅
         // ==========================================
         function getAlertBannerHtml(line, mode) {
             const alerts = globalAlerts[mode][line] || [];
             if (alerts.length > 0) {
-                // 取第一条警报展示
-                return `<div class="alert-banner">
-                            <strong>⚠️ ${line} Line Alert</strong>
-                            ${alerts[0]}
-                        </div>`;
+                const alert = alerts[0]; // 提取最相关的一条
+                
+                // 根据类型智能匹配 UI 颜色
+                let typeColor = '#8e8e93'; 
+                let typeIcon = 'ℹ️';
+                let typeText = alert.type;
+                
+                if (alert.type === 'Delays' || alert.type === 'Severe Delays') { typeColor = '#ff9f0a'; typeIcon = '💥'; typeText = '延误 / Delays'; }
+                else if (alert.type === 'Suspended') { typeColor = '#ff3b30'; typeIcon = '⛔'; typeText = '停运 / Suspended'; }
+                else if (alert.type === 'Planned Work') { typeColor = '#0a84ff'; typeIcon = '🚧'; typeText = '计划施工 / Planned Work'; }
+                else if (alert.type === 'Service Change') { typeColor = '#bf5af2'; typeIcon = '🔀'; typeText = '服务变更 / Service Change'; }
+
+                // 格式化时间戳
+                let timeStr = '';
+                if (alert.updated) {
+                    const d = new Date(parseInt(alert.updated) * 1000);
+                    timeStr = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const today = new Date();
+                    if (d.getDate() === today.getDate()) timeStr = `今天 ${timeStr}`;
+                    else timeStr = `${d.getMonth()+1}月${d.getDate()}日 ${timeStr}`;
+                }
+
+                // 输出战术情报板 HTML
+                return `
+                <div class="alert-banner" style="border-left-color: ${typeColor}; background: rgba(255,255,255,0.05);">
+                    <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="background: ${typeColor}22; border: 1px solid ${typeColor}; color: ${typeColor}; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold;">
+                            ${typeIcon} ${typeText}
+                        </span>
+                    </div>
+                    <strong style="color: ${typeColor};">${alert.title}</strong>
+                    
+                    ${alert.desc ? `
+                    <div style="font-size: 14px; color: #ddd; margin-top: 10px; line-height: 1.6; max-height: 200px; overflow-y: auto; padding-right: 5px;">
+                        ${alert.desc}
+                    </div>` : ''}
+                    
+                    ${timeStr ? `<div style="text-align: right; font-size: 11px; color: #8e8e93; margin-top: 12px; border-top: 1px solid #333; padding-top: 8px;"><i>MTA 更新于: ${timeStr}</i></div>` : ''}
+                </div>`;
             }
             return '';
         }
-
 
         function switchMainTab(tabId, btn) {
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -306,7 +352,7 @@
             const originalText = btn.innerText;
             btn.innerText = '🔄 刷新中...';
             btn.style.opacity = '0.5';
-            await fetchSystemAlerts(); // 连同警报一起刷新
+            await fetchSystemAlerts(); 
             await updateFavoritesRealtime();
             btn.innerText = '🔄 刷新';
             btn.style.opacity = '1';
@@ -559,7 +605,6 @@
                 </div>`;
             });
 
-            // 渡轮没有警报横幅
             document.getElementById('stops-alert-banner').innerHTML = ''; 
             content.innerHTML = html;
             navTo('stops');

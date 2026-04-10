@@ -216,8 +216,9 @@
                 <div class="station-card" style="margin-top: 20px;">
                     <h3 style="margin-top:0; color:#fff;" data-i18n="lang_pref">🌐 语言偏好 / Language</h3>
                     <div class="setting-row">
-                        <button class="lang-btn" id="btn-lang-zh" onclick="setLanguage('zh')">中文 (简体)</button>
+                        <button class="lang-btn" id="btn-lang-zh" onclick="setLanguage('zh')">简体中文</button>
                         <button class="lang-btn" id="btn-lang-en" onclick="setLanguage('en')">English</button>
+                        <button class="lang-btn" id="btn-lang-hk" onclick="setLanguage('hk')">繁體中文</button>
                     </div>
                 </div>
 
@@ -235,7 +236,7 @@
                     <div class="changelog-item">
                         <div class="changelog-version">V2.0 PRO MAX (Current)</div>
                         <div class="changelog-desc" data-i18n="cl_v2">
-                            - 深度重构 i18n 中英双语系统<br>
+                            - 深度重构 i18n 中繁英三语系统<br>
                             - 引入 MTA 官方 JSON 警报数据流<br>
                             - 新增“战术情报板”折叠面板与熔断级红点提醒<br>
                             - 隐藏式高级设置大厅
@@ -269,18 +270,33 @@
                 about_title: "📖 关于 SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约通勤者打造的极速、精准的第三方交通追踪引擎。<br><br>我们摒弃了臃肿的冗余功能，直击通勤痛点：从破除官方接口延迟、实现全网秒级定位，到深度的“海陆联动”渡轮时刻表；从丝滑的自定义拖拽收藏夹，到直连 MTA 核心情报库的“战术级警报系统”。<br><br>SB MTA 致力于用最极简的 UI，为你提供最强大的数据掌控力。在钢铁丛林中，做你最可靠的通勤瑞士军刀。",
                 changelog_title: "🚀 版本更新日志",
-                cl_v2: "- 深度重构 i18n 中英双语系统<br>- 引入 MTA 官方 JSON 警报数据流<br>- 新增“战术情报板”折叠面板与熔断级红点提醒<br>- 隐藏式高级设置大厅",
+                cl_v2: "- 深度重构 i18n 中繁英三语系统<br>- 引入 MTA 官方 JSON 警报数据流<br>- 新增“战术情报板”折叠面板与熔断级红点提醒<br>- 隐藏式高级设置大厅",
                 cl_v1: "- 引入 SortableJS 物理拖拽引擎<br>- 新增 Staten Island 渡轮全天候智能时刻表<br>- 统一原生 App 级巨幅自适应排版比例<br>- Cloudflare Worker 跨域防护与 SBS 纠错引擎",
                 t_calc: "测算中...", t_no_fav: "暂无收藏<br><br>去查地铁或巴士点亮 ☆ 添加", t_no_bus: "无车", t_arr: "进站", t_due: "即刻",
                 t_no_train: "暂无列车", t_no_data: "暂无定位数据", t_search_data: "正在获取线级联定位...", t_req_fail: "请求失败",
                 f_sys_time: "🕒 系统时间", f_weekend: "🎈 周末时刻表", f_weekday: "💼 工作日", f_depart: "🚢 即将启航", f_rush: "🔥 高峰班次",
                 d_north: "⬆️ 北行", d_south: "⬇️ 南行", a_updated: "MTA 更新于", a_today: "今天"
             },
+            "hk": {
+                live_sync: "實時同步", tab_favs: "🌟 收藏", tab_subway: "🚇 地鐵", tab_bus: "🚌 巴士", tab_ferry: "⛴️ 渡輪",
+                my_favs: "我的收藏", refresh: "刷新", refreshing: "刷新中...", bus_placeholder: "輸入線路如 B70, M15",
+                dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
+                back: "返回", stations: "站名", refresh_time: "刷新時間", settings: "系統設置", lang_pref: "🌐 語言偏好 / Language",
+                about_title: "📖 關於 SB MTA",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約通勤者打造的極速、精準的第三方交通追踪引擎。<br><br>我們摒棄了臃腫的冗餘功能，直擊通勤痛點：從破除官方接口延遲、實現全網秒級定位，到深度的“海陸聯動”渡輪時刻表；從絲滑的自定義拖拽收藏夾，到直連 MTA 核心情報庫的“戰術級警報系統”。<br><br>SB MTA 致力於用最極簡的 UI，為你提供最強大的數據掌控力。在鋼鐵叢林中，做你最可靠的通勤瑞士軍刀。",
+                changelog_title: "🚀 版本更新日誌",
+                cl_v2: "- 深度重構 i18n 中繁英三語系統<br>- 引入 MTA 官方 JSON 警報數據流<br>- 新增“戰術情報板”折疊面板與熔斷級紅點提醒<br>- 隱藏式高級設置大廳",
+                cl_v1: "- 引入 SortableJS 物理拖拽引擎<br>- 新增 Staten Island 渡輪全天候智能時刻表<br>- 統一原生 App 級巨幅自適應排版比例<br>- Cloudflare Worker 跨域防護與 SBS 糾錯引擎",
+                t_calc: "測算中...", t_no_fav: "暫無收藏<br><br>去查地鐵或巴士點亮 ☆ 添加", t_no_bus: "無車", t_arr: "進站", t_due: "即刻",
+                t_no_train: "暫無列車", t_no_data: "暫無定位數據", t_search_data: "正在獲取線級聯定位...", t_req_fail: "請求失敗",
+                f_sys_time: "🕒 系統時間", f_weekend: "🎈 周末時刻表", f_weekday: "💼 工作日", f_depart: "🚢 即將啟航", f_rush: "🔥 高峰班次",
+                d_north: "⬆️ 北行", d_south: "⬇️ 南行", a_updated: "MTA 更新於", a_today: "今天"
+            },
             "en": {
                 live_sync: "Live Sync", tab_favs: "🌟 Favs", tab_subway: "🚇 Subway", tab_bus: "🚌 Bus", tab_ferry: "⛴️ Ferry",
                 my_favs: "My Favorites", refresh: "Refresh", refreshing: "Refreshing...", bus_placeholder: "e.g. B70, M15",
                 dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
-                back: "Back", stations: "Stops", refresh_time: "Refresh", settings: "Settings", lang_pref: "🌐 Language / 语言偏好",
+                back: "Back", stations: "Stops", refresh_time: "Refresh", settings: "Settings", lang_pref: "🌐 Language / 語言偏好",
                 about_title: "📖 About SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an ultra-fast, precise third-party transit tracking engine built specifically for NYC commuters.<br><br>We stripped away the bloat to focus on what matters: bypassing official API delays for second-level tracking, integrating Staten Island Ferry schedules, enabling silky-smooth draggable favorites, and hooking directly into the MTA's tactical Service Alert database.<br><br>SB MTA uses a minimalist UI to give you maximum data control. It's your ultimate commuter Swiss Army knife in the concrete jungle.",
                 changelog_title: "🚀 Changelog",
@@ -314,6 +330,7 @@
             // 更新按钮状态
             document.getElementById('btn-lang-zh').classList.remove('active');
             document.getElementById('btn-lang-en').classList.remove('active');
+            document.getElementById('btn-lang-hk').classList.remove('active');
             document.getElementById(`btn-lang-${lang}`).classList.add('active');
 
             // 重新渲染动态内容
@@ -755,6 +772,7 @@
             };
             const content = document.getElementById('stops-list-content');
             
+            // 🚨 注入顶部横幅警报
             document.getElementById('stops-alert-banner').innerHTML = getAlertBannerHtml(line, mode);
             
             if (mode === 'subway') {

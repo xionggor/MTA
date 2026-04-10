@@ -11,8 +11,6 @@
         :root { --mta-blue: #0039A6; --dark-bg: #121212; --card-bg: #1c1c1e; --text-main: #ffffff; --text-dim: #8e8e93; }
         
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: #000; color: var(--text-main); -webkit-font-smoothing: antialiased; display: flex; justify-content: center; overscroll-behavior-y: none; }
-        
-        /* 限制最大宽度并居中，打造统一的 App 视觉 */
         .app-wrapper { width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; background-color: var(--dark-bg); box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; }
 
         .header-global { position: sticky; top: 0; z-index: 2000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); }
@@ -33,17 +31,22 @@
         .layer-view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 收藏夹头部精简 --- */
         .favs-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; margin-top: 5px; }
         .favs-header-title { margin: 0; color: #fff; font-size: 22px; font-weight: 900; }
         .favs-refresh-btn { background: var(--card-bg); color: #fff; border: 1px solid #333; padding: 8px 16px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .favs-refresh-btn:active { background: #333; }
 
-        /* --- 大厅网格 --- */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 16px; padding: 10px 0; }
+        .route-circle-wrapper { position: relative; display: inline-block; }
         .route-circle { width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: 900; color: white; cursor: pointer; }
         
-        /* --- 列表行与徽标恢复正常比例 --- */
+        /* 🚨 警报微标 */
+        .alert-dot { position: absolute; top: -2px; right: -2px; background: #ff3b30; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--dark-bg); z-index: 5; box-shadow: 0 0 10px rgba(255,59,48,0.5); }
+        
+        /* 🚨 横幅警报 */
+        .alert-banner { background: rgba(255, 59, 48, 0.15); border-left: 4px solid #ff3b30; padding: 14px 16px; margin-bottom: 18px; border-radius: 12px; color: #ffeb3b; font-size: 14px; line-height: 1.5; }
+        .alert-banner strong { color: #ff3b30; font-size: 15px; display: block; margin-bottom: 6px; }
+
         .list-row { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; }
         .list-row:active { background: #2c2c2e; }
         
@@ -61,14 +64,12 @@
         .mini-route.sub { font-size: 20px; }
         .mini-route.bus { font-size: 12px; }
 
-        /* --- 时间看板 --- */
         .live-dash { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; pointer-events: none; flex-shrink: 0; }
-        .dash-badge { background: #2c2c2e; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 4px; border: 1px solid #444; }
-        .dash-icon { font-size: 1.2em; display: inline-block; transform: translateY(-1px); } 
+        .dash-badge { background: #2c2c2e; padding: 8px 12px; border-radius: 10px; font-size: 15px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 4px; border: 1px solid #444; }
+        .dash-icon { font-size: 1.3em; display: inline-block; transform: translateY(-1px); } 
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
         @keyframes pulse-bg { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* --- 路线时间轴 --- */
         .timeline-wrapper { display: flex; margin-bottom: 12px; cursor: pointer; }
         .timeline-wrapper:active .list-row { background: #2c2c2e; }
         .timeline-wrapper .list-row { flex: 1; margin-bottom: 0; }
@@ -76,35 +77,33 @@
         .line-segment { width: 6px; background-color: var(--route-color, #fff); }
         .line-top { position: absolute; top: 0; height: 50%; }
         .line-bottom { position: absolute; bottom: 0; height: 50%; }
-        .timeline-node { width: 18px; height: 18px; background-color: var(--dark-bg); border: 4px solid var(--route-color, #fff); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; transition: 0.2s; }
-        .timeline-node.square { border-radius: 4px; } 
+        .timeline-node { width: 16px; height: 16px; background-color: var(--dark-bg); border: 4px solid var(--route-color, #fff); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; transition: 0.2s; }
+        .timeline-node.square { border-radius: 5px; } 
         .timeline-node.circle { border-radius: 50%; } 
         .timeline-wrapper:active .timeline-node { background-color: var(--route-color, #fff); }
 
-        /* --- 详情卡片 --- */
-        .station-card { background: var(--card-bg); border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .dir-header { font-size: 15px; font-weight: 800; color: var(--text-dim); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #333; padding-bottom: 12px; }
-        .route-times-row { display: flex; align-items: center; margin-bottom: 20px; gap: 16px; }
+        .station-card { background: var(--card-bg); border-radius: 16px; padding: 24px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .dir-header { font-size: 16px; font-weight: 800; color: var(--text-dim); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #333; padding-bottom: 12px; }
+        .route-times-row { display: flex; align-items: center; margin-bottom: 18px; gap: 15px; }
         .times-flex { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
-        .time-box { background: #2c2c2e; padding: 10px 16px; border-radius: 12px; font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 4px; }
+        .time-box { background: #2c2c2e; padding: 10px 14px; border-radius: 10px; font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 4px; }
         .time-box .unit { font-size: 14px; font-weight: 500; color: var(--text-dim); }
         .time-box.arriving { background: #30d158; color: #000; }
 
-        /* --- 巴士地区与搜索 --- */
-        .borough-btn { background: #1c1c1e; border: 1px solid #333; border-radius: 16px; padding: 24px; text-align: center; font-size: 20px; font-weight: bold; color: #fff; cursor: pointer; margin-bottom: 16px; line-height: 1.4; }
+        .borough-btn { background: #1c1c1e; border: 1px solid #333; border-radius: 14px; padding: 24px; text-align: center; font-size: 20px; font-weight: bold; color: #fff; cursor: pointer; margin-bottom: 15px; line-height: 1.4; position: relative; }
         .borough-btn:active { background: #2c2c2e; }
 
         .search-container { margin-bottom: 24px; position: relative; }
-        .search-input { width: 100%; background: #1c1c1e; border: none; padding: 16px; border-radius: 14px; color: #fff; font-size: 16px; box-sizing: border-box; outline: none; border: 1px solid #333; }
-        .suggestions { position: absolute; top: 60px; left: 0; right: 0; background: #2c2c2e; border-radius: 14px; z-index: 2000; overflow: hidden; display: none; }
-        .sug-item { padding: 16px; border-bottom: 1px solid #3d3d3f; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .search-input { width: 100%; background: #1c1c1e; border: none; padding: 18px; border-radius: 14px; color: #fff; font-size: 18px; box-sizing: border-box; outline: none; border: 1px solid #333; }
+        .suggestions { position: absolute; top: 62px; left: 0; right: 0; background: #2c2c2e; border-radius: 14px; z-index: 2000; overflow: hidden; display: none; }
+        .sug-item { padding: 18px; border-bottom: 1px solid #3d3d3f; font-size: 16px; font-weight: bold; cursor: pointer; }
 
-        .loading-shimmer { text-align: center; color: var(--text-dim); padding: 50px; font-size: 15px; font-weight: bold; }
-        .error-msg { color: #ff453a; font-size: 14px; margin-top: 12px; }
+        .loading-shimmer { text-align: center; color: var(--text-dim); padding: 50px; font-size: 16px; font-weight: bold; }
+        .error-msg { color: #ff453a; font-size: 15px; margin-top: 12px; }
         .fav-btn { font-size: 32px; cursor: pointer; color: #3d3d3f; transition: 0.2s; }
         .fav-btn.active { color: #ffd60a; text-shadow: 0 0 16px rgba(255, 214, 10, 0.4); }
         
-        #station-detail-title, #route-title, #borough-title, #bus-detail-title { font-size: 22px; }
+        #station-detail-title, #route-title, #borough-title, #bus-detail-title { font-size: 24px; }
     </style>
 </head>
 <body>
@@ -171,7 +170,8 @@
                     <button class="toolbar-btn btn-back" id="stops-back-btn" onclick="navTo('home')">← 返回</button>
                     <div style="flex:1; font-weight:900; text-align:center;" id="route-title"></div>
                 </div>
-                <div id="stops-list-content" style="margin-top: 18px;"></div>
+                <div id="stops-alert-banner"></div>
+                <div id="stops-list-content" style="margin-top: 5px;"></div>
             </div>
 
             <div id="layer-station" class="layer-view">
@@ -183,6 +183,7 @@
                     <h2 id="station-detail-title" style="margin: 0; color:#fff;"></h2>
                     <div id="station-fav-btn" class="fav-btn" onclick="toggleFav()">☆</div>
                 </div>
+                <div id="station-alert-banner"></div>
                 <div id="station-detail-content"></div>
             </div>
         </div>
@@ -217,6 +218,70 @@
 
         let state = { activeTab: 'favs', currentLayer: 'home', mode: 'subway', selectedLine: null, selectedStation: { id: null, name: null, dirName: null } };
         let favorites = JSON.parse(localStorage.getItem('mta_pro_favs_v5') || '[]');
+        
+        // 🚨 全局警报存储池
+        let globalAlerts = { subway: {}, bus: {} };
+
+        // ==========================================
+        // 🚨 核心警报引擎：静默拉取并解析 JSON
+        // ==========================================
+        async function fetchSystemAlerts() {
+            try {
+                const [subRes, busRes] = await Promise.all([
+                    fetch(`${WORKER_URL}/?type=subway-alerts`).then(r => r.json()),
+                    fetch(`${WORKER_URL}/?type=bus-alerts`).then(r => r.json())
+                ]);
+
+                globalAlerts = { subway: {}, bus: {} };
+
+                const processAlerts = (data, type) => {
+                    (data.entity || []).forEach(ent => {
+                        const alert = ent.alert;
+                        if (!alert) return;
+                        
+                        // 提取最易读的英文警报文本
+                        const textObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
+                        const alertText = textObj ? textObj.text : 'Service Change';
+
+                        (alert.informed_entity || []).forEach(ie => {
+                            if (ie.route_id) {
+                                // 智能剥离 MTA 前缀 (如 MTABC_B70 -> B70)
+                                let rId = ie.route_id;
+                                if (rId.includes('_')) rId = rId.split('_')[1];
+                                if (rId.endsWith('+')) rId = rId.replace('+', '-SBS'); // 兼容 SBS
+
+                                if (!globalAlerts[type][rId]) globalAlerts[type][rId] = [];
+                                globalAlerts[type][rId].push(alertText);
+                            }
+                        });
+                    });
+                };
+
+                if (subRes.entity) processAlerts(subRes, 'subway');
+                if (busRes.entity) processAlerts(busRes, 'bus');
+                
+                // 拉取完后静默刷新大厅，挂载红点
+                if (state.currentLayer === 'home' && state.activeTab === 'subway') renderSubwayGrid();
+                if (state.currentLayer === 'home' && state.activeTab === 'favs') renderFavorites();
+                
+            } catch (e) { console.error("警报获取失败:", e); }
+        }
+
+        // ==========================================
+        // 渲染辅助：生成横幅 HTML
+        // ==========================================
+        function getAlertBannerHtml(line, mode) {
+            const alerts = globalAlerts[mode][line] || [];
+            if (alerts.length > 0) {
+                // 取第一条警报展示
+                return `<div class="alert-banner">
+                            <strong>⚠️ ${line} Line Alert</strong>
+                            ${alerts[0]}
+                        </div>`;
+            }
+            return '';
+        }
+
 
         function switchMainTab(tabId, btn) {
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -239,8 +304,9 @@
         async function manualRefreshFavs() {
             const btn = document.getElementById('favs-refresh-btn');
             const originalText = btn.innerText;
-            btn.innerText = '🔄 刷新中';
+            btn.innerText = '🔄 刷新中...';
             btn.style.opacity = '0.5';
+            await fetchSystemAlerts(); // 连同警报一起刷新
             await updateFavoritesRealtime();
             btn.innerText = '🔄 刷新';
             btn.style.opacity = '1';
@@ -256,7 +322,12 @@
                 const isSubway = fav.type === 'subway';
                 const conf = isSubway ? (LINE_MAP[fav.line] || { color: '#333', textColor: '#fff' }) : { color: 'var(--mta-blue)', textColor: '#fff' };
                 const iconTxt = isSubway ? fav.line : 'BUS';
-                const titleTxt = isSubway ? fav.name : `${fav.line} - ${fav.name}`;
+                
+                // 🚨 收藏夹红点熔断提示
+                const hasAlert = globalAlerts[fav.type][fav.line] && globalAlerts[fav.type][fav.line].length > 0;
+                const alertIcon = hasAlert ? `<span style="color:#ff3b30; font-size:18px; margin-left:6px; animation: pulse-bg 2s infinite;">⚠️</span>` : '';
+                
+                const titleTxt = (isSubway ? fav.name : `${fav.line} - ${fav.name}`) + alertIcon;
                 const classType = isSubway ? 'sub' : 'bus';
                 
                 const safeName = fav.name ? fav.name.replace(/'/g, "\\'") : '';
@@ -379,12 +450,22 @@
             }
         }
 
+        // ==========================================
+        // 🚇 导航大厅 (🚨 增加红点微标)
+        // ==========================================
         function renderSubwayGrid() {
             const grid = document.getElementById('subwayGrid');
-            if (grid.innerHTML !== '') return; 
+            grid.innerHTML = ''; 
             for (let line in LINE_MAP) {
                 const conf = LINE_MAP[line];
-                grid.innerHTML += `<div class="route-circle" style="background:${conf.color}; color:${conf.textColor||'white'};" onclick="openRouteStops('${line}', 'subway')">${line}</div>`;
+                const hasAlert = globalAlerts.subway[line] && globalAlerts.subway[line].length > 0;
+                const dotHtml = hasAlert ? `<div class="alert-dot"></div>` : '';
+                
+                grid.innerHTML += `
+                <div class="route-circle-wrapper" onclick="openRouteStops('${line}', 'subway')">
+                    <div class="route-circle" style="background:${conf.color}; color:${conf.textColor||'white'};">${line}</div>
+                    ${dotHtml}
+                </div>`;
             }
         }
 
@@ -395,7 +476,11 @@
             const matches = ALL_BUS_ROUTES.filter(r => r.includes(val));
             if(!matches.includes(val) && val.length > 1) matches.unshift(val);
             if (matches.length > 0) {
-                sug.innerHTML = matches.map(m => `<div class="sug-item" onclick="openRouteStops('${m}', 'bus')">${m}</div>`).join('');
+                sug.innerHTML = matches.map(m => {
+                    const hasAlert = globalAlerts.bus[m] && globalAlerts.bus[m].length > 0;
+                    const alertIcon = hasAlert ? `<span style="color:#ff3b30; margin-left:6px;">⚠️</span>` : '';
+                    return `<div class="sug-item" onclick="openRouteStops('${m}', 'bus')">${m} ${alertIcon}</div>`;
+                }).join('');
                 sug.style.display = 'block';
             } else sug.style.display = 'none';
         }
@@ -404,7 +489,12 @@
             document.getElementById('borough-title').innerText = `${borough} Buses`;
             const routes = BUS_BOROUGHS[borough] || [];
             let html = '';
-            routes.forEach(r => html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route bus" style="background:var(--mta-blue); color:#fff;">BUS</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`);
+            routes.forEach(r => {
+                const hasAlert = globalAlerts.bus[r] && globalAlerts.bus[r].length > 0;
+                const alertIcon = hasAlert ? `<span style="color:#ff3b30; margin-left:6px;">⚠️</span>` : '';
+                
+                html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left"><div class="mini-route bus" style="background:var(--mta-blue); color:#fff;">BUS</div><div class="row-title">${r} ${alertIcon}</div></div><div class="row-icon">›</div></div>`
+            });
             document.getElementById('bus-routes-content').innerHTML = html;
             navTo('bus-routes');
         }
@@ -425,7 +515,7 @@
 
             let html = `<div class="dir-header" style="margin-top:20px; display:flex; justify-content:space-between;">
                             <span>🕒 系统时间: ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            <span style="color:#fff; background:#333; padding:4px 10px; border-radius:8px; font-size:13px;">${isWeekend ? '🎈 周末时刻表' : '💼 工作日'}</span>
+                            <span style="color:#fff; background:#333; padding:4px 10px; border-radius:8px; font-size:12px;">${isWeekend ? '🎈 周末时刻表' : '💼 工作日'}</span>
                         </div>`;
 
             let nextIdx = -1;
@@ -469,6 +559,8 @@
                 </div>`;
             });
 
+            // 渡轮没有警报横幅
+            document.getElementById('stops-alert-banner').innerHTML = ''; 
             content.innerHTML = html;
             navTo('stops');
 
@@ -487,6 +579,9 @@
                 else navTo('bus-routes');
             };
             const content = document.getElementById('stops-list-content');
+            
+            // 🚨 注入顶部横幅警报
+            document.getElementById('stops-alert-banner').innerHTML = getAlertBannerHtml(line, mode);
             
             if (mode === 'subway') {
                 const stations = STATION_DICT[line] || [];
@@ -620,6 +715,9 @@
                 backBtn.onclick = () => navTo('stops');
             }
             
+            // 🚨 注入详情页顶部横幅警报
+            document.getElementById('station-alert-banner').innerHTML = getAlertBannerHtml(line, mode);
+            
             navTo('station');
             fetchStationRealtime();
         }
@@ -738,7 +836,10 @@
             }
         }, 30000); 
 
-        window.onload = () => { renderFavorites(); };
+        window.onload = () => { 
+            // 页面加载时自动拉取全局警报，然后渲染收藏夹
+            fetchSystemAlerts().then(() => renderFavorites()); 
+        };
     </script>
 </body>
 </html>

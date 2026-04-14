@@ -51,7 +51,7 @@
         .alert-arrow.up { transform: rotate(180deg); }
         .alert-content { display: none; padding: 0 14px 14px 14px; font-size: 13px; color: #ddd; line-height: 1.5; border-top: 1px solid #333; margin-top: 4px; padding-top: 10px; }
         .alert-content.show { display: block; animation: fadeIn 0.3s ease; }
-        .translate-btn { background: rgba(255,255,255,0.1); border: 1px solid #444; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; z-index: 10; transition: 0.2s; white-space: nowrap; }
+        .translate-btn { background: rgba(255,255,255,0.1); border: 1px solid #444; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; z-index: 10; transition: 0.2s; white-space: nowrap; }
         .translate-btn:active { background: rgba(255,255,255,0.2); }
         
         @keyframes flash-border { 0% { box-shadow: 0 0 4px rgba(255,59,48,0.2); } 50% { box-shadow: 0 0 16px rgba(255,59,48,0.8); } 100% { box-shadow: 0 0 4px rgba(255,59,48,0.2); } }
@@ -234,7 +234,15 @@
                 <div class="station-card">
                     <h3 style="margin-top:0; color:#fff; font-size:15px;" data-i18n="changelog_title">🚀 版本更新日志</h3>
                     <div class="changelog-item">
-                        <div class="changelog-version">V2.0 PRO MAX (Current)</div>
+                        <div class="changelog-version">V2.0 PRO MAX.1 (Patch)</div>
+                        <div class="changelog-desc">
+                            - <span style="color:#ff9f0a;">[核心]</span> 重写翻译引擎：引入碎片化词典，提高警报命中率<br>
+                            - <span style="color:#ff9f0a;">[UI]</span> 修复翻译切换按钮状态丢失的 Bug<br>
+                            - <span style="color:#0a84ff;">[功能]</span> 实装浏览器底层语言自动嗅探协议
+                        </div>
+                    </div>
+                    <div class="changelog-item">
+                        <div class="changelog-version">V2.0 PRO MAX</div>
                         <div class="changelog-desc" data-i18n="cl_v2">
                             - 深度重构 i18n 中繁英三语系统<br>
                             - <span style="color:#ff9f0a;">[核心]</span> MTA警报自动词典翻译与一键切换<br>
@@ -282,7 +290,7 @@
                 about_title: "📖 关于 SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约都会区研发的高效、精确的综合公共交通追踪系统。<br><br>本系统深度直连 MTA (Metropolitan Transportation Authority) 官方底层数据架构，无缝覆盖全网地铁、五大区巴士（含 SBS 快速公交）以及史泰登岛渡轮，致力于提供低延迟的实时定位与发车时刻服务。<br><br>作为专业级的通勤辅助工具，SB MTA 搭载了独创的智能服务警报（Smart Service Alerts）引擎。该引擎可自动屏蔽深夜维护等常规冗余信息，精准提取并推送停运、改道及严重延误等关键行车情报，确保用户获取高信噪比的出行参考。<br><br>系统秉承“极简与高效”的设计理念，配备自适应交互界面、自定义捷径收藏以及多语言无障碍支持。SB MTA 始终将数据可靠性与使用便捷性置于首位，为您在纽约的每一次出行保驾护航。",
                 changelog_title: "🚀 版本更新日志",
-                cl_v2: "- 深度重构 i18n 中繁英三语系统<br>- <span style=\"color:#ff9f0a;\">[核心]</span> MTA警报自动词典翻译与一键切换<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>- 新增折叠式情报板与智能 Major Alert 红点",
+                cl_v2: "- 深度重构 i18n 中繁英三语系统<br>- 引入 MTA JSON 数据流与折叠式情报板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>- 隐藏式高级设置大厅与 UI 像素收缩优化<br>- 完善了开源鸣谢与免责声明系统",
                 credits_title: "🌟 鸣谢与开源",
                 credits_desc: "本项目为开源非盈利应用。<br><br><b>特别鸣谢：</b><br>• <b>MTA</b>: 提供底层实时公共交通数据流<br>• <b>Cloudflare</b>: 提供边缘计算与跨域网络防护<br>• <b>GitHub</b>: 提供开源代码托管支持<br>• <b>Gemini</b>: 提供底层架构设计与代码编写支持",
                 disclaimer_title: "⚠️ 免责声明",
@@ -300,7 +308,7 @@
                 about_title: "📖 關於 SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約都會區研發的高效、精確的綜合公共交通追踪系統。<br><br>本系統深度直連 MTA (Metropolitan Transportation Authority) 官方底層數據架構，無縫覆蓋全網地鐵、五大區巴士（含 SBS 快速公交）以及史泰登島渡輪，致力於提供低延遲的實時定位與發車時刻服務。<br><br>作為專業級的通勤輔助工具，SB MTA 搭載了獨創的智能服務警報（Smart Service Alerts）引擎。該引擎可自動屏蔽深夜維護等常規冗餘信息，精準提取並推送停運、改道及嚴重延誤等關鍵行車情報，確保用戶獲取高信噪比的出行參考。<br><br>系統秉承“極簡與高效”的設計理念，配備自適應交互界面、自定義捷徑收藏以及多語言無障礙支持。SB MTA 始終將數據可靠性與使用便捷性置於首位，為您在紐約的每一次出行保駕護航。",
                 changelog_title: "🚀 版本更新日誌",
-                cl_v2: "- 深度重構 i18n 中繁英三語系統<br>- <span style=\"color:#ff9f0a;\">[核心]</span> MTA警報自動詞典翻譯與一鍵切換<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能時間戳比對：自動銷毀已過期警報<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警報 (Overnight) 絕對攔截算法<br>- 新增折疊式情報板與智能 Major Alert 紅點",
+                cl_v2: "- 深度重構 i18n 中繁英三語系統<br>- 引入 MTA JSON 數據流與折疊式情報板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能時間戳比對：自動銷毀已過期警報<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警報 (Overnight) 絕對攔截算法<br>- 隱藏式高級設置大廳與 UI 像素收縮優化<br>- 完善了開源鳴謝與免責聲明系統",
                 credits_title: "🌟 鳴謝與開源",
                 credits_desc: "本項目為開源非盈利應用。<br><br><b>特別鳴謝：</b><br>• <b>MTA</b>: 提供底層實時公共交通數據流<br>• <b>Cloudflare</b>: 提供邊緣計算與跨域網絡防護<br>• <b>GitHub</b>: 提供開源代碼託管支持<br>• <b>Gemini</b>: 提供底層架構設計與代碼編寫支持",
                 disclaimer_title: "⚠️ 免責聲明",
@@ -318,7 +326,7 @@
                 about_title: "📖 About SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an advanced, high-precision public transit tracking system designed for the New York metropolitan area.<br><br>By integrating directly with the Metropolitan Transportation Authority (MTA) core data infrastructure, the system provides low-latency, real-time tracking for subways, all five boroughs' bus networks (including SBS), and the Staten Island Ferry.<br><br>As a professional-grade commuter tool, SB MTA features a proprietary Smart Service Alerts engine. This engine automatically filters out routine maintenance noise (such as overnight work) and precisely delivers critical operational intelligence—including suspensions, route changes, and severe delays—ensuring users receive high-signal, actionable travel advisories.<br><br>Built on the philosophy of \"minimalism and efficiency,\" the system offers a responsive UI, customizable quick-access favorites, and multi-language support. SB MTA prioritizes data reliability and user convenience to safeguard every journey you take in New York City.",
                 changelog_title: "🚀 Changelog",
-                cl_v2: "- Deep i18n bilingual integration<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Local MTA-Jargon Translation Engine<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Auto-destruct Expired Alerts (Timestamp Sync)<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Eradicated Overnight/Late Night Alerts<br>- Accordion Alert Banners & Major Red-Dot",
+                cl_v2: "- Deep i18n bilingual integration<br>- Accordion Alert Banners & Major Red-Dot<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Auto-destruct Expired Alerts (Timestamp Sync)<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Eradicated Overnight/Late Night Alerts<br>- Hidden Settings & 18% denser UI scaling<br>- Added official Legal Disclaimer & Credits",
                 credits_title: "🌟 Credits & Open Source",
                 credits_desc: "This is an open-source, non-profit application.<br><br><b>Special Thanks To:</b><br>• <b>MTA</b>: Real-time public transit data feeds<br>• <b>Cloudflare</b>: Edge computing & CORS protection<br>• <b>GitHub</b>: Open-source code hosting<br>• <b>Gemini</b>: Core architecture design & coding support",
                 disclaimer_title: "⚠️ Legal Disclaimer",
@@ -374,35 +382,101 @@
         }
 
         // ==========================================
-        // ⚡ MTA 专属本地术语翻译引擎
+        // ⚡ 碎片化本地翻译引擎 (Fragment Dictionary)
         // ==========================================
         function translateMtaText(text, lang) {
             if (!text || lang === 'en') return text;
             let res = text;
-            const rules = lang === 'hk' ? [
-                [/Trains are delayed/ig, "列車出現延誤"], [/trains are rerouted/ig, "列車已改道"], [/are delayed/ig, "出現延誤"],
-                [/in both directions/ig, "雙向"], [/northbound/ig, "北行 (Uptown)"], [/southbound/ig, "南行 (Downtown)"],
-                [/Manhattan-bound/ig, "開往曼哈頓方向"], [/Brooklyn-bound/ig, "開往布魯克林方向"], [/Queens-bound/ig, "開往皇后區方向"], [/Bronx-bound/ig, "開往布朗克斯方向"],
-                [/signal problem/ig, "信號故障"], [/mechanical problem/ig, "機械故障"], [/switch problem/ig, "道岔故障"],
-                [/medical emergency/ig, "醫療緊急情況"], [/police activity/ig, "警方行動"], [/unauthorized person on tracks/ig, "軌道上有閒雜人員"],
-                [/track fire/ig, "軌道起火"], [/due to/ig, "由於"], [/while we fix/ig, "我們正在搶修"],
-                [/Please allow extra travel time/ig, "請預留額外的通勤時間"], [/We are actively working to restore normal service/ig, "我們正在積極搶修以恢復正常運營"],
-                [/For service between/ig, "如需往返於"], [/use the/ig, "請換乘"], [/operates between/ig, "運行於"], [/instead of/ig, "而不是"],
-                [/Suspended/ig, "停運"], [/Severe Delays/ig, "嚴重延誤"], [/Delays/ig, "延誤"], [/Planned Work/ig, "計劃施工"], [/Service Change/ig, "服務變更"],
-                [/Express/ig, "快車"], [/Local/ig, "慢車"]
-            ] : [
-                [/Trains are delayed/ig, "列车出现延误"], [/trains are rerouted/ig, "列车已改道"], [/are delayed/ig, "出现延误"],
-                [/in both directions/ig, "双向"], [/northbound/ig, "北行 (Uptown)"], [/southbound/ig, "南行 (Downtown)"],
-                [/Manhattan-bound/ig, "开往曼哈顿方向"], [/Brooklyn-bound/ig, "开往布鲁克林方向"], [/Queens-bound/ig, "开往皇后区方向"], [/Bronx-bound/ig, "开往布朗克斯方向"],
-                [/signal problem/ig, "信号故障"], [/mechanical problem/ig, "机械故障"], [/switch problem/ig, "道岔故障"],
-                [/medical emergency/ig, "医疗紧急情况"], [/police activity/ig, "警方行动"], [/unauthorized person on tracks/ig, "轨道上有闲杂人员"],
-                [/track fire/ig, "轨道起火"], [/due to/ig, "由于"], [/while we fix/ig, "我们正在抢修"],
-                [/Please allow extra travel time/ig, "请预留额外的通勤时间"], [/We are actively working to restore normal service/ig, "我们正在积极抢修以恢复正常运营"],
-                [/For service between/ig, "如需往返于"], [/use the/ig, "请换乘"], [/operates between/ig, "运行于"], [/instead of/ig, "而不是"],
-                [/Suspended/ig, "停运"], [/Severe Delays/ig, "严重延误"], [/Delays/ig, "延误"], [/Planned Work/ig, "计划施工"], [/Service Change/ig, "服务变更"],
-                [/Express/ig, "快车"], [/Local/ig, "慢车"]
-            ];
-            rules.forEach(r => { res = res.replace(r[0], r[1]); });
+            
+            const dict = lang === 'hk' ? {
+                "We are actively working to restore normal service.": "我們正在積極搶修以恢復正常運營。",
+                "Please allow extra travel time.": "請預留額外的通勤時間。",
+                "unauthorized person on tracks": "軌道上有閒雜人員",
+                "Trains are delayed": "列車出現延誤",
+                "trains are rerouted": "列車已改道",
+                "No trains running": "沒有列車運行",
+                "in both directions": "雙向",
+                "medical emergency": "醫療緊急情況",
+                "mechanical problem": "機械故障",
+                "signal problem": "信號故障",
+                "switch problem": "道岔故障",
+                "police activity": "警方行動",
+                "track fire": "軌道起火",
+                "Manhattan-bound": "開往曼哈頓方向",
+                "Brooklyn-bound": "開往布魯克林方向",
+                "Queens-bound": "開往皇后區方向",
+                "Bronx-bound": "開往布朗克斯方向",
+                "northbound": "北行 (Uptown)",
+                "southbound": "南行 (Downtown)",
+                "For service between": "如需往返於",
+                "operates between": "運行於",
+                "are running on the": "正行駛於",
+                "are running with delays": "出現延誤",
+                "are delayed": "出現延誤",
+                "due to": "由於",
+                "while we fix": "我們正在搶修",
+                "use the": "請換乘",
+                "instead of": "而不是",
+                "Suspended": "停運",
+                "Severe Delays": "嚴重延誤",
+                "Planned Work": "計劃施工",
+                "Service Change": "服務變更",
+                "Delays": "延誤",
+                "Express": "快車",
+                "Local": "慢車",
+                "trains": "列車",
+                "Some": "部分",
+                "line": "線",
+                "from": "從",
+                "to": "至"
+            } : {
+                "We are actively working to restore normal service.": "我们正在积极抢修以恢复正常运营。",
+                "Please allow extra travel time.": "请预留额外的通勤时间。",
+                "unauthorized person on tracks": "轨道上有闲杂人员",
+                "Trains are delayed": "列车出现延误",
+                "trains are rerouted": "列车已改道",
+                "No trains running": "没有列车运行",
+                "in both directions": "双向",
+                "medical emergency": "医疗紧急情况",
+                "mechanical problem": "机械故障",
+                "signal problem": "信号故障",
+                "switch problem": "道岔故障",
+                "police activity": "警方行动",
+                "track fire": "轨道起火",
+                "Manhattan-bound": "开往曼哈顿方向",
+                "Brooklyn-bound": "开往布鲁克林方向",
+                "Queens-bound": "开往皇后区方向",
+                "Bronx-bound": "开往布朗克斯方向",
+                "northbound": "北行 (Uptown)",
+                "southbound": "南行 (Downtown)",
+                "For service between": "如需往返于",
+                "operates between": "运行于",
+                "are running on the": "正行驶于",
+                "are running with delays": "出现延误",
+                "are delayed": "出现延误",
+                "due to": "由于",
+                "while we fix": "我们正在抢修",
+                "use the": "请换乘",
+                "instead of": "而不是",
+                "Suspended": "停运",
+                "Severe Delays": "严重延误",
+                "Planned Work": "计划施工",
+                "Service Change": "服务变更",
+                "Delays": "延误",
+                "Express": "快车",
+                "Local": "慢车",
+                "trains": "列车",
+                "Some": "部分",
+                "line": "线",
+                "from": "从",
+                "to": "至"
+            };
+
+            for (const [en, local] of Object.entries(dict)) {
+                // 使用 gi (全局+不区分大小写) 确保所有变体都能被切割翻译
+                const regex = new RegExp(en, 'gi');
+                res = res.replace(regex, local);
+            }
             return res;
         }
 
@@ -472,23 +546,26 @@
             arrow.classList.toggle('up');
         }
 
-        // 🌐 一键切换警报原文
+        // 🌐 一键切换警报原文 (修复版：使用 data-state 强制记录状态，不依赖按钮文字)
         window.toggleTrans = function(e, btn) {
             e.stopPropagation(); 
             const banner = btn.closest('.alert-banner');
             const localTexts = banner.querySelectorAll('.text-local');
             const enTexts = banner.querySelectorAll('.text-en');
             
-            const isEn = btn.innerText.includes('中文');
+            // 默认状态下 btn 没有 data-state，说明当前显示的是 local
+            let isLocal = btn.getAttribute('data-state') !== 'en';
             
-            if (isEn) { 
-                localTexts.forEach(el => el.style.display = 'inline');
-                enTexts.forEach(el => el.style.display = 'none');
-                btn.innerText = t('trans_btn');
-            } else { 
+            if (isLocal) { 
                 localTexts.forEach(el => el.style.display = 'none');
                 enTexts.forEach(el => el.style.display = 'inline');
-                btn.innerText = t('orig_btn');
+                btn.setAttribute('data-state', 'en');
+                btn.innerText = t('orig_btn'); // "🌐 译文"
+            } else { 
+                localTexts.forEach(el => el.style.display = 'inline');
+                enTexts.forEach(el => el.style.display = 'none');
+                btn.setAttribute('data-state', 'local');
+                btn.innerText = t('trans_btn'); // "🌐 原文"
             }
         }
 
@@ -567,7 +644,6 @@
             } catch (e) { console.error("警报获取失败:", e); }
         }
 
-        // 🚨 横幅渲染集成智能翻译
         function getAlertBannerHtml(line, mode) {
             const alerts = globalAlerts[mode][line] || [];
             if (alerts.length > 0) {
@@ -590,10 +666,10 @@
                     else timeStr = `${d.getMonth()+1}/${d.getDate()} ${timeStr}`;
                 }
 
-                // 本地化翻译处理
+                // 注入碎片化翻译
                 const localTitle = translateMtaText(alert.title, currentLang);
                 const localDesc = translateMtaText(alert.desc, currentLang);
-                const transBtnHtml = currentLang !== 'en' ? `<span class="translate-btn" onclick="toggleTrans(event, this)">${t('trans_btn')}</span>` : '';
+                const transBtnHtml = currentLang !== 'en' ? `<span class="translate-btn" data-state="local" onclick="toggleTrans(event, this)">${t('trans_btn')}</span>` : '';
 
                 return `
                 <div class="alert-banner ${severeClass}" style="border-left-color: ${typeColor}; background: rgba(255,255,255,0.05);">

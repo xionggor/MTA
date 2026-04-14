@@ -37,15 +37,12 @@
         .favs-refresh-btn { background: var(--card-bg); color: #fff; border: 1px solid #333; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
         .favs-refresh-btn:active { background: #333; }
 
-        /* 🚇 大厅网格圆圈缩小 */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 14px; padding: 8px 0; }
         .route-circle-wrapper { position: relative; display: inline-block; flex-shrink: 0; }
         .route-circle { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: 900; color: white; cursor: pointer; }
         
-        /* 🚨 红点角标统一控制 */
         .alert-dot { position: absolute; top: -1px; right: -1px; background: #ff3b30; width: 12px; height: 12px; border-radius: 50%; border: 2.5px solid var(--dark-bg); z-index: 5; box-shadow: 0 0 8px rgba(255,59,48,0.6); }
 
-        /* 🚨 详情页战术情报板缩放 */
         .alert-banner { background: #1c1c1e; border-left: 4px solid #ff3b30; margin-bottom: 16px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); overflow: hidden; transition: all 0.3s ease; }
         .alert-header { padding: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
         .alert-header strong { font-size: 14px; line-height: 1.4; flex: 1; padding-right: 8px; }
@@ -57,7 +54,6 @@
         @keyframes flash-border { 0% { box-shadow: 0 0 4px rgba(255,59,48,0.2); } 50% { box-shadow: 0 0 16px rgba(255,59,48,0.8); } 100% { box-shadow: 0 0 4px rgba(255,59,48,0.2); } }
         .alert-severe { animation: flash-border 2s infinite; }
 
-        /* 📋 列表项整体精细化缩放 (-18%) */
         .list-row { background: var(--card-bg); border-radius: 14px; padding: 13px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; }
         .list-row:active { background: #2c2c2e; }
         
@@ -71,18 +67,15 @@
         .row-title { font-size: 14px; font-weight: 700; color: #fff; white-space: normal; line-height: 1.3; word-break: break-word; padding-right: 8px; }
         .row-icon { color: var(--text-dim); font-size: 18px; margin-left: 4px; }
         
-        /* 路线圆圈缩小 */
         .mini-route { width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; flex-shrink: 0; }
         .mini-route.sub { font-size: 16px; }
         .mini-route.bus { font-size: 10px; }
 
-        /* 时间方块缩小 */
         .live-dash { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; pointer-events: none; flex-shrink: 0; }
         .dash-badge { background: #2c2c2e; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 3px; border: 1px solid #444; }
         .dash-icon { font-size: 1.2em; display: inline-block; transform: translateY(-1px); } 
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
 
-        /* 📍 站点时间轴缩小 */
         .timeline-wrapper { display: flex; margin-bottom: 10px; cursor: pointer; }
         .timeline-wrapper:active .list-row { background: #2c2c2e; }
         .timeline-wrapper .list-row { flex: 1; margin-bottom: 0; }
@@ -242,11 +235,10 @@
                         <div class="changelog-version">V2.0 PRO MAX (Current)</div>
                         <div class="changelog-desc" data-i18n="cl_v2">
                             - 深度重构 i18n 中繁英三语系统<br>
-                            - 引入 MTA 官方 JSON 警报数据流<br>
-                            - 新增“战术情报板”折叠面板与熔断级红点提醒<br>
-                            - 隐藏式高级设置大厅<br>
-                            - 智能 Major Alert 重大警报红点过滤引擎<br>
-                            - UI 像素全面重构，密度提升 18%
+                            - 引入 MTA JSON 数据流与折叠式情报板<br>
+                            - <span style="color:#ff9f0a;">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>
+                            - <span style="color:#ff9f0a;">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>
+                            - 隐藏式高级设置大厅与 UI 像素收缩优化
                         </div>
                     </div>
                     <div class="changelog-item">
@@ -277,7 +269,7 @@
                 about_title: "📖 关于 SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约通勤者打造的极速、精准的第三方交通追踪引擎。<br><br>我们摒弃了臃肿的冗余功能，直击通勤痛点：从破除官方接口延迟、实现全网秒级定位，到深度的“海陆联动”渡轮时刻表；从丝滑的自定义拖拽收藏夹，到直连 MTA 核心情报库的“智能战术预警系统”。<br><br>SB MTA 致力于用最极简的 UI，为你提供最强大的数据掌控力。在钢铁丛林中，做你最可靠的通勤瑞士军刀。",
                 changelog_title: "🚀 版本更新日志",
-                cl_v2: "- 深度重构 i18n 中繁英三语系统<br>- 引入 MTA 官方 JSON 警报数据流<br>- 新增“战术情报板”折叠面板与熔断级红点提醒<br>- 隐藏式高级设置大厅<br>- 智能 Major Alert 重大警报红点过滤引擎<br>- UI 像素全面重构，信息密度提升 18%",
+                cl_v2: "- 深度重构 i18n 中繁英三语系统<br>- 引入 MTA JSON 数据流与折叠式情报板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>- 隐藏式高级设置大厅与 UI 像素收缩优化",
                 cl_v1: "- 引入 SortableJS 物理拖拽引擎<br>- 新增 Staten Island 渡轮全天候智能时刻表<br>- 统一原生 App 级巨幅自适应排版比例<br>- Cloudflare Worker 跨域防护与 SBS 纠错引擎",
                 t_calc: "测算中...", t_no_fav: "暂无收藏<br><br>去查地铁或巴士点亮 ☆ 添加", t_no_bus: "无车", t_arr: "进站", t_due: "即刻",
                 t_no_train: "暂无列车", t_no_data: "暂无定位数据", t_search_data: "正在获取线级联定位...", t_req_fail: "请求失败",
@@ -292,7 +284,7 @@
                 about_title: "📖 關於 SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約通勤者打造的極速、精準的第三方交通追踪引擎。<br><br>我們摒棄了臃腫的冗餘功能，直擊通勤痛點：從破除官方接口延遲、實現全網秒級定位，到深度的“海陸聯動”渡輪時刻表；從絲滑的自定義拖拽收藏夾，到直連 MTA 核心情報庫的“智能戰術預警系統”。<br><br>SB MTA 致力於用最極簡的 UI，為你提供最強大的數據掌控力。在鋼鐵叢林中，做你最可靠的通勤瑞士軍刀。",
                 changelog_title: "🚀 版本更新日誌",
-                cl_v2: "- 深度重構 i18n 中繁英三語系統<br>- 引入 MTA 官方 JSON 警報數據流<br>- 新增“戰術情報板”折疊面板與熔斷級紅點提醒<br>- 隱藏式高級設置大廳<br>- 智能 Major Alert 重大警報紅點過濾引擎<br>- UI 像素全面重構，信息密度提升 18%",
+                cl_v2: "- 深度重構 i18n 中繁英三語系統<br>- 引入 MTA JSON 數據流與折疊式情報板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能時間戳比對：自動銷毀已過期警報<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警報 (Overnight) 絕對攔截算法<br>- 隱藏式高級設置大廳與 UI 像素收縮優化",
                 cl_v1: "- 引入 SortableJS 物理拖拽引擎<br>- 新增 Staten Island 渡輪全天候智能時刻表<br>- 統一原生 App 級巨幅自適應排版比例<br>- Cloudflare Worker 跨域防護與 SBS 糾錯引擎",
                 t_calc: "測算中...", t_no_fav: "暫無收藏<br><br>去查地鐵或巴士點亮 ☆ 添加", t_no_bus: "無車", t_arr: "進站", t_due: "即刻",
                 t_no_train: "暫無列車", t_no_data: "暫無定位數據", t_search_data: "正在獲取線級聯定位...", t_req_fail: "請求失敗",
@@ -307,7 +299,7 @@
                 about_title: "📖 About SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an ultra-fast, precise third-party transit tracking engine built specifically for NYC commuters.<br><br>We stripped away the bloat to focus on what matters: bypassing official API delays for second-level tracking, integrating Staten Island Ferry schedules, enabling silky-smooth draggable favorites, and hooking directly into the MTA's tactical Service Alert database with smart filtering.<br><br>SB MTA uses a minimalist UI to give you maximum data control. It's your ultimate commuter Swiss Army knife in the concrete jungle.",
                 changelog_title: "🚀 Changelog",
-                cl_v2: "- Deep i18n bilingual system integration<br>- MTA JSON Alert feeds integration<br>- Tactical Alert accordions & Major Alert Red-Dot Filter<br>- Hidden Advanced Settings Layer<br>- Precise UI scale reduction by 18%",
+                cl_v2: "- Deep i18n bilingual integration<br>- Accordion Alert Banners & Major Red-Dot<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Auto-destruct Expired Alerts (Timestamp Sync)<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Eradicated Overnight/Late Night Alerts<br>- Hidden Settings & 18% denser UI scaling",
                 cl_v1: "- SortableJS physics drag engine<br>- Staten Island Ferry 24/7 schedules<br>- Native App-level responsive UI scaling<br>- Cloudflare Worker CORS & SBS correction",
                 t_calc: "Calculating...", t_no_fav: "No Favorites<br><br>Star ☆ a route to add it here", t_no_bus: "No Bus", t_arr: "Arriving", t_due: "Due",
                 t_no_train: "No Trains", t_no_data: "No GPS Data", t_search_data: "Fetching route data...", t_req_fail: "Request Failed",
@@ -377,17 +369,15 @@
         let favorites = JSON.parse(localStorage.getItem('mta_pro_favs_v5') || '[]');
         let globalAlerts = { subway: {}, bus: {} };
 
-        // 🚨 核心逻辑：判断是否为“重大警报”（才配亮红点）
+        // 🚨 判断是否为“重大警报”（才配亮红点）
         function isMajorAlert(alerts) {
             if (!alerts || alerts.length === 0) return false;
             return alerts.some(a => {
                 const t = a.type || '';
-                // 只有停运、严重延误、临时改道才配亮红点
                 return t.includes('Suspended') || t.includes('Severe') || t.includes('Service Change');
             });
         }
 
-        // 点击空白处收起折叠面板
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.alert-banner')) {
                 document.querySelectorAll('.alert-content.show').forEach(content => {
@@ -412,6 +402,9 @@
             arrow.classList.toggle('up');
         }
 
+        // ==========================================
+        // 🚨 核心警报引擎：时间戳销毁与深夜拦截
+        // ==========================================
         async function fetchSystemAlerts() {
             try {
                 const [subRes, busRes] = await Promise.all([
@@ -420,14 +413,35 @@
                 ]);
 
                 globalAlerts = { subway: {}, bus: {} };
+                const nowSec = Math.floor(Date.now() / 1000); // 当前物理时间 (秒)
 
                 const processAlerts = (data, type) => {
                     (data.entity || []).forEach(ent => {
                         const alert = ent.alert;
                         if (!alert) return;
                         
+                        // 🛑 1. 时间戳防线：检查是否已过期
+                        let isExpired = false;
+                        if (alert.active_period) {
+                            for (const period of alert.active_period) {
+                                if (period.end && parseInt(period.end) < nowSec) {
+                                    isExpired = true; 
+                                } else {
+                                    isExpired = false; // 只要有一个有效的时间段，就放行
+                                    break;
+                                }
+                            }
+                        }
+                        if (isExpired) return; // 已过期的警报，直接销毁！
+
                         const titleObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
                         const alertTitle = titleObj ? titleObj.text : 'Service Change';
+                        
+                        // 🛑 2. 深夜拦截网：斩草除根
+                        const titleStr = alertTitle.toLowerCase();
+                        if (titleStr.includes('overnight') || titleStr.includes('late night') || titleStr.includes('nightly')) {
+                            return; // 直接丢弃，不存入内存
+                        }
 
                         const descObj = alert.description_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
                         const alertDesc = descObj ? descObj.text : '';
@@ -452,7 +466,6 @@
                 if (subRes.entity) processAlerts(subRes, 'subway');
                 if (busRes.entity) processAlerts(busRes, 'bus');
                 
-                // 将警报按严重程度排序，确保最严重的警报永远显示在横幅里
                 const sortAlerts = (alertsObj) => {
                     for(let line in alertsObj) {
                         alertsObj[line].sort((a, b) => {
@@ -558,7 +571,6 @@
                 const conf = isSubway ? (LINE_MAP[fav.line] || { color: '#333', textColor: '#fff' }) : { color: 'var(--mta-blue)', textColor: '#fff' };
                 const iconTxt = isSubway ? fav.line : 'BUS';
                 
-                // 🚨 收藏夹原生红点角标 (只有重大警报才出现)
                 const hasMajor = isMajorAlert(globalAlerts[fav.type][fav.line]);
                 const dotHtml = hasMajor ? `<div class="alert-dot" style="border-color: var(--card-bg);"></div>` : '';
                 
@@ -686,15 +698,11 @@
             }
         }
 
-        // ==========================================
-        // 🚇 导航大厅 (🚨 只有重大警报亮红点)
-        // ==========================================
         function renderSubwayGrid() {
             const grid = document.getElementById('subwayGrid');
             grid.innerHTML = ''; 
             for (let line in LINE_MAP) {
                 const conf = LINE_MAP[line];
-                // 只有重大警报才亮红点
                 const hasMajor = isMajorAlert(globalAlerts.subway[line]);
                 const dotHtml = hasMajor ? `<div class="alert-dot"></div>` : '';
                 

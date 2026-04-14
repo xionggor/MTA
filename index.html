@@ -238,7 +238,8 @@
                             - 引入 MTA JSON 数据流与折叠式情报板<br>
                             - <span style="color:#ff9f0a;">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>
                             - <span style="color:#ff9f0a;">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>
-                            - 隐藏式高级设置大厅与 UI 像素收缩优化
+                            - 隐藏式高级设置大厅与 UI 像素收缩优化<br>
+                            - 完善了开源鸣谢与免责声明系统
                         </div>
                     </div>
                     <div class="changelog-item">
@@ -251,6 +252,26 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="station-card">
+                    <h3 style="margin-top:0; color:#fff; font-size:15px;" data-i18n="credits_title">🌟 鸣谢与开源</h3>
+                    <div style="color:var(--text-dim); font-size:13px; line-height:1.6;" data-i18n="credits_desc">
+                        本项目为开源非盈利应用。<br><br>
+                        <b>特别鸣谢：</b><br>
+                        • <b>MTA</b>: 提供底层实时公共交通数据流<br>
+                        • <b>Cloudflare</b>: 提供边缘计算与跨域网络防护<br>
+                        • <b>GitHub</b>: 提供开源代码托管支持<br>
+                        • <b>Gemini</b>: 提供底层架构设计与代码编写支持
+                    </div>
+                </div>
+
+                <div class="station-card" style="background: rgba(255,159,10,0.1); border: 1px solid rgba(255,159,10,0.3);">
+                    <h3 style="margin-top:0; color:#ff9f0a; font-size:15px;" data-i18n="disclaimer_title">⚠️ 免责声明</h3>
+                    <div style="color:rgba(255,255,255,0.85); font-size:13px; line-height:1.6;" data-i18n="disclaimer_desc">
+                        本应用数据直接读取自 MTA 官方公开接口，并按“原样（As is）”提供。我们不对数据的绝对准确性、实时性或服务器的持续可用性提供任何法律担保。纽约路况复杂，请仅将本应用作为出行参考。开发者对因数据偏差或系统故障导致的任何通勤延误、直接或间接损失概不负责。
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -267,10 +288,14 @@
                 dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
                 back: "返回", stations: "站名", refresh_time: "刷新时间", settings: "系统设置", lang_pref: "🌐 语言偏好 / Language",
                 about_title: "📖 关于 SB MTA",
-                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约通勤者打造的极速、精准的第三方交通追踪引擎。<br><br>我们摒弃了臃肿的冗余功能，直击通勤痛点：从破除官方接口延迟、实现全网秒级定位，到深度的“海陆联动”渡轮时刻表；从丝滑的自定义拖拽收藏夹，到直连 MTA 核心情报库的“智能战术预警系统”。<br><br>SB MTA 致力于用最极简的 UI，为你提供最强大的数据掌控力。在钢铁丛林中，做你最可靠的通勤瑞士军刀。",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约都会区研发的高效、精确的综合公共交通追踪系统。<br><br>本系统深度直连 MTA (Metropolitan Transportation Authority) 官方底层数据架构，无缝覆盖全网地铁、五大区巴士（含 SBS 快速公交）以及史泰登岛渡轮，致力于提供低延迟的实时定位与发车时刻服务。<br><br>作为专业级的通勤辅助工具，SB MTA 搭载了独创的智能服务警报（Smart Service Alerts）引擎。该引擎可自动屏蔽深夜维护等常规冗余信息，精准提取并推送停运、改道及严重延误等关键行车情报，确保用户获取高信噪比的出行参考。<br><br>系统秉承“极简与高效”的设计理念，配备自适应交互界面、自定义捷径收藏以及多语言无障碍支持。SB MTA 始终将数据可靠性与使用便捷性置于首位，为您在纽约的每一次出行保驾护航。",
                 changelog_title: "🚀 版本更新日志",
-                cl_v2: "- 深度重构 i18n 中繁英三语系统<br>- 引入 MTA JSON 数据流与折叠式情报板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>- 隐藏式高级设置大厅与 UI 像素收缩优化",
+                cl_v2: "- 深度重构 i18n 中繁英三语系统<br>- 引入 MTA JSON 数据流与折叠式情报板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>- 隐藏式高级设置大厅与 UI 像素收缩优化<br>- 完善了开源鸣谢与免责声明系统",
                 cl_v1: "- 引入 SortableJS 物理拖拽引擎<br>- 新增 Staten Island 渡轮全天候智能时刻表<br>- 统一原生 App 级巨幅自适应排版比例<br>- Cloudflare Worker 跨域防护与 SBS 纠错引擎",
+                credits_title: "🌟 鸣谢与开源",
+                credits_desc: "本项目为开源非盈利应用。<br><br><b>特别鸣谢：</b><br>• <b>MTA</b>: 提供底层实时公共交通数据流<br>• <b>Cloudflare</b>: 提供边缘计算与跨域网络防护<br>• <b>GitHub</b>: 提供开源代码托管支持<br>• <b>Gemini</b>: 提供底层架构设计与代码编写支持",
+                disclaimer_title: "⚠️ 免责声明",
+                disclaimer_desc: "本应用数据直接读取自 MTA 官方公开接口，并按“原样（As is）”提供。我们不对数据的绝对准确性、实时性或服务器的持续可用性提供任何法律担保。纽约路况复杂，请仅将本应用作为出行参考。开发者对因数据偏差或系统故障导致的任何通勤延误、直接或间接损失概不负责。",
                 t_calc: "测算中...", t_no_fav: "暂无收藏<br><br>去查地铁或巴士点亮 ☆ 添加", t_no_bus: "无车", t_arr: "进站", t_due: "即刻",
                 t_no_train: "暂无列车", t_no_data: "暂无定位数据", t_search_data: "正在获取线级联定位...", t_req_fail: "请求失败",
                 f_sys_time: "🕒 系统时间", f_weekend: "🎈 周末时刻表", f_weekday: "💼 工作日", f_depart: "🚢 即将启航", f_rush: "🔥 高峰班次",
@@ -282,10 +307,14 @@
                 dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
                 back: "返回", stations: "站名", refresh_time: "刷新時間", settings: "系統設置", lang_pref: "🌐 語言偏好 / Language",
                 about_title: "📖 關於 SB MTA",
-                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約通勤者打造的極速、精準的第三方交通追踪引擎。<br><br>我們摒棄了臃腫的冗餘功能，直擊通勤痛點：從破除官方接口延遲、實現全網秒級定位，到深度的“海陸聯動”渡輪時刻表；從絲滑的自定義拖拽收藏夾，到直連 MTA 核心情報庫的“智能戰術預警系統”。<br><br>SB MTA 致力於用最極簡的 UI，為你提供最強大的數據掌控力。在鋼鐵叢林中，做你最可靠的通勤瑞士軍刀。",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約都會區研發的高效、精確的綜合公共交通追踪系統。<br><br>本系統深度直連 MTA (Metropolitan Transportation Authority) 官方底層數據架構，無縫覆蓋全網地鐵、五大區巴士（含 SBS 快速公交）以及史泰登島渡輪，致力於提供低延遲的實時定位與發車時刻服務。<br><br>作為專業級的通勤輔助工具，SB MTA 搭載了獨創的智能服務警報（Smart Service Alerts）引擎。該引擎可自動屏蔽深夜維護等常規冗餘信息，精準提取並推送停運、改道及嚴重延誤等關鍵行車情報，確保用戶獲取高信噪比的出行參考。<br><br>系統秉承“極簡與高效”的設計理念，配備自適應交互界面、自定義捷徑收藏以及多語言無障礙支持。SB MTA 始終將數據可靠性與使用便捷性置於首位，為您在紐約的每一次出行保駕護航。",
                 changelog_title: "🚀 版本更新日誌",
-                cl_v2: "- 深度重構 i18n 中繁英三語系統<br>- 引入 MTA JSON 數據流與折疊式情報板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能時間戳比對：自動銷毀已過期警報<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警報 (Overnight) 絕對攔截算法<br>- 隱藏式高級設置大廳與 UI 像素收縮優化",
+                cl_v2: "- 深度重構 i18n 中繁英三語系統<br>- 引入 MTA JSON 數據流與折疊式情報板<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 智能時間戳比對：自動銷毀已過期警報<br>- <span style=\"color:#ff9f0a;\">[底層]</span> 深夜警報 (Overnight) 絕對攔截算法<br>- 隱藏式高級設置大廳與 UI 像素收縮優化<br>- 完善了開源鳴謝與免責聲明系統",
                 cl_v1: "- 引入 SortableJS 物理拖拽引擎<br>- 新增 Staten Island 渡輪全天候智能時刻表<br>- 統一原生 App 級巨幅自適應排版比例<br>- Cloudflare Worker 跨域防護與 SBS 糾錯引擎",
+                credits_title: "🌟 鳴謝與開源",
+                credits_desc: "本項目為開源非盈利應用。<br><br><b>特別鳴謝：</b><br>• <b>MTA</b>: 提供底層實時公共交通數據流<br>• <b>Cloudflare</b>: 提供邊緣計算與跨域網絡防護<br>• <b>GitHub</b>: 提供開源代碼託管支持<br>• <b>Gemini</b>: 提供底層架構設計與代碼編寫支持",
+                disclaimer_title: "⚠️ 免責聲明",
+                disclaimer_desc: "本應用數據直接讀取自 MTA 官方公開接口，並按“原樣（As is）”提供。我們不對數據的絕對準確性、實時性或服務器的持續可用性提供任何法律擔保。紐約路況複雜，請僅將本應用作為出行參考。開發者對因數據偏差或系統故障導致的任何通勤延誤、直接或間接損失概不負責。",
                 t_calc: "測算中...", t_no_fav: "暫無收藏<br><br>去查地鐵或巴士點亮 ☆ 添加", t_no_bus: "無車", t_arr: "進站", t_due: "即刻",
                 t_no_train: "暫無列車", t_no_data: "暫無定位數據", t_search_data: "正在獲取線級聯定位...", t_req_fail: "請求失敗",
                 f_sys_time: "🕒 系統時間", f_weekend: "🎈 周末時刻表", f_weekday: "💼 工作日", f_depart: "🚢 即將啟航", f_rush: "🔥 高峰班次",
@@ -297,10 +326,14 @@
                 dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
                 back: "Back", stations: "Stops", refresh_time: "Refresh", settings: "Settings", lang_pref: "🌐 Language / 語言偏好",
                 about_title: "📖 About SB MTA",
-                about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an ultra-fast, precise third-party transit tracking engine built specifically for NYC commuters.<br><br>We stripped away the bloat to focus on what matters: bypassing official API delays for second-level tracking, integrating Staten Island Ferry schedules, enabling silky-smooth draggable favorites, and hooking directly into the MTA's tactical Service Alert database with smart filtering.<br><br>SB MTA uses a minimalist UI to give you maximum data control. It's your ultimate commuter Swiss Army knife in the concrete jungle.",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an advanced, high-precision public transit tracking system designed for the New York metropolitan area.<br><br>By integrating directly with the Metropolitan Transportation Authority (MTA) core data infrastructure, the system provides low-latency, real-time tracking for subways, all five boroughs' bus networks (including SBS), and the Staten Island Ferry.<br><br>As a professional-grade commuter tool, SB MTA features a proprietary Smart Service Alerts engine. This engine automatically filters out routine maintenance noise (such as overnight work) and precisely delivers critical operational intelligence—including suspensions, route changes, and severe delays—ensuring users receive high-signal, actionable travel advisories.<br><br>Built on the philosophy of \"minimalism and efficiency,\" the system offers a responsive UI, customizable quick-access favorites, and multi-language support. SB MTA prioritizes data reliability and user convenience to safeguard every journey you take in New York City.",
                 changelog_title: "🚀 Changelog",
-                cl_v2: "- Deep i18n bilingual integration<br>- Accordion Alert Banners & Major Red-Dot<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Auto-destruct Expired Alerts (Timestamp Sync)<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Eradicated Overnight/Late Night Alerts<br>- Hidden Settings & 18% denser UI scaling",
+                cl_v2: "- Deep i18n bilingual integration<br>- Accordion Alert Banners & Major Red-Dot<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Auto-destruct Expired Alerts (Timestamp Sync)<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Eradicated Overnight/Late Night Alerts<br>- Hidden Settings & 18% denser UI scaling<br>- Added official Legal Disclaimer & Credits",
                 cl_v1: "- SortableJS physics drag engine<br>- Staten Island Ferry 24/7 schedules<br>- Native App-level responsive UI scaling<br>- Cloudflare Worker CORS & SBS correction",
+                credits_title: "🌟 Credits & Open Source",
+                credits_desc: "This is an open-source, non-profit application.<br><br><b>Special Thanks To:</b><br>• <b>MTA</b>: Real-time public transit data feeds<br>• <b>Cloudflare</b>: Edge computing & CORS protection<br>• <b>GitHub</b>: Open-source code hosting<br>• <b>Gemini</b>: Core architecture design & coding support",
+                disclaimer_title: "⚠️ Legal Disclaimer",
+                disclaimer_desc: "Data in this application is sourced directly from the MTA's public APIs and is provided on an 'As is' basis. We make no legal warranties regarding the absolute accuracy, timeliness, or continuous availability of the data. Given the complex traffic conditions in NYC, please use this app for reference only. The developers assume no liability for any commuting delays, direct or indirect losses caused by data discrepancies or system failures.",
                 t_calc: "Calculating...", t_no_fav: "No Favorites<br><br>Star ☆ a route to add it here", t_no_bus: "No Bus", t_arr: "Arriving", t_due: "Due",
                 t_no_train: "No Trains", t_no_data: "No GPS Data", t_search_data: "Fetching route data...", t_req_fail: "Request Failed",
                 f_sys_time: "🕒 Local Time", f_weekend: "🎈 Weekend Sched", f_weekday: "💼 Weekday", f_depart: "🚢 Departing", f_rush: "🔥 Rush Hour",
@@ -374,6 +407,14 @@
             if (!alerts || alerts.length === 0) return false;
             return alerts.some(a => {
                 const t = a.type || '';
+                const titleStr = (a.title || '').toLowerCase();
+                
+                const isOvernight = titleStr.includes('overnight') || 
+                                    titleStr.includes('late night') || 
+                                    titleStr.includes('nightly');
+                
+                if (isOvernight) return false;
+
                 return t.includes('Suspended') || t.includes('Severe') || t.includes('Service Change');
             });
         }
@@ -413,34 +454,34 @@
                 ]);
 
                 globalAlerts = { subway: {}, bus: {} };
-                const nowSec = Math.floor(Date.now() / 1000); // 当前物理时间 (秒)
+                const nowSec = Math.floor(Date.now() / 1000);
 
                 const processAlerts = (data, type) => {
                     (data.entity || []).forEach(ent => {
                         const alert = ent.alert;
                         if (!alert) return;
                         
-                        // 🛑 1. 时间戳防线：检查是否已过期
+                        // 🛑 时间戳防线：检查是否已过期
                         let isExpired = false;
                         if (alert.active_period) {
                             for (const period of alert.active_period) {
                                 if (period.end && parseInt(period.end) < nowSec) {
                                     isExpired = true; 
                                 } else {
-                                    isExpired = false; // 只要有一个有效的时间段，就放行
+                                    isExpired = false; 
                                     break;
                                 }
                             }
                         }
-                        if (isExpired) return; // 已过期的警报，直接销毁！
+                        if (isExpired) return;
 
                         const titleObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
                         const alertTitle = titleObj ? titleObj.text : 'Service Change';
                         
-                        // 🛑 2. 深夜拦截网：斩草除根
+                        // 🛑 深夜拦截网
                         const titleStr = alertTitle.toLowerCase();
                         if (titleStr.includes('overnight') || titleStr.includes('late night') || titleStr.includes('nightly')) {
-                            return; // 直接丢弃，不存入内存
+                            return; 
                         }
 
                         const descObj = alert.description_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');

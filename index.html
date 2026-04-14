@@ -43,7 +43,7 @@
         
         .alert-dot { position: absolute; top: -1px; right: -1px; background: #ff3b30; width: 12px; height: 12px; border-radius: 50%; border: 2.5px solid var(--dark-bg); z-index: 5; box-shadow: 0 0 8px rgba(255,59,48,0.6); }
 
-        /* 🚨 折叠式战术情报板与翻译按钮 */
+        /* 🚨 折叠式战术情报板 */
         .alert-banner { background: #1c1c1e; border-left: 4px solid #ff3b30; margin-bottom: 16px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); overflow: hidden; transition: all 0.3s ease; }
         .alert-header { padding: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
         .alert-header strong { font-size: 14px; line-height: 1.4; flex: 1; padding-right: 8px; }
@@ -51,8 +51,6 @@
         .alert-arrow.up { transform: rotate(180deg); }
         .alert-content { display: none; padding: 0 14px 14px 14px; font-size: 13px; color: #ddd; line-height: 1.5; border-top: 1px solid #333; margin-top: 4px; padding-top: 10px; }
         .alert-content.show { display: block; animation: fadeIn 0.3s ease; }
-        .translate-btn { background: rgba(255,255,255,0.1); border: 1px solid #444; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; z-index: 10; transition: 0.2s; white-space: nowrap; margin-right: 4px; }
-        .translate-btn:active { background: rgba(255,255,255,0.2); }
         
         @keyframes flash-border { 0% { box-shadow: 0 0 4px rgba(255,59,48,0.2); } 50% { box-shadow: 0 0 16px rgba(255,59,48,0.8); } 100% { box-shadow: 0 0 4px rgba(255,59,48,0.2); } }
         .alert-severe { animation: flash-border 2s infinite; }
@@ -239,10 +237,19 @@
                     <div class="changelog-item">
                         <div class="changelog-version">V2.0 PRO MAX (Ultimate)</div>
                         <div class="changelog-desc">
-                            - <span style="color:#0a84ff;">[黑科技]</span> 双引擎融合：本地精准词典直翻 + 全局 DOM 免疫标记保护<br>
-                            - <span style="color:#ff9f0a;">[UI]</span> 恢复并重构了“🌐 原文/译文”一键无缝切换按钮<br>
+                            - <span style="color:#0a84ff;">[黑科技]</span> 彻底舍弃本地字典残缺翻译，全面拥抱原生引擎<br>
                             - <span style="color:#0a84ff;">[核心]</span> 利用 stations.js 数据为全网站名与线路穿上翻译防弹衣<br>
+                            - <span style="color:#ff9f0a;">[UI]</span> 精简界面结构，配合原生浏览器机器翻译实现无缝阅读<br>
                             - 实装基于 navigator.language 的零配置多语言嗅探
+                        </div>
+                    </div>
+                    <div class="changelog-item">
+                        <div class="changelog-version">V2.0 Stable</div>
+                        <div class="changelog-desc" data-i18n="cl_v2">
+                            - 深度重构 i18n 中繁英三语系统<br>
+                            - <span style="color:#ff9f0a;">[底層]</span> 智能时间戳比对：自动销毁已过期警报<br>
+                            - <span style="color:#ff9f0a;">[底層]</span> 深夜警报 (Overnight) 绝对拦截算法<br>
+                            - 新增折叠式情报板与智能 Major Alert 红点
                         </div>
                     </div>
                 </div>
@@ -290,7 +297,7 @@
                 t_calc: "测算中...", t_no_fav: "暂无收藏<br><br>去查地铁或巴士点亮 ☆ 添加", t_no_bus: "无车", t_arr: "进站", t_due: "即刻",
                 t_no_train: "暂无列车", t_no_data: "暂无定位数据", t_search_data: "正在获取线级联定位...", t_req_fail: "请求失败",
                 f_sys_time: "🕒 系统时间", f_weekend: "🎈 周末时刻表", f_weekday: "💼 工作日", f_depart: "🚢 即将启航", f_rush: "🔥 高峰班次",
-                d_north: "⬆️ 北行", d_south: "⬇️ 南行", a_updated: "更新于", a_today: "今天", trans_btn: "🌐 原文/En", orig_btn: "🌐 译文/Zh", dir_to: "前往: "
+                d_north: "⬆️ 北行", d_south: "⬇️ 南行", a_updated: "更新于", a_today: "今天", dir_to: "前往: "
             },
             "hk": {
                 live_sync: "實時同步", tab_favs: "🌟 收藏", tab_subway: "🚇 地鐵", tab_bus: "🚌 巴士", tab_ferry: "⛴️ 渡輪",
@@ -306,7 +313,7 @@
                 t_calc: "測算中...", t_no_fav: "暫無收藏<br><br>去查地鐵或巴士點亮 ☆ 添加", t_no_bus: "無車", t_arr: "進站", t_due: "即刻",
                 t_no_train: "暫無列車", t_no_data: "暫無定位數據", t_search_data: "正在獲取線級聯定位...", t_req_fail: "請求失敗",
                 f_sys_time: "🕒 系統時間", f_weekend: "🎈 周末時刻表", f_weekday: "💼 工作日", f_depart: "🚢 即將啟航", f_rush: "🔥 高峰班次",
-                d_north: "⬆️ 北行", d_south: "⬇️ 南行", a_updated: "更新於", a_today: "今天", trans_btn: "🌐 原文/En", orig_btn: "🌐 譯文/Hk", dir_to: "前往: "
+                d_north: "⬆️ 北行", d_south: "⬇️ 南行", a_updated: "更新於", a_today: "今天", dir_to: "前往: "
             },
             "en": {
                 live_sync: "Live Sync", tab_favs: "🌟 Favs", tab_subway: "🚇 Subway", tab_bus: "🚌 Bus", tab_ferry: "⛴️ Ferry",
@@ -322,7 +329,7 @@
                 t_calc: "Calculating...", t_no_fav: "No Favorites<br><br>Star ☆ a route to add it here", t_no_bus: "No Bus", t_arr: "Arriving", t_due: "Due",
                 t_no_train: "No Trains", t_no_data: "No GPS Data", t_search_data: "Fetching route data...", t_req_fail: "Request Failed",
                 f_sys_time: "🕒 Local Time", f_weekend: "🎈 Weekend Sched", f_weekday: "💼 Weekday", f_depart: "🚢 Departing", f_rush: "🔥 Rush Hour",
-                d_north: "⬆️ Uptown", d_south: "⬇️ Downtown", a_updated: "Updated", a_today: "Today", trans_btn: "", orig_btn: "", dir_to: "To: "
+                d_north: "⬆️ Uptown", d_south: "⬇️ Downtown", a_updated: "Updated", a_today: "Today", dir_to: "To: "
             }
         };
 
@@ -368,115 +375,19 @@
         }
 
         // ==========================================
-        // ⚡ 双引擎1：精准备份词典 (安全边界替换)
-        // ==========================================
-        function translateMtaText(text, lang) {
-            if (!text || lang === 'en') return text;
-            let res = text;
-            
-            // 短语字典：不使用 \b，避免遇到标点符号时断裂，但因内容长且固定，直接全局替换很安全
-            const phraseDict = lang === 'hk' ? {
-                "We are actively working to restore normal service": "我們正在積極搶修以恢復正常運營",
-                "Please allow extra travel time": "請預留額外的通勤時間",
-                "unauthorized person on tracks": "軌道上有閒雜人員",
-                "Trains are delayed": "列車出現延誤",
-                "trains are rerouted": "列車已改道",
-                "No trains running": "沒有列車運行",
-                "in both directions": "雙向",
-                "medical emergency": "醫療緊急情況",
-                "mechanical problem": "機械故障",
-                "signal problem": "信號故障",
-                "switch problem": "道岔故障",
-                "police activity": "警方行動",
-                "track fire": "軌道起火",
-                "Manhattan-bound": "開往曼哈頓方向",
-                "Brooklyn-bound": "開往布魯克林方向",
-                "Queens-bound": "開往皇后區方向",
-                "Bronx-bound": "開往布朗克斯方向",
-                "For service between": "如需往返於",
-                "operates between": "運行於",
-                "are running on the": "正行駛於",
-                "are running with delays": "出現延誤",
-                "are delayed": "出現延誤",
-                "due to": "由於",
-                "while we fix": "我們正在搶修",
-                "take the": "請乘坐",
-                "use the": "請換乘",
-                "instead of": "而不是",
-                "Severe Delays": "嚴重延誤",
-                "Planned Work": "計劃施工",
-                "Service Change": "服務變更",
-                "Suspended": "停運",
-                "Delays": "延誤"
-            } : {
-                "We are actively working to restore normal service": "我们正在积极抢修以恢复正常运营",
-                "Please allow extra travel time": "请预留额外的通勤时间",
-                "unauthorized person on tracks": "轨道上有闲杂人员",
-                "Trains are delayed": "列车出现延误",
-                "trains are rerouted": "列车已改道",
-                "No trains running": "没有列车运行",
-                "in both directions": "双向",
-                "medical emergency": "医疗紧急情况",
-                "mechanical problem": "机械故障",
-                "signal problem": "信号故障",
-                "switch problem": "道岔故障",
-                "police activity": "警方行动",
-                "track fire": "轨道起火",
-                "Manhattan-bound": "开往曼哈顿方向",
-                "Brooklyn-bound": "开往布鲁克林方向",
-                "Queens-bound": "开往皇后区方向",
-                "Bronx-bound": "开往布朗克斯方向",
-                "For service between": "如需往返于",
-                "operates between": "运行于",
-                "are running on the": "正行驶于",
-                "are running with delays": "出现延误",
-                "are delayed": "出现延误",
-                "due to": "由于",
-                "while we fix": "我们正在抢修",
-                "take the": "请乘坐",
-                "use the": "请换乘",
-                "instead of": "而不是",
-                "Severe Delays": "严重延误",
-                "Planned Work": "计划施工",
-                "Service Change": "服务变更",
-                "Suspended": "停运",
-                "Delays": "延误"
-            };
-
-            for (const [en, local] of Object.entries(phraseDict)) {
-                const regex = new RegExp(en, 'gi');
-                res = res.replace(regex, local);
-            }
-
-            // 单词字典：必须使用 \b 边界，防止切割如 Rector 里的 to
-            const wordDict = lang === 'hk' ? {
-                "northbound": "北行 (Uptown)", "southbound": "南行 (Downtown)",
-                "Express": "快車", "Local": "慢車", "trains": "列車", "Some": "部分", "line": "線", "from": "從", "to": "至"
-            } : {
-                "northbound": "北行 (Uptown)", "southbound": "南行 (Downtown)",
-                "Express": "快车", "Local": "慢车", "trains": "列车", "Some": "部分", "line": "线", "from": "从", "to": "至"
-            };
-
-            for (const [en, local] of Object.entries(wordDict)) {
-                const regex = new RegExp("\\b" + en + "\\b", 'gi');
-                res = res.replace(regex, local);
-            }
-
-            return res;
-        }
-
-        // ==========================================
-        // 🛡️ 双引擎2：DOM 免疫过滤 (保护站名不被机器翻译破坏)
+        // 🛡️ [核心] 动态 DOM 免疫过滤引擎 (Dynamic Whitelist Immunity)
         // ==========================================
         window.mtaProtectRegex = null;
         function getProtectedHtml(htmlStr) {
             if (!htmlStr) return '';
             
+            // 第一次运行时，扫描 stations.js 提取全部站名
             if (!window.mtaProtectRegex && typeof STATION_DICT !== 'undefined') {
                 let names = new Set();
                 for (let k in STATION_DICT) {
                     STATION_DICT[k].forEach(st => names.add(st.name));
                 }
+                // 按站名长度从大到小排序，防止短站名截断长站名
                 let sorted = Array.from(names)
                     .sort((a,b) => b.length - a.length)
                     .map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); 
@@ -486,22 +397,27 @@
                 }
             }
 
+            // 使用内存 DOM 进行安全包裹，防止正则破坏现有 HTML 结构
             let temp = document.createElement('div');
             temp.innerHTML = htmlStr;
             
+            // 1. 保护所有类似 [R], [N], [1] 的线路名
             temp.innerHTML = temp.innerHTML.replace(/\[([a-zA-Z0-9]+)\]/g, '<span translate="no" class="notranslate">[$1]</span>');
             
             if (!window.mtaProtectRegex) return temp.innerHTML;
 
+            // 2. 深度遍历文本节点，保护在字典中的站名
             function walk(node) {
-                if (node.nodeType === 3) { 
+                if (node.nodeType === 3) { // 文本节点
                     let text = node.nodeValue;
                     if (window.mtaProtectRegex.test(text)) {
                         let span = document.createElement('span');
+                        // 遇到站名，立刻穿上 translate="no" 防弹衣
                         span.innerHTML = text.replace(window.mtaProtectRegex, '<span translate="no" class="notranslate">$1</span>');
                         node.parentNode.replaceChild(span, node);
                     }
-                } else if (node.nodeType === 1) { 
+                } else if (node.nodeType === 1) { // 元素节点
+                    // 如果已经穿了防弹衣，跳过不处理
                     if (node.getAttribute('translate') === 'no' || node.classList.contains('notranslate')) return;
                     Array.from(node.childNodes).forEach(walk);
                 }
@@ -574,28 +490,6 @@
             });
             content.classList.toggle('show');
             arrow.classList.toggle('up');
-        }
-
-        // 🔘 一键切换逻辑：隐藏显示 local / en 块
-        window.toggleTrans = function(e, btn) {
-            e.stopPropagation(); 
-            const banner = btn.closest('.alert-banner');
-            const localTexts = banner.querySelectorAll('.text-local');
-            const enTexts = banner.querySelectorAll('.text-en');
-            
-            let isLocal = btn.getAttribute('data-state') !== 'en';
-            
-            if (isLocal) { 
-                localTexts.forEach(el => el.style.display = 'none');
-                enTexts.forEach(el => el.style.display = 'inline');
-                btn.setAttribute('data-state', 'en');
-                btn.innerText = t('orig_btn'); 
-            } else { 
-                localTexts.forEach(el => el.style.display = 'inline');
-                enTexts.forEach(el => el.style.display = 'none');
-                btn.setAttribute('data-state', 'local');
-                btn.innerText = t('trans_btn'); 
-            }
         }
 
         async function fetchSystemAlerts() {
@@ -673,7 +567,7 @@
             } catch (e) { console.error("警报获取失败:", e); }
         }
 
-        // 🚨 横幅渲染集成双引擎
+        // 🚨 横幅渲染集成防弹衣引擎
         function getAlertBannerHtml(line, mode) {
             const alerts = globalAlerts[mode][line] || [];
             if (alerts.length > 0) {
@@ -696,32 +590,23 @@
                     else timeStr = `${d.getMonth()+1}/${d.getDate()} ${timeStr}`;
                 }
 
-                // 引擎 2：站名防弹衣 (原生 HTML 态)
+                // 核心：应用 DOM 免疫过滤包裹，供原生机器翻译使用
                 const protectedTitle = getProtectedHtml(alert.title);
                 const protectedDesc = getProtectedHtml(alert.desc);
-
-                // 引擎 1：本地直翻短语
-                const localTitle = translateMtaText(protectedTitle, currentLang);
-                const localDesc = translateMtaText(protectedDesc, currentLang);
-                
-                const transBtnHtml = currentLang !== 'en' ? `<span class="translate-btn" data-state="local" onclick="toggleTrans(event, this)">${t('trans_btn')}</span>` : '';
 
                 return `
                 <div class="alert-banner ${severeClass}" style="border-left-color: ${typeColor}; background: rgba(255,255,255,0.05);">
                     <div class="alert-header" onclick="toggleAlert(this)">
                         <strong style="color: ${typeColor};">
                             ${typeIcon} 
-                            <span class="text-local">${localTitle}</span>
-                            <span class="text-en" style="display:none;">${protectedTitle}</span>
+                            <span>${protectedTitle}</span>
                         </strong>
                         <div style="display:flex; align-items:center;">
-                            ${transBtnHtml}
                             <span class="alert-arrow">▼</span>
                         </div>
                     </div>
                     <div class="alert-content">
-                        <div class="text-local">${localDesc ? localDesc : ''}</div>
-                        <div class="text-en" style="display:none;">${protectedDesc ? protectedDesc : ''}</div>
+                        <div>${protectedDesc ? protectedDesc : ''}</div>
                         ${timeStr ? `<div style="text-align: right; font-size: 11px; color: #8e8e93; margin-top: 16px;"><i>${t('a_updated')}: <span translate="no">${timeStr}</span></i></div>` : ''}
                     </div>
                 </div>`;

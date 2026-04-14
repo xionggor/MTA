@@ -141,7 +141,7 @@
     <div class="app-wrapper">
         <div class="header-global">
             <div class="app-title" onclick="navTo('settings')">
-                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V3.0</span></span>
+                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V3.1</span></span>
                 <span style="font-size: 10px; color: #30d158;">● <span data-i18n="live_sync">实时同步</span></span>
             </div>
             <div class="tab-nav" id="main-tabs">
@@ -247,12 +247,18 @@
                     <h3 style="margin-top:0; color:#fff; font-size:15px;" data-i18n="changelog_title">🚀 版本更新日志</h3>
                     <div class="changelog-container">
                         <div class="changelog-item">
+                            <div class="changelog-version">V3.1 (Time-Sync Fix)</div>
+                            <div class="changelog-desc">
+                                - <span style="color:#ff3b30;">[修复]</span> 重写时间轴拦截引擎，精准过滤未来/未激活的幽灵警报<br>
+                                - 严格对比 start/end time，与 MTA 官方 App 逻辑完全同步
+                            </div>
+                        </div>
+                        <div class="changelog-item">
                             <div class="changelog-version">V3.0 (API Translation)</div>
                             <div class="changelog-desc">
                                 - <span style="color:#0a84ff;">[重构]</span> 彻底舍弃本地缺陷字典，告别中英夹杂<br>
                                 - <span style="color:#ff9f0a;">[核心]</span> 接入 Google Translate 免费全句翻译引擎<br>
-                                - 新增独立的一键“翻译/原文”切换按钮，支持全文直翻<br>
-                                - 实装基于 navigator.language 的零配置多语言嗅探
+                                - 新增独立的一键“翻译/原文”切换按钮，支持全文直翻
                             </div>
                         </div>
                         <div class="changelog-item">
@@ -596,14 +602,22 @@
                         const alert = ent.alert;
                         if (!alert) return;
                         
-                        let isExpired = false;
-                        if (alert.active_period) {
+                        // 🛠️ 终极修复：双向时间轴判定引擎 (Start & End Time Check)
+                        let isActive = true; // 默认放行没有时间段的突发警报
+                        if (alert.active_period && alert.active_period.length > 0) {
+                            isActive = false; // 一旦有时间段，必须处于某个时间段内才放行
                             for (const period of alert.active_period) {
-                                if (period.end && parseInt(period.end) < nowSec) isExpired = true; 
-                                else { isExpired = false; break; }
+                                const start = period.start ? parseInt(period.start) : 0;
+                                const end = period.end ? parseInt(period.end) : 2147483647; // 如果没有结束时间，默认为无限远
+                                
+                                // 必须同时满足：现在已经开始了，并且现在还没结束
+                                if (nowSec >= start && nowSec <= end) {
+                                    isActive = true;
+                                    break;
+                                }
                             }
                         }
-                        if (isExpired) return;
+                        if (!isActive) return; // 精准击毙未来警报和过期警报
 
                         const titleObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
                         const alertTitle = titleObj ? titleObj.text : 'Service Change';

@@ -141,7 +141,7 @@
     <div class="app-wrapper">
         <div class="header-global">
             <div class="app-title" onclick="navTo('settings')">
-                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V3.1</span></span>
+                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V3.2</span></span>
                 <span style="font-size: 10px; color: #30d158;">● <span data-i18n="live_sync">实时同步</span></span>
             </div>
             <div class="tab-nav" id="main-tabs">
@@ -247,6 +247,13 @@
                     <h3 style="margin-top:0; color:#fff; font-size:15px;" data-i18n="changelog_title">🚀 版本更新日志</h3>
                     <div class="changelog-container">
                         <div class="changelog-item">
+                            <div class="changelog-version">V3.2 (Precision Bus ETA)</div>
+                            <div class="changelog-desc">
+                                - <span style="color:#30d158;">[巴士]</span> 引入 MTA 物理距离判定算法，破解“时间空转”假象<br>
+                                - <span style="color:#30d158;">[巴士]</span> 全面同步官方 App 状态显示（如 进站/即刻/站外距离）
+                            </div>
+                        </div>
+                        <div class="changelog-item">
                             <div class="changelog-version">V3.1 (Time-Sync Fix)</div>
                             <div class="changelog-desc">
                                 - <span style="color:#ff3b30;">[修复]</span> 重写时间轴拦截引擎，精准过滤未来/未激活的幽灵警报<br>
@@ -259,21 +266,6 @@
                                 - <span style="color:#0a84ff;">[重构]</span> 彻底舍弃本地缺陷字典，告别中英夹杂<br>
                                 - <span style="color:#ff9f0a;">[核心]</span> 接入 Google Translate 免费全句翻译引擎<br>
                                 - 新增独立的一键“翻译/原文”切换按钮，支持全文直翻
-                            </div>
-                        </div>
-                        <div class="changelog-item">
-                            <div class="changelog-version">V2.0 PRO MAX</div>
-                            <div class="changelog-desc">
-                                - 利用 stations.js 数据为全网站名与线路穿上翻译防弹衣<br>
-                                - 新增折叠式情报板与智能 Major Alert 红点
-                            </div>
-                        </div>
-                        <div class="changelog-item">
-                            <div class="changelog-version">V1.0 Stable</div>
-                            <div class="changelog-desc">
-                                - 引入 SortableJS 物理拖拽引擎<br>
-                                - 新增 Staten Island 渡轮全天候时刻表<br>
-                                - Cloudflare Worker 跨域防护与纠错引擎
                             </div>
                         </div>
                     </div>
@@ -824,23 +816,44 @@
                     
                     let times = [];
                     visits.forEach(v => {
-                        const eta = v.MonitoredVehicleJourney?.MonitoredCall?.ExpectedArrivalTime;
-                        if(eta) {
-                            const mins = Math.round((new Date(eta) - new Date()) / 60000);
-                            if(mins >= -5) times.push(mins);
-                        }
+                        const journey = v.MonitoredVehicleJourney;
+                        if(!journey) return;
+                        const call = journey.MonitoredCall;
+                        if(!call) return;
+                        
+                        const eta = call.ExpectedArrivalTime;
+                        const dist = call.Extensions?.Distances?.PresentableDistance || "";
+                        
+                        let m = 999;
+                        if(eta) m = Math.round((new Date(eta) - new Date()) / 60000);
+                        
+                        // 强制物理距离优先级
+                        if (dist === "at stop") m = 0;
+                        else if (dist === "approaching") m = 1;
+                        
+                        if (m >= -5) times.push({ mins: m, dist: dist });
                     });
                     
-                    times = times.sort((a,b)=>a-b).slice(0, 2); 
+                    times = times.sort((a,b) => a.mins - b.mins).slice(0, 2); 
                     const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                     if(dashEl) {
                         if(times.length === 0) {
                             dashEl.innerHTML = `<div class="dash-badge">${t('t_no_bus')}</div>`;
                         } else {
-                            dashEl.innerHTML = times.map(time => {
-                                if (time <= 0) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;"><span class="dash-icon">🚌</span> ${t('t_arr')}</div>`;
-                                if (time === 1) return `<div class="dash-badge arr"><span class="dash-icon">🚌</span> ${t('t_due')}</div>`;
-                                return `<div class="dash-badge"><span class="dash-icon">🚌</span> ${time}m</div>`;
+                            let stopStr = currentLang === 'en' ? 'stops' : '站';
+                            dashEl.innerHTML = times.map(tData => {
+                                let txt = tData.mins + "m";
+                                let isArr = false;
+                                if (tData.dist === "at stop" || tData.mins <= 0) { txt = t('t_arr'); isArr = true; }
+                                else if (tData.dist === "approaching" || tData.mins === 1) { txt = t('t_due'); isArr = true; }
+                                else if (tData.dist.includes("stop")) { 
+                                    const match = tData.dist.match(/(\d+)\s+stop/); 
+                                    if(match) txt = match[1] + " " + stopStr; 
+                                }
+                                
+                                if (isArr && txt === t('t_arr')) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;"><span class="dash-icon">🚌</span> ${txt}</div>`;
+                                if (isArr) return `<div class="dash-badge arr"><span class="dash-icon">🚌</span> ${txt}</div>`;
+                                return `<div class="dash-badge"><span class="dash-icon">🚌</span> ${txt}</div>`;
                             }).join('');
                         }
                     }
@@ -1104,34 +1117,45 @@
                     vehicles.forEach(v => {
                         const journey = v.MonitoredVehicleJourney;
                         if (!journey) return;
-                        const sid = journey.MonitoredCall?.StopPointRef;
-                        const eta = journey.MonitoredCall?.ExpectedArrivalTime;
-                        if (sid && eta) {
-                            const mins = Math.round((new Date(eta) - new Date()) / 60000);
-                            if(!vMap[sid]) vMap[sid] = [];
-                            vMap[sid].push(mins);
-                        }
-                        const onwardCalls = journey.OnwardCalls?.OnwardCall || [];
-                        onwardCalls.forEach(oc => {
-                            const osid = oc.StopPointRef;
-                            const oeta = oc.ExpectedArrivalTime;
-                            if (osid && oeta) {
-                                const mins = Math.round((new Date(oeta) - new Date()) / 60000);
-                                if(!vMap[osid]) vMap[osid] = [];
-                                vMap[osid].push(mins);
+                        
+                        const processCall = (call) => {
+                            const sid = call.StopPointRef;
+                            const eta = call.ExpectedArrivalTime;
+                            const dist = call.Extensions?.Distances?.PresentableDistance || "";
+                            if (sid) {
+                                let m = 999;
+                                if(eta) m = Math.round((new Date(eta) - new Date()) / 60000);
+                                if (dist === "at stop") m = 0;
+                                else if (dist === "approaching") m = 1;
+                                
+                                if(!vMap[sid]) vMap[sid] = [];
+                                if (m >= -5) vMap[sid].push({mins: m, dist: dist});
                             }
-                        });
+                        };
+                        
+                        if(journey.MonitoredCall) processCall(journey.MonitoredCall);
+                        const onwardCalls = journey.OnwardCalls?.OnwardCall || [];
+                        onwardCalls.forEach(processCall);
                     });
 
                     stopGroups.forEach(g => {
                         (g.stopIds || []).forEach(sid => {
-                            const times = (vMap[sid] || []).filter(m => m >= -5).sort((a,b)=>a-b);
+                            const times = (vMap[sid] || []).sort((a,b)=>a.mins-b.mins).slice(0, 2);
                             const el = document.getElementById(`bus-live-${sid}`);
                             if (el && times.length > 0) {
-                                el.innerHTML = times.slice(0, 2).map(time => {
-                                    if (time <= 0) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;">${t('t_arr')}</div>`;
-                                    if (time === 1) return `<div class="dash-badge arr">${t('t_due')}</div>`;
-                                    return `<div class="dash-badge">${time}m</div>`;
+                                let stopStr = currentLang === 'en' ? 'stops' : '站';
+                                el.innerHTML = times.map(tData => {
+                                    let txt = tData.mins + "m";
+                                    let isArr = false;
+                                    if (tData.dist === "at stop" || tData.mins <= 0) { txt = t('t_arr'); isArr = true; }
+                                    else if (tData.dist === "approaching" || tData.mins === 1) { txt = t('t_due'); isArr = true; }
+                                    else if (tData.dist.includes("stop")) { 
+                                        const match = tData.dist.match(/(\d+)\s+stop/); 
+                                        if(match) txt = match[1] + " " + stopStr; 
+                                    }
+                                    if (isArr && txt === t('t_arr')) return `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite;">${txt}</div>`;
+                                    if (isArr) return `<div class="dash-badge arr">${txt}</div>`;
+                                    return `<div class="dash-badge">${txt}</div>`;
                                 }).join('');
                             }
                         });
@@ -1231,24 +1255,52 @@
                     
                     let times = [];
                     visits.forEach(v => {
-                        const eta = v.MonitoredVehicleJourney?.MonitoredCall?.ExpectedArrivalTime;
-                        if(eta) {
-                            const mins = Math.round((new Date(eta) - new Date()) / 60000);
-                            if(mins >= -5) times.push(mins);
-                        }
+                        const journey = v.MonitoredVehicleJourney;
+                        if(!journey) return;
+                        const call = journey.MonitoredCall;
+                        if(!call) return;
+                        
+                        const eta = call.ExpectedArrivalTime;
+                        const dist = call.Extensions?.Distances?.PresentableDistance || "";
+                        
+                        let m = 999;
+                        if(eta) m = Math.round((new Date(eta) - new Date()) / 60000);
+                        if (dist === "at stop") m = 0;
+                        else if (dist === "approaching") m = 1;
+                        
+                        if(m >= -5) times.push({mins: m, dist: dist});
                     });
-                    times = times.sort((a,b)=>a-b).slice(0, 4);
+                    times = times.sort((a,b)=>a.mins-b.mins).slice(0, 4);
 
                     let html = `<div class="station-card">
                         <div class="dir-header" style="font-size: 14px;">${t('dir_to')} <span translate="no" class="notranslate">${state.selectedStation.dirName}</span></div>
                         <div class="route-times-row" style="margin-top:15px;">
                             <div class="mini-route bus" translate="no" class="notranslate" style="background:var(--mta-blue); color:#fff; font-size: 14px;">${state.selectedLine}</div>
                             <div class="times-flex">
-                                ${times.length > 0 ? times.map(time => {
-                                    if (time <= 0) return `<div class="time-box arriving" style="animation: pulse-bg 2s infinite;">${t('t_arr')}</div>`;
-                                    if (time === 1) return `<div class="time-box arriving">${t('t_due')}</div>`;
-                                    return `<div class="time-box">${time}<span class="unit">m</span></div>`;
-                                }).join('') : `<div style="color:#8e8e93; font-weight:bold; font-size:13px;">${t('t_no_data')}</div>`}
+                                `;
+                                
+                    let stopStr = currentLang === 'en' ? 'stops' : '站';
+                    if (times.length > 0) {
+                        html += times.map(tData => {
+                            let txt = tData.mins + '<span class="unit">m</span>';
+                            let isArr = false;
+                            let isAtStop = false;
+                            if (tData.dist === "at stop" || tData.mins <= 0) { txt = t('t_arr'); isArr = true; isAtStop = true; }
+                            else if (tData.dist === "approaching" || tData.mins === 1) { txt = t('t_due'); isArr = true; }
+                            else if (tData.dist.includes("stop")) { 
+                                const match = tData.dist.match(/(\d+)\s+stop/); 
+                                if(match) txt = match[1] + `<span class="unit">${stopStr}</span>`; 
+                            }
+                            
+                            if (isAtStop) return `<div class="time-box arriving" style="animation: pulse-bg 2s infinite;">${txt}</div>`;
+                            if (isArr) return `<div class="time-box arriving">${txt}</div>`;
+                            return `<div class="time-box">${txt}</div>`;
+                        }).join('');
+                    } else {
+                        html += `<div style="color:#8e8e93; font-weight:bold; font-size:13px;">${t('t_no_data')}</div>`;
+                    }
+                    
+                    html += `
                             </div>
                         </div>
                     </div>`;

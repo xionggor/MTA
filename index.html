@@ -141,7 +141,7 @@
     <div class="app-wrapper">
         <div class="header-global">
             <div class="app-title" onclick="navTo('settings')">
-                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V3.4</span></span>
+                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V3.5</span></span>
                 <span style="font-size: 10px; color: #30d158;">● <span data-i18n="live_sync">实时同步</span></span>
             </div>
             <div class="tab-nav" id="main-tabs">
@@ -287,11 +287,11 @@
                 about_title: "📖 关于 SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约都会区研发的高效、精确的综合公共交通追踪系统。<br><br>本系统深度直连 MTA (Metropolitan Transportation Authority) 官方底层数据架构，无缝覆盖全网地铁、五大区巴士（含 SBS 快速公交）以及史泰登岛渡轮，致力于提供低延迟的实时定位与发车时刻服务。<br><br>作为专业级的通勤辅助工具，SB MTA 搭载了独创的智能服务警报（Smart Service Alerts）引擎。该引擎可自动屏蔽深夜维护等常规冗余信息，精准提取并推送停运、改道及严重延误等关键行车情报，确保用户获取高信噪比的出行参考。<br><br>系统秉承“极简与高效”的设计理念，配备自适应交互界面、自定义捷径收藏以及多语言无障碍支持。SB MTA 始终将数据可靠性与使用便捷性置于首位，为您在纽约的每一次出行保驾护航。",
                 changelog_title: "🚀 版本更新日志",
+                cl_v3_5: "- <span style=\"color:#0a84ff;\">[渡轮]</span> 完全同步 MTA 官方最新精准渡轮时刻表（含 19:20 等交接班次）",
                 cl_v3_4: "- <span style=\"color:#ff9f0a;\">[巴士]</span> 三重除灵滤网：强制屏蔽休息中、跨线中及 GPS 失联超3分钟的车辆<br>- 引入车牌去重算法，完美解决两车并排的时间重影假象",
                 cl_v3_3: "- <span style=\"color:#30d158;\">[核心]</span> 幽灵推算引擎：离线或信号差时系统自动接管时间倒数<br>- <span style=\"color:#30d158;\">[核心]</span> 零点自动销毁：列车发车后方块自动剔除顺延<br>- 重新连接网络时原生监听触发，瞬间恢复实时数据覆写<br>- 更新日志现已全面支持多语言智能翻译",
                 cl_v3_2: "- <span style=\"color:#30d158;\">[巴士]</span> 引入 MTA 物理距离判定算法，破解“时间空转”假象<br>- <span style=\"color:#30d158;\">[巴士]</span> 全面同步官方 App 状态显示（如 进站/即刻/站外距离）",
                 cl_v3_1: "- <span style=\"color:#ff3b30;\">[修复]</span> 重写时间轴拦截引擎，精准过滤未来/未激活的幽灵警报<br>- 严格对比 start/end time，与 MTA 官方 App 逻辑完全同步",
-                cl_v3_0: "- <span style=\"color:#0a84ff;\">[重构]</span> 彻底舍弃本地缺陷字典，告别中英夹杂<br>- <span style=\"color:#ff9f0a;\">[核心]</span> 接入 Google Translate 免费全句翻译引擎<br>- 新增独立的一键“翻译/原文”切换按钮，支持全文直翻",
                 credits_title: "🌟 鸣谢与开源",
                 credits_desc: "本项目为开源非盈利应用。<br><br><b>特别鸣谢：</b><br>• <b>MTA</b>: 提供底层实时公共交通数据流<br>• <b>Cloudflare</b>: 提供边缘计算与跨域网络防护<br>• <b>GitHub</b>: 提供开源代码托管支持<br>• <b>Google Translate</b>: 提供底层全句机器翻译 API<br>• <b>Gemini</b>: 提供底层架构设计与代码编写支持",
                 disclaimer_title: "⚠️ 免责声明",
@@ -310,11 +310,11 @@
                 about_title: "📖 關於 SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約都會區研發的高效、精確的綜合公共交通追踪系統。<br><br>本系統深度直連 MTA (Metropolitan Transportation Authority) 官方底層數據架構，無縫覆蓋全網地鐵、五大區巴士（含 SBS 快速公交）以及史泰登島渡輪，致力於提供低延遲的實時定位與發車時刻服務。<br><br>作為專業級的通勤輔助工具，SB MTA 搭載了獨創的智能服務警報（Smart Service Alerts）引擎。該引擎可自動屏蔽深夜維護等常規冗餘信息，精準提取並推送停運、改道及嚴重延誤等關鍵行車情報，確保用戶獲取高信噪比的出行參考。<br><br>系統秉承“極簡與高效”的設計理念，配備自適應交互界面、自定義捷徑收藏以及多語言無障礙支持。SB MTA 始終將數據可靠性與使用便捷性置於首位，為您在紐約的每一次出行保駕護航。",
                 changelog_title: "🚀 版本更新日誌",
+                cl_v3_5: "- <span style=\"color:#0a84ff;\">[渡輪]</span> 完全同步 MTA 官方最新精準渡輪時刻表（含 19:20 等交接班次）",
                 cl_v3_4: "- <span style=\"color:#ff9f0a;\">[巴士]</span> 三重除靈濾網：強制屏蔽休息中、跨線中及 GPS 失聯超3分鐘的車輛<br>- 引入車牌去重算法，完美解決兩車並排的時間重影假象",
                 cl_v3_3: "- <span style=\"color:#30d158;\">[核心]</span> 幽靈推算引擎：離線或信號差時系統自動接管時間倒數<br>- <span style=\"color:#30d158;\">[核心]</span> 零點自動銷毀：列車發車後方塊自動剔除順延<br>- 重新連接網絡時原生監聽觸發，瞬間恢復實時數據覆寫<br>- 更新日誌現已全面支持多語言智能翻譯",
                 cl_v3_2: "- <span style=\"color:#30d158;\">[巴士]</span> 引入 MTA 物理距離判定算法，破解“時間空轉”假象<br>- <span style=\"color:#30d158;\">[巴士]</span> 全面同步官方 App 狀態顯示（如 進站/即刻/站外距離）",
                 cl_v3_1: "- <span style=\"color:#ff3b30;\">[修復]</span> 重寫時間軸攔截引擎，精準過濾未來/未激活的幽靈警報<br>- 嚴格對比 start/end time，與 MTA 官方 App 邏輯完全同步",
-                cl_v3_0: "- <span style=\"color:#0a84ff;\">[重構]</span> 徹底捨棄本地缺陷字典，告別中英夾雜<br>- <span style=\"color:#ff9f0a;\">[核心]</span> 接入 Google Translate 免費全句翻譯引擎<br>- 新增獨立的一鍵“翻譯/原文”切換按鈕，支持全文直翻",
                 credits_title: "🌟 鳴謝與開源",
                 credits_desc: "本項目為開源非盈利應用。<br><br><b>特別鳴謝：</b><br>• <b>MTA</b>: 提供底層實時公共交通數據流<br>• <b>Cloudflare</b>: 提供邊緣計算與跨域網絡防護<br>• <b>GitHub</b>: 提供開源代碼託管支持<br>• <b>Google Translate</b>: 提供底層全句機器翻譯 API<br>• <b>Gemini</b>: 提供底層架構設計與代碼編寫支持",
                 disclaimer_title: "⚠️ 免責聲明",
@@ -333,11 +333,11 @@
                 about_title: "📖 About SB MTA",
                 about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an advanced, high-precision public transit tracking system designed for the New York metropolitan area.<br><br>By integrating directly with the Metropolitan Transportation Authority (MTA) core data infrastructure, the system provides low-latency, real-time tracking for subways, all five boroughs' bus networks (including SBS), and the Staten Island Ferry.<br><br>As a professional-grade commuter tool, SB MTA features a proprietary Smart Service Alerts engine. This engine automatically filters out routine maintenance noise (such as overnight work) and precisely delivers critical operational intelligence—including suspensions, route changes, and severe delays—ensuring users receive high-signal, actionable travel advisories.<br><br>Built on the philosophy of \"minimalism and efficiency,\" the system offers a responsive UI, customizable quick-access favorites, and multi-language support. SB MTA prioritizes data reliability and user convenience to safeguard every journey you take in New York City.",
                 changelog_title: "🚀 Changelog",
+                cl_v3_5: "- <span style=\"color:#0a84ff;\">[Ferry]</span> Fully synced with MTA's latest highly-precise Staten Island Ferry schedule",
                 cl_v3_4: "- <span style=\"color:#ff9f0a;\">[Bus]</span> Triple Ghost Filter: Blocked layover, prevTrip, and stale GPS (3+ mins) vehicles<br>- Introduced VehicleRef deduplication to solve side-by-side ETA phantom bugs",
                 cl_v3_3: "- <span style=\"color:#30d158;\">[Core]</span> Offline Dead Reckoning: Local heartbeat engine handles ETA countdowns when signal is lost<br>- <span style=\"color:#30d158;\">[Core]</span> Zero-bound Elimination: Automatically sweeps departed trains off screen<br>- Online listener triggers instant true data override upon signal recovery<br>- Fully i18n integrated dynamically translated changelog",
                 cl_v3_2: "- <span style=\"color:#30d158;\">[Bus]</span> Implemented physical distance algorithm to eliminate ETA 'time-spinning' ghosts<br>- <span style=\"color:#30d158;\">[Bus]</span> Complete parity with Official App's status displays (Approaching/At Stop/Stops Away)",
                 cl_v3_1: "- <span style=\"color:#ff3b30;\">[Fix]</span> Rewrote timeline interception engine to accurately filter out future/inactive ghost alerts<br>- Strict evaluation of alert start/end time windows",
-                cl_v3_0: "- <span style=\"color:#0a84ff;\">[Refactor]</span> Completely abandoned local dictionary, eradicated Chinglish mixing<br>- <span style=\"color:#ff9f0a;\">[Core]</span> Integrated Google Translate API for full-sentence neural translation<br>- Dedicated toggle button for Original/Translated texts",
                 credits_title: "🌟 Credits & Open Source",
                 credits_desc: "This is an open-source, non-profit application.<br><br><b>Special Thanks To:</b><br>• <b>MTA</b>: Real-time public transit data feeds<br>• <b>Cloudflare</b>: Edge computing & CORS protection<br>• <b>GitHub</b>: Open-source code hosting<br>• <b>Google Translate</b>: Neural machine translation API<br>• <b>Gemini</b>: Core architecture design & coding support",
                 disclaimer_title: "⚠️ Legal Disclaimer",
@@ -366,11 +366,11 @@
             const clContainer = document.getElementById('changelog-list');
             if(clContainer) {
                 clContainer.innerHTML = `
+                    <div class="changelog-item"><div class="changelog-version">V3.5 (Schedule Precision)</div><div class="changelog-desc">${t('cl_v3_5')}</div></div>
                     <div class="changelog-item"><div class="changelog-version">V3.4 (Ghost Purge)</div><div class="changelog-desc">${t('cl_v3_4')}</div></div>
                     <div class="changelog-item"><div class="changelog-version">V3.3 (Ghost Engine)</div><div class="changelog-desc">${t('cl_v3_3')}</div></div>
                     <div class="changelog-item"><div class="changelog-version">V3.2 (Precision Bus ETA)</div><div class="changelog-desc">${t('cl_v3_2')}</div></div>
                     <div class="changelog-item"><div class="changelog-version">V3.1 (Time-Sync Fix)</div><div class="changelog-desc">${t('cl_v3_1')}</div></div>
-                    <div class="changelog-item"><div class="changelog-version">V3.0 (API Translation)</div><div class="changelog-desc">${t('cl_v3_0')}</div></div>
                 `;
             }
         }
@@ -471,11 +471,11 @@
 
         const FERRY_SCHEDULES = {
             "Manhattan": { 
-                weekday: ["00:00", "00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30", "06:00", "06:30", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"],
+                weekday: ["00:00", "00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30", "06:00", "06:30", "06:50", "07:10", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:20", "16:40", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:20", "19:40", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"],
                 weekend: ["00:00", "00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30", "06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"]
             },
             "StatenIsland": { 
-                weekday: ["00:00", "00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30", "06:00", "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"],
+                weekday: ["00:00", "00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30", "06:00", "06:20", "06:40", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "15:50", "16:10", "16:30", "16:50", "17:10", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"],
                 weekend: ["00:00", "00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30", "06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"]
             }
         };

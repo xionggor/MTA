@@ -2,8 +2,14 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SB MTA Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SB MTA">
+    
     <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="stations.js"></script>
@@ -13,7 +19,7 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: #000; color: var(--text-main); -webkit-font-smoothing: antialiased; display: flex; justify-content: center; overscroll-behavior-y: none; }
         .app-wrapper { width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; background-color: var(--dark-bg); box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; }
 
-        .header-global { position: sticky; top: 0; z-index: 2000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); }
+        .header-global { position: sticky; top: 0; z-index: 2000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding-top: env(safe-area-inset-top); }
         .app-title { padding: 14px 18px 8px 18px; font-size: 15px; font-weight: 900; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
         .app-title:active { opacity: 0.5; }
         
@@ -21,7 +27,7 @@
         .tab-item { flex: 1; padding: 10px 0; border-radius: 10px; border: none; background: #2c2c2e; color: var(--text-dim); font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
         .tab-item.active { background: #ffffff; color: #000000; }
 
-        .sticky-toolbar { position: sticky; top: 82px; z-index: 1000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 10px 14px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
+        .sticky-toolbar { position: sticky; top: calc(82px + env(safe-area-inset-top)); z-index: 1000; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 10px 14px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
         .toolbar-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
         .btn-back { background: #2c2c2e; color: #fff; flex: 0.4; }
         .btn-action { background: var(--mta-blue); color: #fff; }
@@ -43,7 +49,6 @@
         
         .alert-dot { position: absolute; top: -1px; right: -1px; background: #ff3b30; width: 12px; height: 12px; border-radius: 50%; border: 2.5px solid var(--dark-bg); z-index: 5; box-shadow: 0 0 8px rgba(255,59,48,0.6); }
 
-        /* 🚨 折叠式战术情报板与全文翻译按钮 */
         .alert-banner { background: #1c1c1e; border-left: 4px solid #ff3b30; margin-bottom: 16px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); overflow: hidden; transition: all 0.3s ease; }
         .alert-header { padding: 14px; display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; user-select: none; gap: 8px; }
         .alert-header-left { display: flex; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
@@ -81,18 +86,15 @@
         .dash-icon { font-size: 1.2em; display: inline-block; transform: translateY(-1px); } 
         .dash-badge.arr { color: #30d158; border-color: #30d158; background: rgba(48,209,88,0.1); }
 
+        /* --------------------------
+           🚀 全新 SVG 矢量拓扑图样式
+           -------------------------- */
         .timeline-wrapper { display: flex; margin-bottom: 10px; cursor: pointer; }
         .timeline-wrapper:active .list-row { background: #2c2c2e; }
         .timeline-wrapper .list-row { flex: 1; margin-bottom: 0; }
-        .timeline-graphic { width: 40px; display: flex; flex-direction: column; align-items: center; position: relative; flex-shrink: 0; }
-        .line-segment { width: 4px; background-color: var(--route-color, #fff); }
-        .line-top { position: absolute; top: 0; height: 50%; }
-        .line-bottom { position: absolute; bottom: 0; height: 50%; }
-        .timeline-node { width: 14px; height: 14px; background-color: var(--dark-bg); border: 3px solid var(--route-color, #fff); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; transition: 0.2s; }
-        .timeline-node.square { border-radius: 4px; } 
-        .timeline-node.circle { border-radius: 50%; } 
-        .timeline-wrapper:active .timeline-node { background-color: var(--route-color, #fff); }
-
+        .timeline-graphic { width: 44px; display: flex; justify-content: center; align-items: stretch; position: relative; flex-shrink: 0; }
+        .topo-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+        
         .station-card { background: var(--card-bg); border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .dir-header { font-size: 14px; font-weight: 800; color: var(--text-dim); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .route-times-row { display: flex; align-items: center; margin-bottom: 15px; gap: 12px; }
@@ -116,7 +118,6 @@
         
         #station-detail-title, #route-title, #borough-title, #bus-detail-title { font-size: 20px; }
         
-        /* ⚙️ 设置页 & 滚动框定制 */
         .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #333; }
         .setting-row:last-child { border-bottom: none; }
         .lang-btn { background: #2c2c2e; color: #fff; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; }
@@ -132,7 +133,6 @@
         .changelog-version { font-weight: 900; color: #fff; margin-bottom: 4px; font-size: 14px; }
         .changelog-desc { color: var(--text-dim); font-size: 13px; line-height: 1.5; padding-left: 8px; border-left: 2px solid #444; }
         
-        /* 🛡️ 防弹衣标识辅助样式 */
         .notranslate { isolation: isolate; }
     </style>
 </head>
@@ -141,7 +141,7 @@
     <div class="app-wrapper">
         <div class="header-global">
             <div class="app-title" onclick="navTo('settings')">
-                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V3.5</span></span>
+                <span translate="no" class="notranslate">SB MTA <span style="font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left:4px;">V4.0 PWA</span></span>
                 <span style="font-size: 10px; color: #30d158;">● <span data-i18n="live_sync">实时同步</span></span>
             </div>
             <div class="tab-nav" id="main-tabs">
@@ -238,8 +238,7 @@
                 <div class="station-card">
                     <h3 style="margin-top:0; color:#fff; font-size:15px;" data-i18n="about_title">📖 关于 SB MTA</h3>
                     <p style="color:var(--text-dim); font-size:13px; line-height:1.6;" data-i18n="about_desc">
-                        SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约都会区研发的高效、精确的综合公共交通追踪系统。<br><br>
-                        本系统深度直连 MTA (Metropolitan Transportation Authority) 官方底层数据架构，无缝覆盖全网地铁、五大区巴士（含 SBS 快速公交）以及史泰登岛渡轮，致力于提供低延迟的实时定位与发车时刻服务。
+                        SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约都会区研发的高效、精确的综合公共交通追踪系统。
                     </p>
                 </div>
 
@@ -254,27 +253,36 @@
                     <div style="color:var(--text-dim); font-size:13px; line-height:1.6;" data-i18n="credits_desc">
                         本项目为开源非盈利应用。<br><br>
                         <b>特别鸣谢：</b><br>
-                        • <b>MTA</b>: 提供底层实时公共交通数据流<br>
-                        • <b>Cloudflare</b>: 提供边缘计算与跨域网络防护<br>
-                        • <b>GitHub</b>: 提供开源代码托管支持<br>
-                        • <b>Google Translate</b>: 提供底层全句机器翻译 API<br>
-                        • <b>Gemini</b>: 提供底层架构设计与代码编写支持
+                        • <b>MTA</b>: 提供底层数据流<br>
+                        • <b>Cloudflare</b>: 边缘计算与防护<br>
+                        • <b>Gemini</b>: 架构与开发辅助
                     </div>
                 </div>
 
                 <div class="station-card" style="background: rgba(255,159,10,0.1); border: 1px solid rgba(255,159,10,0.3);">
                     <h3 style="margin-top:0; color:#ff9f0a; font-size:15px;" data-i18n="disclaimer_title">⚠️ 免责声明</h3>
                     <div style="color:rgba(255,255,255,0.85); font-size:13px; line-height:1.6;" data-i18n="disclaimer_desc">
-                        本应用数据直接读取自 MTA 官方公开接口，并按“原样（As is）”提供。我们不对数据的绝对准确性、实时性或服务器的持续可用性提供任何法律担保。纽约路况复杂，请仅将本应用作为出行参考。开发者对因数据偏差或系统故障导致的任何通勤延误、直接或间接损失概不负责。
+                        本应用数据直接读取自 MTA 官方公开接口。我们不对数据的绝对准确性、实时性提供法律担保。请仅作为出行参考。
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // ⚙️ PWA Service Worker 注册
+        // ==========================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('PWA ServiceWorker registered', reg.scope);
+                }).catch(err => {
+                    console.warn('PWA registration failed: ', err);
+                });
+            });
+        }
+
         // ==========================================
         // 🌐 i18n 国际化引擎 & 智能语言嗅探
         // ==========================================
@@ -285,13 +293,12 @@
                 dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
                 back: "返回", stations: "站名", refresh_time: "刷新时间", settings: "系统设置", lang_pref: "🌐 语言偏好 / Language",
                 about_title: "📖 关于 SB MTA",
-                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约都会区研发的高效、精确的综合公共交通追踪系统。<br><br>本系统深度直连 MTA (Metropolitan Transportation Authority) 官方底层数据架构，无缝覆盖全网地铁、五大区巴士（含 SBS 快速公交）以及史泰登岛渡轮，致力于提供低延迟的实时定位与发车时刻服务。<br><br>作为专业级的通勤辅助工具，SB MTA 搭载了独创的智能服务警报（Smart Service Alerts）引擎。该引擎可自动屏蔽深夜维护等常规冗余信息，精准提取并推送停运、改道及严重延误等关键行车情报，确保用户获取高信噪比的出行参考。<br><br>系统秉承“极简与高效”的设计理念，配备自适应交互界面、自定义捷径收藏以及多语言无障碍支持。SB MTA 始终将数据可靠性与使用便捷性置于首位，为您在纽约的每一次出行保驾护航。",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款专为纽约都会区研发的高效、精确的综合公共交通追踪系统。<br><br>本系统深度直连 MTA (Metropolitan Transportation Authority) 官方底层数据架构，无缝覆盖全网地铁、五大区巴士（含 SBS 快速公交）以及史泰登岛渡轮，致力于提供低延迟的实时定位与发车时刻服务。<br><br>搭载独创的智能服务警报与离线幽灵推算引擎，为您在纽约的每一次出行保驾护航。",
                 changelog_title: "🚀 版本更新日志",
-                cl_v3_5: "- <span style=\"color:#0a84ff;\">[渡轮]</span> 完全同步 MTA 官方最新精准渡轮时刻表（含 19:20 等交接班次）",
+                cl_v4_0: "- <span style=\"color:#bf5af2;\">[架构]</span> 彻底进化为 PWA 渐进式原生应用，支持全屏免安装运行<br>- <span style=\"color:#0a84ff;\">[UI]</span> 全新 SVG 矢量拓扑线路图渲染引擎，高度还原 MTA 列车带状地图",
+                cl_v3_5: "- <span style=\"color:#0a84ff;\">[渡轮]</span> 完全同步 MTA 官方最新精准渡轮时刻表（含交接班次）",
                 cl_v3_4: "- <span style=\"color:#ff9f0a;\">[巴士]</span> 三重除灵滤网：强制屏蔽休息中、跨线中及 GPS 失联超3分钟的车辆<br>- 引入车牌去重算法，完美解决两车并排的时间重影假象",
-                cl_v3_3: "- <span style=\"color:#30d158;\">[核心]</span> 幽灵推算引擎：离线或信号差时系统自动接管时间倒数<br>- <span style=\"color:#30d158;\">[核心]</span> 零点自动销毁：列车发车后方块自动剔除顺延<br>- 重新连接网络时原生监听触发，瞬间恢复实时数据覆写<br>- 更新日志现已全面支持多语言智能翻译",
-                cl_v3_2: "- <span style=\"color:#30d158;\">[巴士]</span> 引入 MTA 物理距离判定算法，破解“时间空转”假象<br>- <span style=\"color:#30d158;\">[巴士]</span> 全面同步官方 App 状态显示（如 进站/即刻/站外距离）",
-                cl_v3_1: "- <span style=\"color:#ff3b30;\">[修复]</span> 重写时间轴拦截引擎，精准过滤未来/未激活的幽灵警报<br>- 严格对比 start/end time，与 MTA 官方 App 逻辑完全同步",
+                cl_v3_3: "- <span style=\"color:#30d158;\">[核心]</span> 幽灵推算引擎：离线或信号差时系统自动接管时间倒数",
                 credits_title: "🌟 鸣谢与开源",
                 credits_desc: "本项目为开源非盈利应用。<br><br><b>特别鸣谢：</b><br>• <b>MTA</b>: 提供底层实时公共交通数据流<br>• <b>Cloudflare</b>: 提供边缘计算与跨域网络防护<br>• <b>GitHub</b>: 提供开源代码托管支持<br>• <b>Google Translate</b>: 提供底层全句机器翻译 API<br>• <b>Gemini</b>: 提供底层架构设计与代码编写支持",
                 disclaimer_title: "⚠️ 免责声明",
@@ -308,13 +315,12 @@
                 dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
                 back: "返回", stations: "站名", refresh_time: "刷新時間", settings: "系統設置", lang_pref: "🌐 語言偏好 / Language",
                 about_title: "📖 關於 SB MTA",
-                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約都會區研發的高效、精確的綜合公共交通追踪系統。<br><br>本系統深度直連 MTA (Metropolitan Transportation Authority) 官方底層數據架構，無縫覆蓋全網地鐵、五大區巴士（含 SBS 快速公交）以及史泰登島渡輪，致力於提供低延遲的實時定位與發車時刻服務。<br><br>作為專業級的通勤輔助工具，SB MTA 搭載了獨創的智能服務警報（Smart Service Alerts）引擎。該引擎可自動屏蔽深夜維護等常規冗餘信息，精準提取並推送停運、改道及嚴重延誤等關鍵行車情報，確保用戶獲取高信噪比的出行參考。<br><br>系統秉承“極簡與高效”的設計理念，配備自適應交互界面、自定義捷徑收藏以及多語言無障礙支持。SB MTA 始終將數據可靠性與使用便捷性置於首位，為您在紐約的每一次出行保駕護航。",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) 是一款專為紐約都會區研發的高效、精確的綜合公共交通追踪系統。<br><br>本系統深度直連 MTA (Metropolitan Transportation Authority) 官方底層數據架構，無縫覆蓋全網地鐵、五大區巴士（含 SBS 快速公交）以及史泰登島渡輪，致力於提供低延遲的實時定位與發車時刻服務。<br><br>搭載獨創的智能服務警報與離線幽靈推算引擎，為您在紐約的每一次出行保駕護航。",
                 changelog_title: "🚀 版本更新日誌",
-                cl_v3_5: "- <span style=\"color:#0a84ff;\">[渡輪]</span> 完全同步 MTA 官方最新精準渡輪時刻表（含 19:20 等交接班次）",
+                cl_v4_0: "- <span style=\"color:#bf5af2;\">[架構]</span> 徹底進化為 PWA 漸進式原生應用，支持全屏免安裝運行<br>- <span style=\"color:#0a84ff;\">[UI]</span> 全新 SVG 矢量拓撲線路圖渲染引擎，高度還原 MTA 列車帶狀地圖",
+                cl_v3_5: "- <span style=\"color:#0a84ff;\">[渡輪]</span> 完全同步 MTA 官方最新精準渡輪時刻表（含交接班次）",
                 cl_v3_4: "- <span style=\"color:#ff9f0a;\">[巴士]</span> 三重除靈濾網：強制屏蔽休息中、跨線中及 GPS 失聯超3分鐘的車輛<br>- 引入車牌去重算法，完美解決兩車並排的時間重影假象",
-                cl_v3_3: "- <span style=\"color:#30d158;\">[核心]</span> 幽靈推算引擎：離線或信號差時系統自動接管時間倒數<br>- <span style=\"color:#30d158;\">[核心]</span> 零點自動銷毀：列車發車後方塊自動剔除順延<br>- 重新連接網絡時原生監聽觸發，瞬間恢復實時數據覆寫<br>- 更新日誌現已全面支持多語言智能翻譯",
-                cl_v3_2: "- <span style=\"color:#30d158;\">[巴士]</span> 引入 MTA 物理距離判定算法，破解“時間空轉”假象<br>- <span style=\"color:#30d158;\">[巴士]</span> 全面同步官方 App 狀態顯示（如 進站/即刻/站外距離）",
-                cl_v3_1: "- <span style=\"color:#ff3b30;\">[修復]</span> 重寫時間軸攔截引擎，精準過濾未來/未激活的幽靈警報<br>- 嚴格對比 start/end time，與 MTA 官方 App 邏輯完全同步",
+                cl_v3_3: "- <span style=\"color:#30d158;\">[核心]</span> 幽靈推算引擎：離線或信號差時系統自動接管時間倒數",
                 credits_title: "🌟 鳴謝與開源",
                 credits_desc: "本項目為開源非盈利應用。<br><br><b>特別鳴謝：</b><br>• <b>MTA</b>: 提供底層實時公共交通數據流<br>• <b>Cloudflare</b>: 提供邊緣計算與跨域網絡防護<br>• <b>GitHub</b>: 提供開源代碼託管支持<br>• <b>Google Translate</b>: 提供底層全句機器翻譯 API<br>• <b>Gemini</b>: 提供底層架構設計與代碼編寫支持",
                 disclaimer_title: "⚠️ 免責聲明",
@@ -331,17 +337,16 @@
                 dep_stgeorge: "Departing St. George Terminal", dep_whitehall: "Departing Whitehall Terminal",
                 back: "Back", stations: "Stops", refresh_time: "Refresh", settings: "Settings", lang_pref: "🌐 Language / 語言偏好",
                 about_title: "📖 About SB MTA",
-                about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an advanced, high-precision public transit tracking system designed for the New York metropolitan area.<br><br>By integrating directly with the Metropolitan Transportation Authority (MTA) core data infrastructure, the system provides low-latency, real-time tracking for subways, all five boroughs' bus networks (including SBS), and the Staten Island Ferry.<br><br>As a professional-grade commuter tool, SB MTA features a proprietary Smart Service Alerts engine. This engine automatically filters out routine maintenance noise (such as overnight work) and precisely delivers critical operational intelligence—including suspensions, route changes, and severe delays—ensuring users receive high-signal, actionable travel advisories.<br><br>Built on the philosophy of \"minimalism and efficiency,\" the system offers a responsive UI, customizable quick-access favorites, and multi-language support. SB MTA prioritizes data reliability and user convenience to safeguard every journey you take in New York City.",
+                about_desc: "SB MTA (Subway & Bus MTA Tracking System) is an advanced, high-precision public transit tracking system designed for the New York metropolitan area.<br><br>By integrating directly with the MTA core data infrastructure, the system provides low-latency, real-time tracking for subways, bus networks, and the Staten Island Ferry.<br><br>Featuring a proprietary Smart Service Alerts engine and Offline Dead Reckoning capabilities to safeguard every journey.",
                 changelog_title: "🚀 Changelog",
+                cl_v4_0: "- <span style=\"color:#bf5af2;\">[Arch]</span> Fully evolved into a PWA (Progressive Web App) for native, fullscreen installation<br>- <span style=\"color:#0a84ff;\">[UI]</span> Brand new SVG vector topology engine replicating official MTA strip maps",
                 cl_v3_5: "- <span style=\"color:#0a84ff;\">[Ferry]</span> Fully synced with MTA's latest highly-precise Staten Island Ferry schedule",
                 cl_v3_4: "- <span style=\"color:#ff9f0a;\">[Bus]</span> Triple Ghost Filter: Blocked layover, prevTrip, and stale GPS (3+ mins) vehicles<br>- Introduced VehicleRef deduplication to solve side-by-side ETA phantom bugs",
-                cl_v3_3: "- <span style=\"color:#30d158;\">[Core]</span> Offline Dead Reckoning: Local heartbeat engine handles ETA countdowns when signal is lost<br>- <span style=\"color:#30d158;\">[Core]</span> Zero-bound Elimination: Automatically sweeps departed trains off screen<br>- Online listener triggers instant true data override upon signal recovery<br>- Fully i18n integrated dynamically translated changelog",
-                cl_v3_2: "- <span style=\"color:#30d158;\">[Bus]</span> Implemented physical distance algorithm to eliminate ETA 'time-spinning' ghosts<br>- <span style=\"color:#30d158;\">[Bus]</span> Complete parity with Official App's status displays (Approaching/At Stop/Stops Away)",
-                cl_v3_1: "- <span style=\"color:#ff3b30;\">[Fix]</span> Rewrote timeline interception engine to accurately filter out future/inactive ghost alerts<br>- Strict evaluation of alert start/end time windows",
+                cl_v3_3: "- <span style=\"color:#30d158;\">[Core]</span> Offline Dead Reckoning: Local heartbeat engine handles ETA countdowns when signal is lost",
                 credits_title: "🌟 Credits & Open Source",
                 credits_desc: "This is an open-source, non-profit application.<br><br><b>Special Thanks To:</b><br>• <b>MTA</b>: Real-time public transit data feeds<br>• <b>Cloudflare</b>: Edge computing & CORS protection<br>• <b>GitHub</b>: Open-source code hosting<br>• <b>Google Translate</b>: Neural machine translation API<br>• <b>Gemini</b>: Core architecture design & coding support",
                 disclaimer_title: "⚠️ Legal Disclaimer",
-                disclaimer_desc: "Data in this application is sourced directly from the MTA's public APIs and is provided on an 'As is' basis. We make no legal warranties regarding the absolute accuracy, timeliness, or continuous availability of the data. Given the complex traffic conditions in NYC, please use this app for reference only. The developers assume no liability for any commuting delays, direct or indirect losses caused by data discrepancies or system failures.",
+                disclaimer_desc: "Data in this application is sourced directly from the MTA's public APIs and is provided on an 'As is' basis. We make no legal warranties regarding the absolute accuracy, timeliness, or continuous availability of the data. Given the complex traffic conditions in NYC, please use this app for reference only.",
                 t_calc: "Calculating...", t_no_fav: "No Favorites<br><br>Star ☆ a route to add it here", t_no_bus: "No Bus", t_arr: "Arriving", t_due: "Due",
                 t_no_train: "No Trains", t_no_data: "No GPS Data", t_search_data: "Fetching route data...", t_req_fail: "Request Failed",
                 f_sys_time: "🕒 Local Time", f_weekend: "🎈 Weekend Sched", f_weekday: "💼 Weekday", f_depart: "🚢 Departing", f_rush: "🔥 Rush Hour",
@@ -366,11 +371,10 @@
             const clContainer = document.getElementById('changelog-list');
             if(clContainer) {
                 clContainer.innerHTML = `
+                    <div class="changelog-item"><div class="changelog-version">V4.0 (PWA & SVG Vector Engine)</div><div class="changelog-desc">${t('cl_v4_0')}</div></div>
                     <div class="changelog-item"><div class="changelog-version">V3.5 (Schedule Precision)</div><div class="changelog-desc">${t('cl_v3_5')}</div></div>
                     <div class="changelog-item"><div class="changelog-version">V3.4 (Ghost Purge)</div><div class="changelog-desc">${t('cl_v3_4')}</div></div>
                     <div class="changelog-item"><div class="changelog-version">V3.3 (Ghost Engine)</div><div class="changelog-desc">${t('cl_v3_3')}</div></div>
-                    <div class="changelog-item"><div class="changelog-version">V3.2 (Precision Bus ETA)</div><div class="changelog-desc">${t('cl_v3_2')}</div></div>
-                    <div class="changelog-item"><div class="changelog-version">V3.1 (Time-Sync Fix)</div><div class="changelog-desc">${t('cl_v3_1')}</div></div>
                 `;
             }
         }
@@ -407,33 +411,20 @@
         }
 
         // ==========================================
-        // 🛡️ DOM 免疫过滤引擎 (保护站名被 Google API 破坏)
+        // 🛡️ DOM 免疫过滤引擎
         // ==========================================
         window.mtaProtectRegex = null;
         function getProtectedHtml(htmlStr) {
             if (!htmlStr) return '';
-            
             if (!window.mtaProtectRegex && typeof STATION_DICT !== 'undefined') {
                 let names = new Set();
-                for (let k in STATION_DICT) {
-                    STATION_DICT[k].forEach(st => names.add(st.name));
-                }
-                let sorted = Array.from(names)
-                    .sort((a,b) => b.length - a.length)
-                    .map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); 
-                
-                if(sorted.length > 0) {
-                    window.mtaProtectRegex = new RegExp(`\\b(${sorted.join('|')})\\b`, 'gi');
-                }
+                for (let k in STATION_DICT) { STATION_DICT[k].forEach(st => names.add(st.name)); }
+                let sorted = Array.from(names).sort((a,b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); 
+                if(sorted.length > 0) { window.mtaProtectRegex = new RegExp(`\\b(${sorted.join('|')})\\b`, 'gi'); }
             }
-
-            let temp = document.createElement('div');
-            temp.innerHTML = htmlStr;
-            
+            let temp = document.createElement('div'); temp.innerHTML = htmlStr;
             temp.innerHTML = temp.innerHTML.replace(/\[([a-zA-Z0-9]+)\]/g, '<span translate="no" class="notranslate">[$1]</span>');
-            
             if (!window.mtaProtectRegex) return temp.innerHTML;
-
             function walk(node) {
                 if (node.nodeType === 3) { 
                     let text = node.nodeValue;
@@ -447,13 +438,9 @@
                     Array.from(node.childNodes).forEach(walk);
                 }
             }
-            Array.from(temp.childNodes).forEach(walk);
-            return temp.innerHTML;
+            Array.from(temp.childNodes).forEach(walk); return temp.innerHTML;
         }
 
-        // ==========================================
-        // 核心常量与配置
-        // ==========================================
         const WORKER_URL = "https://mta.zxc717209554.workers.dev";
         const GTFS_PROTO = `syntax = "proto2"; package transit_realtime; message FeedMessage { repeated FeedEntity entity = 2; } message FeedEntity { optional TripUpdate trip_update = 3; } message TripUpdate { optional TripDescriptor trip = 1; repeated StopTimeUpdate stop_time_update = 2; } message TripDescriptor { optional string route_id = 5; } message StopTimeUpdate { optional StopTimeEvent arrival = 2; optional StopTimeEvent departure = 3; optional string stop_id = 4; } message StopTimeEvent { optional int64 time = 2; }`;
         const protoRoot = protobuf.parse(GTFS_PROTO).root;
@@ -487,8 +474,7 @@
         function isMajorAlert(alerts) {
             if (!alerts || alerts.length === 0) return false;
             return alerts.some(a => {
-                const t = a.type || '';
-                const titleStr = (a.title || '').toLowerCase();
+                const t = a.type || ''; const titleStr = (a.title || '').toLowerCase();
                 if (titleStr.includes('overnight') || titleStr.includes('late night') || titleStr.includes('nightly')) return false;
                 return t.includes('Suspended') || t.includes('Severe') || t.includes('Service Change');
             });
@@ -497,117 +483,65 @@
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.alert-banner')) {
                 document.querySelectorAll('.alert-content.show').forEach(content => {
-                    content.classList.remove('show');
-                    content.previousElementSibling.querySelector('.alert-arrow').classList.remove('up');
+                    content.classList.remove('show'); content.previousElementSibling.querySelector('.alert-arrow').classList.remove('up');
                 });
             }
         });
 
         function toggleAlert(headerEl) {
-            const content = headerEl.nextElementSibling;
-            const arrow = headerEl.querySelector('.alert-arrow');
-            
+            const content = headerEl.nextElementSibling; const arrow = headerEl.querySelector('.alert-arrow');
             document.querySelectorAll('.alert-content.show').forEach(c => {
-                if (c !== content) {
-                    c.classList.remove('show');
-                    c.previousElementSibling.querySelector('.alert-arrow').classList.remove('up');
-                }
+                if (c !== content) { c.classList.remove('show'); c.previousElementSibling.querySelector('.alert-arrow').classList.remove('up'); }
             });
-            content.classList.toggle('show');
-            arrow.classList.toggle('up');
+            content.classList.toggle('show'); arrow.classList.toggle('up');
         }
 
-        // ==========================================
-        // ⚡ 全新 API 直连翻译引擎 (调用 Google Free Endpoint)
-        // ==========================================
         window.toggleTrans = async function(e, btn) {
-            e.stopPropagation(); 
-            const banner = btn.closest('.alert-banner');
-            const titleEl = banner.querySelector('.banner-title');
-            const descEl = banner.querySelector('.banner-desc');
-            
+            e.stopPropagation(); const banner = btn.closest('.alert-banner');
+            const titleEl = banner.querySelector('.banner-title'); const descEl = banner.querySelector('.banner-desc');
             const currentState = btn.getAttribute('data-state');
             
             if (currentState === 'en') {
                 if (btn.getAttribute('data-cached-zh')) {
-                    titleEl.innerHTML = titleEl.getAttribute('data-zh-title');
-                    descEl.innerHTML = descEl.getAttribute('data-zh-desc');
-                    btn.setAttribute('data-state', 'zh');
-                    btn.innerText = t('btn_orig'); 
-                    return;
+                    titleEl.innerHTML = titleEl.getAttribute('data-zh-title'); descEl.innerHTML = descEl.getAttribute('data-zh-desc');
+                    btn.setAttribute('data-state', 'zh'); btn.innerText = t('btn_orig'); return;
                 }
-                
                 btn.innerText = '翻译中...';
                 try {
-                    const originalTitleHtml = titleEl.innerHTML;
-                    const originalDescHtml = descEl.innerHTML;
-                    
-                    const textToTranslate = originalTitleHtml + "\n\n|||\n\n" + originalDescHtml;
+                    const textToTranslate = titleEl.innerHTML + "\n\n|||\n\n" + descEl.innerHTML;
                     const tl = currentLang === 'hk' ? 'zh-TW' : 'zh-CN';
                     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${tl}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
-                    
-                    const res = await fetch(url);
-                    const data = await res.json();
-                    
-                    let translatedText = '';
-                    if(data && data[0]) {
-                        data[0].forEach(item => {
-                            if(item[0]) translatedText += item[0];
-                        });
-                    }
-                    
+                    const res = await fetch(url); const data = await res.json();
+                    let translatedText = ''; if(data && data[0]) { data[0].forEach(item => { if(item[0]) translatedText += item[0]; }); }
                     if(translatedText) {
                         const parts = translatedText.split('|||');
-                        const zhTitle = parts[0] ? parts[0].trim() : originalTitleHtml;
-                        const zhDesc = parts[1] ? parts[1].trim() : originalDescHtml;
-                        
-                        titleEl.setAttribute('data-en-title', originalTitleHtml);
-                        descEl.setAttribute('data-en-desc', originalDescHtml);
-                        titleEl.setAttribute('data-zh-title', zhTitle);
-                        descEl.setAttribute('data-zh-desc', zhDesc);
+                        const zhTitle = parts[0] ? parts[0].trim() : titleEl.innerHTML; const zhDesc = parts[1] ? parts[1].trim() : descEl.innerHTML;
+                        titleEl.setAttribute('data-en-title', titleEl.innerHTML); descEl.setAttribute('data-en-desc', descEl.innerHTML);
+                        titleEl.setAttribute('data-zh-title', zhTitle); descEl.setAttribute('data-zh-desc', zhDesc);
                         btn.setAttribute('data-cached-zh', 'true');
-                        
-                        titleEl.innerHTML = zhTitle;
-                        descEl.innerHTML = zhDesc;
-                        btn.setAttribute('data-state', 'zh');
-                        btn.innerText = t('btn_orig'); 
-                    } else {
-                        throw new Error("Translation empty");
+                        titleEl.innerHTML = zhTitle; descEl.innerHTML = zhDesc;
+                        btn.setAttribute('data-state', 'zh'); btn.innerText = t('btn_orig'); 
                     }
-                } catch(err) {
-                    console.error("翻译请求失败:", err);
-                    btn.innerText = '网络错误';
-                    setTimeout(() => btn.innerText = t('btn_trans'), 2000);
-                }
+                } catch(err) { setTimeout(() => btn.innerText = t('btn_trans'), 2000); }
             } else {
-                titleEl.innerHTML = titleEl.getAttribute('data-en-title');
-                descEl.innerHTML = descEl.getAttribute('data-en-desc');
-                btn.setAttribute('data-state', 'en');
-                btn.innerText = t('btn_trans'); 
+                titleEl.innerHTML = titleEl.getAttribute('data-en-title'); descEl.innerHTML = descEl.getAttribute('data-en-desc');
+                btn.setAttribute('data-state', 'en'); btn.innerText = t('btn_trans'); 
             }
         };
 
         async function fetchSystemAlerts() {
             try {
-                const [subRes, busRes] = await Promise.all([
-                    fetch(`${WORKER_URL}/?type=subway-alerts`).then(r => r.json()),
-                    fetch(`${WORKER_URL}/?type=bus-alerts`).then(r => r.json())
-                ]);
-
-                globalAlerts = { subway: {}, bus: {} };
-                const nowSec = Math.floor(Date.now() / 1000);
+                const [subRes, busRes] = await Promise.all([ fetch(`${WORKER_URL}/?type=subway-alerts`).then(r => r.json()), fetch(`${WORKER_URL}/?type=bus-alerts`).then(r => r.json()) ]);
+                globalAlerts = { subway: {}, bus: {} }; const nowSec = Math.floor(Date.now() / 1000);
 
                 const processAlerts = (data, type) => {
                     (data.entity || []).forEach(ent => {
-                        const alert = ent.alert;
-                        if (!alert) return;
-                        
+                        const alert = ent.alert; if (!alert) return;
                         let isActive = true;
                         if (alert.active_period && alert.active_period.length > 0) {
                             isActive = false; 
                             for (const period of alert.active_period) {
-                                const start = period.start ? parseInt(period.start) : 0;
-                                const end = period.end ? parseInt(period.end) : 2147483647; 
+                                const start = period.start ? parseInt(period.start) : 0; const end = period.end ? parseInt(period.end) : 2147483647; 
                                 if (nowSec >= start && nowSec <= end) { isActive = true; break; }
                             }
                         }
@@ -615,65 +549,42 @@
 
                         const titleObj = alert.header_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
                         const alertTitle = titleObj ? titleObj.text : 'Service Change';
-                        
                         if (alertTitle.toLowerCase().includes('overnight') || alertTitle.toLowerCase().includes('late night') || alertTitle.toLowerCase().includes('nightly')) return; 
 
                         const descObj = alert.description_text?.translation?.find(t => t.language === 'en-html' || t.language === 'en');
-                        let alertDesc = descObj ? descObj.text : '';
-                        alertDesc = alertDesc.replace(/<br\s*[\/]?>/gi, '\n');
-
+                        let alertDesc = descObj ? descObj.text : ''; alertDesc = alertDesc.replace(/<br\s*[\/]?>/gi, '\n');
                         const mercuryInfo = alert['transit_realtime.mercury_alert'];
-                        const alertType = mercuryInfo?.alert_type || 'Alert';
-                        const updatedAt = mercuryInfo?.updated_at;
+                        const alertType = mercuryInfo?.alert_type || 'Alert'; const updatedAt = mercuryInfo?.updated_at;
 
                         (alert.informed_entity || []).forEach(ie => {
                             if (ie.route_id) {
-                                let rId = ie.route_id;
-                                if (rId.includes('_')) rId = rId.split('_')[1];
-                                if (rId.endsWith('+')) rId = rId.replace('+', '-SBS');
-
+                                let rId = ie.route_id; if (rId.includes('_')) rId = rId.split('_')[1]; if (rId.endsWith('+')) rId = rId.replace('+', '-SBS');
                                 if (!globalAlerts[type][rId]) globalAlerts[type][rId] = [];
                                 globalAlerts[type][rId].push({ title: alertTitle, desc: alertDesc, type: alertType, updated: updatedAt });
                             }
                         });
                     });
                 };
-
-                if (subRes.entity) processAlerts(subRes, 'subway');
-                if (busRes.entity) processAlerts(busRes, 'bus');
-                
+                if (subRes.entity) processAlerts(subRes, 'subway'); if (busRes.entity) processAlerts(busRes, 'bus');
                 const sortAlerts = (alertsObj) => {
                     for(let line in alertsObj) {
                         alertsObj[line].sort((a, b) => {
-                            const score = (t) => {
-                                if(t.includes('Suspended')) return 4;
-                                if(t.includes('Severe')) return 3;
-                                if(t.includes('Service Change')) return 2;
-                                if(t.includes('Delays')) return 1;
-                                return 0;
-                            };
+                            const score = (t) => { if(t.includes('Suspended')) return 4; if(t.includes('Severe')) return 3; if(t.includes('Service Change')) return 2; if(t.includes('Delays')) return 1; return 0; };
                             return score(b.type) - score(a.type);
                         });
                     }
                 };
-                sortAlerts(globalAlerts.subway);
-                sortAlerts(globalAlerts.bus);
-                
+                sortAlerts(globalAlerts.subway); sortAlerts(globalAlerts.bus);
                 if (state.currentLayer === 'home' && state.activeTab === 'subway') renderSubwayGrid();
                 if (state.currentLayer === 'home' && state.activeTab === 'favs') renderFavorites();
-                
             } catch (e) { console.error("警报获取失败:", e); }
         }
 
-        // 🚨 横幅渲染集成 API 直翻
         function getAlertBannerHtml(line, mode) {
             const alerts = globalAlerts[mode][line] || [];
             if (alerts.length > 0) {
                 const alert = alerts[0]; 
-                
-                let typeColor = '#8e8e93'; let typeIcon = 'ℹ️'; 
-                let severeClass = '';
-                
+                let typeColor = '#8e8e93'; let typeIcon = 'ℹ️'; let severeClass = '';
                 if (alert.type.includes('Delays')) { typeColor = '#ff9f0a'; typeIcon = '💥'; }
                 else if (alert.type.includes('Suspended')) { typeColor = '#ff3b30'; typeIcon = '⛔'; severeClass = 'alert-severe'; }
                 else if (alert.type.includes('Planned Work')) { typeColor = '#0a84ff'; typeIcon = '🚧'; }
@@ -682,16 +593,11 @@
                 let timeStr = '';
                 if (alert.updated) {
                     const d = new Date(parseInt(alert.updated) * 1000);
-                    timeStr = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    const today = new Date();
-                    if (d.getDate() === today.getDate()) timeStr = `${t('a_today')} ${timeStr}`;
-                    else timeStr = `${d.getMonth()+1}/${d.getDate()} ${timeStr}`;
+                    timeStr = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); const today = new Date();
+                    if (d.getDate() === today.getDate()) timeStr = `${t('a_today')} ${timeStr}`; else timeStr = `${d.getMonth()+1}/${d.getDate()} ${timeStr}`;
                 }
 
-                // 添加 DOM 免疫防弹衣
-                const protectedTitle = getProtectedHtml(alert.title || '');
-                const protectedDesc = getProtectedHtml(alert.desc || '');
-                
+                const protectedTitle = getProtectedHtml(alert.title || ''); const protectedDesc = getProtectedHtml(alert.desc || '');
                 const transBtnHtml = `<span class="translate-btn" data-state="en" onclick="toggleTrans(event, this)">${t('btn_trans')}</span>`;
 
                 return `
@@ -701,10 +607,7 @@
                             <span style="color: ${typeColor}; font-size: 14px;">${typeIcon}</span>
                             <strong style="color: ${typeColor};" class="banner-title">${protectedTitle}</strong>
                         </div>
-                        <div style="display:flex; align-items:center;">
-                            ${transBtnHtml}
-                            <span class="alert-arrow">▼</span>
-                        </div>
+                        <div style="display:flex; align-items:center;">${transBtnHtml}<span class="alert-arrow">▼</span></div>
                     </div>
                     <div class="alert-content">
                         <div class="banner-desc" style="white-space: pre-wrap;">${protectedDesc}</div>
@@ -716,15 +619,13 @@
         }
 
         function switchMainTab(tabId, btn) {
-            document.querySelectorAll('#main-tabs .tab-item').forEach(t => t.classList.remove('active'));
-            if(btn) btn.classList.add('active'); 
+            document.querySelectorAll('#main-tabs .tab-item').forEach(t => t.classList.remove('active')); if(btn) btn.classList.add('active'); 
             state.activeTab = tabId;
             document.getElementById('home-favs').style.display = tabId === 'favs' ? 'block' : 'none';
             document.getElementById('home-subway').style.display = tabId === 'subway' ? 'block' : 'none';
             document.getElementById('home-bus').style.display = tabId === 'bus' ? 'block' : 'none';
             document.getElementById('home-ferry').style.display = tabId === 'ferry' ? 'block' : 'none';
-            if (tabId === 'subway') renderSubwayGrid();
-            if (tabId === 'favs') renderFavorites();
+            if (tabId === 'subway') renderSubwayGrid(); if (tabId === 'favs') renderFavorites();
             navTo('home'); 
         }
 
@@ -732,42 +633,28 @@
             document.querySelectorAll('.layer-view').forEach(v => v.classList.remove('active'));
             document.getElementById(`layer-${layerId}`).classList.add('active');
             state.currentLayer = layerId; window.scrollTo(0, 0); 
-            
-            document.querySelectorAll('.alert-content.show').forEach(c => {
-                c.classList.remove('show');
-                c.previousElementSibling.querySelector('.alert-arrow').classList.remove('up');
-            });
+            document.querySelectorAll('.alert-content.show').forEach(c => { c.classList.remove('show'); c.previousElementSibling.querySelector('.alert-arrow').classList.remove('up'); });
         }
 
         async function manualRefreshFavs() {
-            const btn = document.getElementById('favs-refresh-btn');
-            btn.innerHTML = `🔄 ${t('refreshing')}`;
-            btn.style.opacity = '0.5';
-            await fetchSystemAlerts(); 
-            await updateFavoritesRealtime();
-            btn.innerHTML = `🔄 ${t('refresh')}`;
-            btn.style.opacity = '1';
+            const btn = document.getElementById('favs-refresh-btn'); btn.innerHTML = `🔄 ${t('refreshing')}`; btn.style.opacity = '0.5';
+            await fetchSystemAlerts(); await updateFavoritesRealtime();
+            btn.innerHTML = `🔄 ${t('refresh')}`; btn.style.opacity = '1';
         }
 
         function renderFavorites() {
             const container = document.getElementById('favs-content');
-            if (favorites.length === 0) {
-                container.innerHTML = `<div class="loading-shimmer">${t('t_no_fav')}</div>`; return;
-            }
+            if (favorites.length === 0) { container.innerHTML = `<div class="loading-shimmer">${t('t_no_fav')}</div>`; return; }
             let html = '';
             favorites.forEach(fav => {
                 const isSubway = fav.type === 'subway';
                 const conf = isSubway ? (LINE_MAP[fav.line] || { color: '#333', textColor: '#fff' }) : { color: 'var(--mta-blue)', textColor: '#fff' };
                 const iconTxt = isSubway ? fav.line : 'BUS';
-                
                 const hasMajor = isMajorAlert(globalAlerts[fav.type][fav.line]);
                 const dotHtml = hasMajor ? `<div class="alert-dot" style="border-color: var(--card-bg);"></div>` : '';
-                
                 const titleTxt = isSubway ? fav.name : `${fav.line} - ${fav.name}`;
                 const classType = isSubway ? 'sub' : 'bus';
-                
-                const safeName = fav.name ? fav.name.replace(/'/g, "\\'") : '';
-                const safeDir = fav.dirName ? fav.dirName.replace(/'/g, "\\'") : '';
+                const safeName = fav.name ? fav.name.replace(/'/g, "\\'") : ''; const safeDir = fav.dirName ? fav.dirName.replace(/'/g, "\\'") : '';
                 
                 html += `
                 <div class="list-row" data-key="${fav.id}|${fav.line}" onclick="openStationLayer('${fav.id}', '${safeName}', '${fav.line}', '${fav.type}', '${safeDir}', true)">
@@ -783,97 +670,52 @@
                     </div>
                 </div>`;
             });
-            container.innerHTML = html;
-            updateFavoritesRealtime(); 
+            container.innerHTML = html; updateFavoritesRealtime(); 
 
             if(window.favSortable) window.favSortable.destroy();
             window.favSortable = Sortable.create(container, {
                 animation: 200, delay: 200, delayOnTouchOnly: true,  
                 onEnd: function (evt) {
-                    const newKeys = Array.from(container.children).map(el => el.getAttribute('data-key'));
-                    const newFavs = [];
-                    newKeys.forEach(key => {
-                        const found = favorites.find(f => `${f.id}|${f.line}` === key);
-                        if(found) newFavs.push(found);
-                    });
-                    favorites = newFavs;
-                    localStorage.setItem('mta_pro_favs_v5', JSON.stringify(favorites));
+                    const newKeys = Array.from(container.children).map(el => el.getAttribute('data-key')); const newFavs = [];
+                    newKeys.forEach(key => { const found = favorites.find(f => `${f.id}|${f.line}` === key); if(found) newFavs.push(found); });
+                    favorites = newFavs; localStorage.setItem('mta_pro_favs_v5', JSON.stringify(favorites));
                 }
             });
         }
 
         async function updateFavoritesRealtime() {
             if (state.activeTab !== 'favs') return;
-            const now = Math.floor(Date.now() / 1000);
-            const subwayFavs = favorites.filter(f => f.type === 'subway');
-            const busFavs = favorites.filter(f => f.type === 'bus');
+            const now = Math.floor(Date.now() / 1000); const subwayFavs = favorites.filter(f => f.type === 'subway'); const busFavs = favorites.filter(f => f.type === 'bus');
 
             busFavs.forEach(async (fav) => {
                 try {
                     const fullStopId = fav.id.includes('_') ? fav.id : `MTA_${fav.id}`;
-                    const res = await fetch(`${WORKER_URL}/?type=bus-stop-monitoring&stopId=${fullStopId}`);
-                    const data = await res.json();
+                    const res = await fetch(`${WORKER_URL}/?type=bus-stop-monitoring&stopId=${fullStopId}`); const data = await res.json();
                     const visits = data.Siri?.ServiceDelivery?.StopMonitoringDelivery[0]?.MonitoredStopVisit || [];
                     
-                    let times = [];
-                    let seenVRefs = new Set();
-                    
+                    let times = []; let seenVRefs = new Set();
                     visits.forEach(v => {
-                        const journey = v.MonitoredVehicleJourney;
-                        if(!journey) return;
-                        
-                        // 🛡️ 三重除灵滤网 1：状态审查
-                        const status = journey.ProgressStatus || "";
-                        if (status.includes("layover") || status.includes("prevTrip") || status.includes("deadhead")) return;
-                        
-                        // 🛡️ 三重除灵滤网 2：心跳保鲜 (3分钟)
+                        const journey = v.MonitoredVehicleJourney; if(!journey) return;
+                        const status = journey.ProgressStatus || ""; if (status.includes("layover") || status.includes("prevTrip") || status.includes("deadhead")) return;
                         if (v.RecordedAtTime && (Date.now() - new Date(v.RecordedAtTime).getTime() > 180000)) return;
-
-                        // 🛡️ 三重除灵滤网 3：车牌去重
-                        const vRef = journey.VehicleRef;
-                        if (vRef) {
-                            if (seenVRefs.has(vRef)) return;
-                            seenVRefs.add(vRef);
-                        }
-                        
-                        const call = journey.MonitoredCall;
-                        if(!call) return;
-                        
-                        const eta = call.ExpectedArrivalTime;
-                        const dist = call.Extensions?.Distances?.PresentableDistance || "";
-                        
-                        let m = 999;
-                        let etaMs = 0;
-                        if(eta) {
-                            etaMs = new Date(eta).getTime();
-                            m = Math.round((etaMs - Date.now()) / 60000);
-                        }
-                        
-                        let isStatic = false;
-                        if (dist === "at stop" || dist === "approaching" || dist.includes("stop")) isStatic = true;
-                        
+                        const vRef = journey.VehicleRef; if (vRef) { if (seenVRefs.has(vRef)) return; seenVRefs.add(vRef); }
+                        const call = journey.MonitoredCall; if(!call) return;
+                        const eta = call.ExpectedArrivalTime; const dist = call.Extensions?.Distances?.PresentableDistance || "";
+                        let m = 999; let etaMs = 0;
+                        if(eta) { etaMs = new Date(eta).getTime(); m = Math.round((etaMs - Date.now()) / 60000); }
+                        let isStatic = false; if (dist === "at stop" || dist === "approaching" || dist.includes("stop")) isStatic = true;
                         if (m >= -5) times.push({ eta: etaMs, dist: dist, isStatic: isStatic, mins: m });
                     });
-                    
-                    times = times.sort((a,b) => a.mins - b.mins).slice(0, 2); 
-                    const dashEl = document.getElementById(`fav-dash-${fav.id}`);
+                    times = times.sort((a,b) => a.mins - b.mins).slice(0, 2);  const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                     if(dashEl) {
-                        if(times.length === 0) {
-                            dashEl.innerHTML = `<div class="dash-badge">${t('t_no_bus')}</div>`;
-                        } else {
+                        if(times.length === 0) { dashEl.innerHTML = `<div class="dash-badge">${t('t_no_bus')}</div>`; } else {
                             let stopStr = currentLang === 'en' ? 'stops' : '站';
                             dashEl.innerHTML = times.map(tData => {
-                                let txt = tData.mins + "m";
-                                let isArr = false;
+                                let txt = tData.mins + "m"; let isArr = false;
                                 if (tData.dist === "at stop" || tData.mins <= 0) { txt = t('t_arr'); isArr = true; }
                                 else if (tData.dist === "approaching" || tData.mins === 1) { txt = t('t_due'); isArr = true; }
-                                else if (tData.dist.includes("stop")) { 
-                                    const match = tData.dist.match(/(\d+)\s+stop/); 
-                                    if(match) txt = match[1] + " " + stopStr; 
-                                }
-                                
+                                else if (tData.dist.includes("stop")) { const match = tData.dist.match(/(\d+)\s+stop/); if(match) txt = match[1] + " " + stopStr; }
                                 const staticAttr = tData.isStatic ? 'data-static="true"' : '';
-                                
                                 if (isArr && txt === t('t_arr')) return `<div class="dash-badge arr" data-eta="${tData.eta}" ${staticAttr} style="animation: pulse-bg 2s infinite;"><span class="dash-icon">🚌</span> ${txt}</div>`;
                                 if (isArr) return `<div class="dash-badge arr" data-eta="${tData.eta}" ${staticAttr}><span class="dash-icon">🚌</span> ${txt}</div>`;
                                 return `<div class="dash-badge" data-eta="${tData.eta}" ${staticAttr}><span class="dash-icon">🚌</span> ${txt}</div>`;
@@ -883,58 +725,34 @@
                 } catch(e) {}
             });
 
-            let feedMap = {};
-            subwayFavs.forEach(fav => {
-                const feed = LINE_MAP[fav.line]?.feed;
-                if(feed) { if(!feedMap[feed]) feedMap[feed] = []; feedMap[feed].push(fav); }
-            });
+            let feedMap = {}; subwayFavs.forEach(fav => { const feed = LINE_MAP[fav.line]?.feed; if(feed) { if(!feedMap[feed]) feedMap[feed] = []; feedMap[feed].push(fav); } });
 
             for (const [feed, favsInFeed] of Object.entries(feedMap)) {
                 try {
-                    const res = await fetch(`${WORKER_URL}/?route=${feed}`);
-                    if(!res.ok) continue;
-                    const buffer = await res.arrayBuffer();
-                    const message = FeedMessage.decode(new Uint8Array(buffer));
-                    const data = FeedMessage.toObject(message, { longs: String });
-
+                    const res = await fetch(`${WORKER_URL}/?route=${feed}`); if(!res.ok) continue;
+                    const buffer = await res.arrayBuffer(); const message = FeedMessage.decode(new Uint8Array(buffer)); const data = FeedMessage.toObject(message, { longs: String });
                     let parsedTimes = {}; 
                     (data.entity || []).forEach(ent => {
                         const stopTimes = ent.tripUpdate?.stopTimeUpdate || [];
                         stopTimes.forEach(stu => {
                             const fullStopId = stu.stopId;
                             if (fullStopId) {
-                                const sid = fullStopId.slice(0, -1); const dir = fullStopId.slice(-1);
-                                const tObj = stu.arrival || stu.departure;
+                                const sid = fullStopId.slice(0, -1); const dir = fullStopId.slice(-1); const tObj = stu.arrival || stu.departure;
                                 if (tObj && tObj.time) {
-                                    const tMs = parseInt(tObj.time) * 1000;
-                                    const mins = Math.round((tMs - Date.now()) / 60000);
-                                    if(mins <= 90 && mins >= -5) {
-                                        if(!parsedTimes[sid]) parsedTimes[sid] = { N: [], S: [] };
-                                        parsedTimes[sid][dir].push(tMs);
-                                    }
+                                    const tMs = parseInt(tObj.time) * 1000; const mins = Math.round((tMs - Date.now()) / 60000);
+                                    if(mins <= 90 && mins >= -5) { if(!parsedTimes[sid]) parsedTimes[sid] = { N: [], S: [] }; parsedTimes[sid][dir].push(tMs); }
                                 }
                             }
                         });
                     });
 
                     favsInFeed.forEach(fav => {
-                        const tObj = parsedTimes[fav.id] || { N: [], S: [] };
-                        const nTimes = tObj.N.sort((a,b)=>a-b);
-                        const sTimes = tObj.S.sort((a,b)=>a-b);
-                        
+                        const tObj = parsedTimes[fav.id] || { N: [], S: [] }; const nTimes = tObj.N.sort((a,b)=>a-b); const sTimes = tObj.S.sort((a,b)=>a-b);
                         const dashEl = document.getElementById(`fav-dash-${fav.id}`);
                         if(dashEl) {
                             let h = '';
-                            if(nTimes.length > 0) {
-                                const etaMs = nTimes[0];
-                                const m = Math.round((etaMs - Date.now())/60000);
-                                h += `<div class="dash-badge ${m<=0?'arr':''}" data-eta="${etaMs}"><span class="dash-icon">⬆</span> ${m<=0?t('t_due'):m+'m'}</div>`;
-                            }
-                            if(sTimes.length > 0) {
-                                const etaMs = sTimes[0];
-                                const m = Math.round((etaMs - Date.now())/60000);
-                                h += `<div class="dash-badge ${m<=0?'arr':''}" data-eta="${etaMs}"><span class="dash-icon">⬇</span> ${m<=0?t('t_due'):m+'m'}</div>`;
-                            }
+                            if(nTimes.length > 0) { const etaMs = nTimes[0]; const m = Math.round((etaMs - Date.now())/60000); h += `<div class="dash-badge ${m<=0?'arr':''}" data-eta="${etaMs}"><span class="dash-icon">⬆</span> ${m<=0?t('t_due'):m+'m'}</div>`; }
+                            if(sTimes.length > 0) { const etaMs = sTimes[0]; const m = Math.round((etaMs - Date.now())/60000); h += `<div class="dash-badge ${m<=0?'arr':''}" data-eta="${etaMs}"><span class="dash-icon">⬇</span> ${m<=0?t('t_due'):m+'m'}</div>`; }
                             dashEl.innerHTML = h || `<div class="dash-badge">${t('t_no_bus')}</div>`;
                         }
                     });
@@ -943,156 +761,98 @@
         }
 
         function renderSubwayGrid() {
-            const grid = document.getElementById('subwayGrid');
-            grid.innerHTML = ''; 
+            const grid = document.getElementById('subwayGrid'); grid.innerHTML = ''; 
             for (let line in LINE_MAP) {
-                const conf = LINE_MAP[line];
-                const hasMajor = isMajorAlert(globalAlerts.subway[line]);
-                const dotHtml = hasMajor ? `<div class="alert-dot"></div>` : '';
-                
-                grid.innerHTML += `
-                <div class="route-circle-wrapper" onclick="openRouteStops('${line}', 'subway')">
-                    <div class="route-circle" translate="no" class="notranslate" style="background:${conf.color}; color:${conf.textColor||'white'};">${line}</div>
-                    ${dotHtml}
-                </div>`;
+                const conf = LINE_MAP[line]; const hasMajor = isMajorAlert(globalAlerts.subway[line]); const dotHtml = hasMajor ? `<div class="alert-dot"></div>` : '';
+                grid.innerHTML += `<div class="route-circle-wrapper" onclick="openRouteStops('${line}', 'subway')"><div class="route-circle" translate="no" class="notranslate" style="background:${conf.color}; color:${conf.textColor||'white'};">${line}</div>${dotHtml}</div>`;
             }
         }
 
         function busFuzzy(val) {
-            val = val.toUpperCase().trim();
-            const sug = document.getElementById('busSug');
+            val = val.toUpperCase().trim(); const sug = document.getElementById('busSug');
             if (val.length < 1) { sug.style.display = 'none'; return; }
             const matches = ALL_BUS_ROUTES.filter(r => r.includes(val));
             if(!matches.includes(val) && val.length > 1) matches.unshift(val);
             if (matches.length > 0) {
                 sug.innerHTML = matches.map(m => {
-                    const hasMajor = isMajorAlert(globalAlerts.bus[m]);
-                    const dotHtml = hasMajor ? `<div class="alert-dot" style="position:relative; top:0; right:0; display:inline-block; margin-left:6px;"></div>` : '';
+                    const hasMajor = isMajorAlert(globalAlerts.bus[m]); const dotHtml = hasMajor ? `<div class="alert-dot" style="position:relative; top:0; right:0; display:inline-block; margin-left:6px;"></div>` : '';
                     return `<div class="sug-item" translate="no" class="notranslate" onclick="openRouteStops('${m}', 'bus')" style="display:flex; align-items:center;">${m} ${dotHtml}</div>`;
-                }).join('');
-                sug.style.display = 'block';
+                }).join(''); sug.style.display = 'block';
             } else sug.style.display = 'none';
         }
 
         function openBoroughLayer(borough) {
-            document.getElementById('borough-title').innerText = `${borough} Buses`;
-            const routes = BUS_BOROUGHS[borough] || [];
-            let html = '';
+            document.getElementById('borough-title').innerText = `${borough} Buses`; const routes = BUS_BOROUGHS[borough] || []; let html = '';
             routes.forEach(r => {
-                const hasMajor = isMajorAlert(globalAlerts.bus[r]);
-                const dotHtml = hasMajor ? `<div class="alert-dot" style="border-color: var(--card-bg);"></div>` : '';
-                
-                html += `
-                <div class="list-row" onclick="openRouteStops('${r}', 'bus')">
-                    <div class="row-left" translate="no" class="notranslate">
-                        <div style="position:relative; display:inline-block; flex-shrink:0;">
-                            <div class="mini-route bus" style="background:var(--mta-blue); color:#fff;">BUS</div>
-                            ${dotHtml}
-                        </div>
-                        <div class="row-title">${r}</div>
-                    </div>
-                    <div class="row-icon">›</div>
-                </div>`
+                const hasMajor = isMajorAlert(globalAlerts.bus[r]); const dotHtml = hasMajor ? `<div class="alert-dot" style="border-color: var(--card-bg);"></div>` : '';
+                html += `<div class="list-row" onclick="openRouteStops('${r}', 'bus')"><div class="row-left" translate="no" class="notranslate"><div style="position:relative; display:inline-block; flex-shrink:0;"><div class="mini-route bus" style="background:var(--mta-blue); color:#fff;">BUS</div>${dotHtml}</div><div class="row-title">${r}</div></div><div class="row-icon">›</div></div>`
             });
-            document.getElementById('bus-routes-content').innerHTML = html;
-            navTo('bus-routes');
+            document.getElementById('bus-routes-content').innerHTML = html; navTo('bus-routes');
         }
 
         function openFerrySchedules(terminal) {
-            state.selectedLine = terminal;
-            state.mode = 'ferry';
+            state.selectedLine = terminal; state.mode = 'ferry';
             document.getElementById('route-title').innerText = terminal === 'Manhattan' ? 'Departing Manhattan' : 'Departing Staten Island';
             document.getElementById('stops-back-btn').onclick = () => navTo('home');
+            const content = document.getElementById('stops-list-content'); const now = new Date(); const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+            const dayType = isWeekend ? 'weekend' : 'weekday'; const schedule = FERRY_SCHEDULES[terminal][dayType]; const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-            const content = document.getElementById('stops-list-content');
-            const now = new Date();
-            const isWeekend = now.getDay() === 0 || now.getDay() === 6;
-            const dayType = isWeekend ? 'weekend' : 'weekday';
-            const schedule = FERRY_SCHEDULES[terminal][dayType];
-            const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-            let html = `<div class="dir-header" style="margin-top:20px; display:flex; justify-content:space-between;">
-                            <span>${t('f_sys_time')}: <span translate="no" class="notranslate">${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></span>
-                            <span style="color:#fff; background:#333; padding:4px 10px; border-radius:8px; font-size:12px;">${isWeekend ? t('f_weekend') : t('f_weekday')}</span>
-                        </div>`;
-
-            let nextIdx = -1;
-            for (let i = 0; i < schedule.length; i++) {
-                const [h, m] = schedule[i].split(':').map(Number);
-                if ((h * 60 + m) >= currentMinutes && nextIdx === -1) nextIdx = i;
-            }
+            let html = `<div class="dir-header" style="margin-top:20px; display:flex; justify-content:space-between;"><span>${t('f_sys_time')}: <span translate="no" class="notranslate">${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></span><span style="color:#fff; background:#333; padding:4px 10px; border-radius:8px; font-size:12px;">${isWeekend ? t('f_weekend') : t('f_weekday')}</span></div>`;
+            let nextIdx = -1; for (let i = 0; i < schedule.length; i++) { const [h, m] = schedule[i].split(':').map(Number); if ((h * 60 + m) >= currentMinutes && nextIdx === -1) nextIdx = i; }
             if (nextIdx === -1) nextIdx = 0;
 
             schedule.forEach((timeStr, idx) => {
-                const isNext = idx === nextIdx;
-                const rowClass = isNext ? 'list-row ferry-next' : 'list-row';
-                const idAttr = isNext ? 'id="next-ferry-item"' : '';
-
-                let [hh, mm] = timeStr.split(':');
-                let hNum = parseInt(hh);
-                let ampm = hNum >= 12 ? 'PM' : 'AM';
-                hNum = hNum % 12 || 12;
-                const displayTime = `${hNum}:${mm} ${ampm}`;
-                const schedMins = parseInt(hh) * 60 + parseInt(mm);
-
+                const isNext = idx === nextIdx; const rowClass = isNext ? 'list-row ferry-next' : 'list-row'; const idAttr = isNext ? 'id="next-ferry-item"' : '';
+                let [hh, mm] = timeStr.split(':'); let hNum = parseInt(hh); let ampm = hNum >= 12 ? 'PM' : 'AM'; hNum = hNum % 12 || 12;
+                const displayTime = `${hNum}:${mm} ${ampm}`; const schedMins = parseInt(hh) * 60 + parseInt(mm);
                 const isRushHour = !isWeekend && ((schedMins >= 360 && schedMins <= 570) || (schedMins >= 930 && schedMins <= 1140));
-
                 let badgeHtml = '';
                 if (isNext) badgeHtml = `<div class="dash-badge arr" style="animation: pulse-bg 2s infinite; color:#000; border-color:#000;">${t('f_depart')}</div>`;
                 else if (isRushHour) badgeHtml = `<div class="dash-badge" style="color:#ff9f0a; border-color:#ff9f0a; background:rgba(255,159,10,0.1);">${t('f_rush')}</div>`;
-
-                html += `
-                <div ${idAttr} class="${rowClass}" style="cursor:default;">
-                    <div class="row-left" translate="no" class="notranslate">
-                        <div class="mini-route bus" style="background:${isNext ? '#000' : 'var(--mta-blue)'}; color:${isNext ? '#30d158' : '#fff'}; font-size: 16px;">⛴️</div>
-                        <div class="row-title" style="${isNext ? 'color:#000;' : ''}">${displayTime}</div>
-                    </div>
-                    ${badgeHtml}
-                </div>`;
+                html += `<div ${idAttr} class="${rowClass}" style="cursor:default;"><div class="row-left" translate="no" class="notranslate"><div class="mini-route bus" style="background:${isNext ? '#000' : 'var(--mta-blue)'}; color:${isNext ? '#30d158' : '#fff'}; font-size: 16px;">⛴️</div><div class="row-title" style="${isNext ? 'color:#000;' : ''}">${displayTime}</div></div>${badgeHtml}</div>`;
             });
 
-            document.getElementById('stops-alert-banner').innerHTML = ''; 
-            content.innerHTML = html;
-            navTo('stops');
+            document.getElementById('stops-alert-banner').innerHTML = ''; content.innerHTML = html; navTo('stops');
+            setTimeout(() => { const el = document.getElementById('next-ferry-item'); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }, 300);
+        }
 
-            setTimeout(() => {
-                const el = document.getElementById('next-ferry-item');
-                if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-            }, 300);
+        // 🎨 核心：生成 SVG 矢量拓扑结构的工具函数
+        function generateSvgGraphic(routeColor, isFirst, isLast, nodeShape) {
+            return `
+            <div class="timeline-graphic">
+                <svg class="topo-svg" viewBox="0 0 40 80" preserveAspectRatio="xMidYMid slice">
+                    <line x1="20" y1="0" x2="20" y2="40" stroke="${routeColor}" stroke-width="6" style="opacity: ${isFirst ? 0 : 1};" />
+                    <line x1="20" y1="40" x2="20" y2="80" stroke="${routeColor}" stroke-width="6" style="opacity: ${isLast ? 0 : 1};" />
+                    ${nodeShape === 'square' 
+                        ? `<rect x="10" y="30" width="20" height="20" rx="4" fill="var(--dark-bg)" stroke="${routeColor}" stroke-width="5" />`
+                        : `<circle cx="20" cy="40" r="10" fill="var(--dark-bg)" stroke="${routeColor}" stroke-width="5" />`
+                    }
+                </svg>
+            </div>`;
         }
 
         async function openRouteStops(line, mode) {
             state.selectedLine = line; state.mode = mode;
             document.getElementById('route-title').innerText = `${line} Line`;
             document.getElementById('stops-back-btn').onclick = () => {
-                if(mode === 'subway') navTo('home');
-                else if(document.getElementById('busInput').value) navTo('home'); 
-                else navTo('bus-routes');
+                if(mode === 'subway') navTo('home'); else if(document.getElementById('busInput').value) navTo('home'); else navTo('bus-routes');
             };
             const content = document.getElementById('stops-list-content');
-            
             document.getElementById('stops-alert-banner').innerHTML = getAlertBannerHtml(line, mode);
             
             if (mode === 'subway') {
-                const stations = STATION_DICT[line] || [];
-                const routeColor = LINE_MAP[line]?.color || '#fff'; 
-
+                const stations = STATION_DICT[line] || []; const routeColor = LINE_MAP[line]?.color || '#ffffff'; 
                 if (stations.length === 0) content.innerHTML = `<div class="loading-shimmer">${t('t_no_data')}</div>`;
                 else {
                     let html = '';
                     stations.forEach((st, idx) => {
-                        const safeName = st.name.replace(/'/g, "\\'");
-                        const isFirst = idx === 0;
-                        const isLast = idx === stations.length - 1;
+                        const safeName = st.name.replace(/'/g, "\\'"); const isFirst = idx === 0; const isLast = idx === stations.length - 1;
                         const nodeShape = isFirst || isLast ? 'square' : 'circle';
+                        const svgGraphic = generateSvgGraphic(routeColor, isFirst, isLast, nodeShape);
                         
                         html += `
-                        <div class="timeline-wrapper" style="--route-color: ${routeColor};" onclick="openStationLayer('${st.id}', '${safeName}', '${line}', 'subway', null, false)">
-                            <div class="timeline-graphic">
-                                <div class="line-segment line-top" style="opacity: ${isFirst ? 0 : 1};"></div>
-                                <div class="timeline-node ${nodeShape}"></div>
-                                <div class="line-segment line-bottom" style="opacity: ${isLast ? 0 : 1};"></div>
-                            </div>
+                        <div class="timeline-wrapper" onclick="openStationLayer('${st.id}', '${safeName}', '${line}', 'subway', null, false)">
+                            ${svgGraphic}
                             <div class="list-row">
                                 <div class="row-left"><div class="row-title" translate="no" class="notranslate">${st.name}</div></div>
                                 <div class="row-icon">›</div>
@@ -1104,37 +864,29 @@
                 navTo('stops');
             } 
             else if (mode === 'bus') {
-                document.getElementById('busSug').style.display = 'none';
-                navTo('stops');
+                document.getElementById('busSug').style.display = 'none'; navTo('stops');
                 content.innerHTML = `<div class="loading-shimmer">${t('t_search_data')}</div>`;
                 try {
-                    const res = await fetch(`${WORKER_URL}/?type=bus-stops&route=${line}`);
-                    const data = await res.json();
+                    const res = await fetch(`${WORKER_URL}/?type=bus-stops&route=${line}`); const data = await res.json();
                     const stopGroups = data.data?.entry?.stopGroupings?.[0]?.stopGroups || [];
                     const stopsRef = (data.data?.references?.stops || []).reduce((acc, s) => ({...acc, [s.id]: s.name}), {});
-                    const routeColor = 'var(--mta-blue)'; 
+                    const routeColor = '#0039A6'; // var(--mta-blue)
                     
                     let html = '';
                     stopGroups.forEach(g => {
-                        const rawDirName = g.name?.name || '沿线目的地';
-                        const safeDir = rawDirName.replace(/'/g, "\\'");
+                        const rawDirName = g.name?.name || '沿线目的地'; const safeDir = rawDirName.replace(/'/g, "\\'");
                         html += `<div class="dir-header" style="margin-top:20px; color:var(--text-dim);">${t('dir_to')} <span translate="no" class="notranslate">${rawDirName}</span></div>`;
                         
                         const stopIds = g.stopIds || [];
                         stopIds.forEach((sid, idx) => {
-                            const sName = stopsRef[sid] || '未知站点';
-                            const safeName = sName.replace(/'/g, "\\'");
-                            const isFirst = idx === 0;
-                            const isLast = idx === stopIds.length - 1;
+                            const sName = stopsRef[sid] || '未知站点'; const safeName = sName.replace(/'/g, "\\'");
+                            const isFirst = idx === 0; const isLast = idx === stopIds.length - 1;
                             const nodeShape = isFirst || isLast ? 'square' : 'circle';
+                            const svgGraphic = generateSvgGraphic(routeColor, isFirst, isLast, nodeShape);
 
                             html += `
-                            <div class="timeline-wrapper" style="--route-color: ${routeColor};" onclick="openStationLayer('${sid}', '${safeName}', '${line}', 'bus', '${safeDir}', false)">
-                                <div class="timeline-graphic">
-                                    <div class="line-segment line-top" style="opacity: ${isFirst ? 0 : 1};"></div>
-                                    <div class="timeline-node ${nodeShape}"></div>
-                                    <div class="line-segment line-bottom" style="opacity: ${isLast ? 0 : 1};"></div>
-                                </div>
+                            <div class="timeline-wrapper" onclick="openStationLayer('${sid}', '${safeName}', '${line}', 'bus', '${safeDir}', false)">
+                                ${svgGraphic}
                                 <div class="list-row">
                                     <div class="row-left"><div class="row-title" translate="no" class="notranslate">${sName}</div></div>
                                     <div class="live-dash" id="bus-live-${sid}"></div>
@@ -1144,52 +896,27 @@
                     });
                     content.innerHTML = html || `<div class="loading-shimmer">${t('t_no_data')}</div>`;
 
-                    const rtRes = await fetch(`${WORKER_URL}/?type=bus-realtime&route=${line}`);
-                    const rtData = await rtRes.json();
+                    const rtRes = await fetch(`${WORKER_URL}/?type=bus-realtime&route=${line}`); const rtData = await rtRes.json();
                     const vehicles = rtData.Siri?.ServiceDelivery?.VehicleMonitoringDelivery?.[0]?.VehicleActivity || [];
-                    
                     const vMap = {};
                     vehicles.forEach(v => {
-                        const journey = v.MonitoredVehicleJourney;
-                        if (!journey) return;
-                        
-                        // 🛡️ 三重除灵滤网 1：状态审查
-                        const status = journey.ProgressStatus || "";
-                        if (status.includes("layover") || status.includes("prevTrip") || status.includes("deadhead")) return;
-                        
-                        // 🛡️ 三重除灵滤网 2：心跳保鲜 (3分钟)
+                        const journey = v.MonitoredVehicleJourney; if (!journey) return;
+                        const status = journey.ProgressStatus || ""; if (status.includes("layover") || status.includes("prevTrip") || status.includes("deadhead")) return;
                         if (v.RecordedAtTime && (Date.now() - new Date(v.RecordedAtTime).getTime() > 180000)) return;
-
-                        // 🛡️ 三重除灵滤网 3：车牌去重准备
                         const vRef = journey.VehicleRef;
-                        
                         const processCall = (call) => {
-                            const sid = call.StopPointRef;
-                            const eta = call.ExpectedArrivalTime;
-                            const dist = call.Extensions?.Distances?.PresentableDistance || "";
+                            const sid = call.StopPointRef; const eta = call.ExpectedArrivalTime; const dist = call.Extensions?.Distances?.PresentableDistance || "";
                             if (sid) {
-                                let m = 999;
-                                let etaMs = 0;
-                                if(eta) {
-                                    etaMs = new Date(eta).getTime();
-                                    m = Math.round((etaMs - Date.now()) / 60000);
-                                }
-                                
-                                let isStatic = false;
-                                if (dist === "at stop" || dist === "approaching" || dist.includes("stop")) isStatic = true;
-                                
+                                let m = 999; let etaMs = 0;
+                                if(eta) { etaMs = new Date(eta).getTime(); m = Math.round((etaMs - Date.now()) / 60000); }
+                                let isStatic = false; if (dist === "at stop" || dist === "approaching" || dist.includes("stop")) isStatic = true;
                                 if(!vMap[sid]) vMap[sid] = [];
-                                
-                                // 去重：同一个站同一个车牌只允许出现一次
                                 if (vRef && vMap[sid].some(item => item.vRef === vRef)) return;
-                                
                                 if (m >= -5) vMap[sid].push({eta: etaMs, dist: dist, isStatic: isStatic, mins: m, vRef: vRef});
                             }
                         };
-                        
                         if(journey.MonitoredCall) processCall(journey.MonitoredCall);
-                        const onwardCalls = journey.OnwardCalls?.OnwardCall || [];
-                        onwardCalls.forEach(processCall);
+                        const onwardCalls = journey.OnwardCalls?.OnwardCall || []; onwardCalls.forEach(processCall);
                     });
 
                     stopGroups.forEach(g => {
@@ -1199,15 +926,10 @@
                             if (el && times.length > 0) {
                                 let stopStr = currentLang === 'en' ? 'stops' : '站';
                                 el.innerHTML = times.map(tData => {
-                                    let txt = tData.mins + "m";
-                                    let isArr = false;
+                                    let txt = tData.mins + "m"; let isArr = false;
                                     if (tData.dist === "at stop" || tData.mins <= 0) { txt = t('t_arr'); isArr = true; }
                                     else if (tData.dist === "approaching" || tData.mins === 1) { txt = t('t_due'); isArr = true; }
-                                    else if (tData.dist.includes("stop")) { 
-                                        const match = tData.dist.match(/(\d+)\s+stop/); 
-                                        if(match) txt = match[1] + " " + stopStr; 
-                                    }
-                                    
+                                    else if (tData.dist.includes("stop")) { const match = tData.dist.match(/(\d+)\s+stop/); if(match) txt = match[1] + " " + stopStr; }
                                     const staticAttr = tData.isStatic ? 'data-static="true"' : '';
                                     if (isArr && txt === t('t_arr')) return `<div class="dash-badge arr" data-eta="${tData.eta}" ${staticAttr} style="animation: pulse-bg 2s infinite;">${txt}</div>`;
                                     if (isArr) return `<div class="dash-badge arr" data-eta="${tData.eta}" ${staticAttr}>${txt}</div>`;
@@ -1221,57 +943,34 @@
         }
 
         function openStationLayer(id, name, line, mode, dirName, fromFav) {
-            state.mode = mode;
-            state.selectedLine = line;
-            state.selectedStation = { id, name, dirName: dirName || '沿线目的地' };
-            
-            document.getElementById('station-detail-title').innerText = name;
-            updateFavStarUI();
-            
+            state.mode = mode; state.selectedLine = line; state.selectedStation = { id, name, dirName: dirName || '沿线目的地' };
+            document.getElementById('station-detail-title').innerText = name; updateFavStarUI();
             const backBtn = document.getElementById('station-back-btn');
-            if (fromFav) {
-                backBtn.innerHTML = `← ${t('tab_favs').replace('🌟 ', '')}`;
-                backBtn.onclick = () => navTo('home');
-            } else {
-                backBtn.innerHTML = `← ${t('stations')}`;
-                backBtn.onclick = () => navTo('stops');
-            }
-            
+            if (fromFav) { backBtn.innerHTML = `← ${t('tab_favs').replace('🌟 ', '')}`; backBtn.onclick = () => navTo('home'); } 
+            else { backBtn.innerHTML = `← ${t('stations')}`; backBtn.onclick = () => navTo('stops'); }
             document.getElementById('station-alert-banner').innerHTML = getAlertBannerHtml(line, mode);
-            
-            navTo('station');
-            fetchStationRealtime();
+            navTo('station'); fetchStationRealtime();
         }
 
         async function fetchStationRealtime() {
-            const content = document.getElementById('station-detail-content');
-            content.innerHTML = `<div class="loading-shimmer">${t('t_calc')}</div>`;
+            const content = document.getElementById('station-detail-content'); content.innerHTML = `<div class="loading-shimmer">${t('t_calc')}</div>`;
             const now = Math.floor(Date.now() / 1000);
 
             if (state.mode === 'subway') {
                 try {
-                    const res = await fetch(`${WORKER_URL}/?route=${LINE_MAP[state.selectedLine].feed}`);
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`); 
-                    const buffer = await res.arrayBuffer();
-                    const message = FeedMessage.decode(new Uint8Array(buffer));
-                    const data = FeedMessage.toObject(message, { longs: String });
-                    
+                    const res = await fetch(`${WORKER_URL}/?route=${LINE_MAP[state.selectedLine].feed}`); if (!res.ok) throw new Error(`HTTP ${res.status}`); 
+                    const buffer = await res.arrayBuffer(); const message = FeedMessage.decode(new Uint8Array(buffer)); const data = FeedMessage.toObject(message, { longs: String });
                     let parsedData = { 'N': {}, 'S': {} }; 
                     (data.entity || []).forEach(ent => {
                         if (ent.tripUpdate && ent.tripUpdate.trip) {
-                            const rId = ent.tripUpdate.trip.routeId;
-                            const stopTimes = ent.tripUpdate.stopTimeUpdate || []; 
+                            const rId = ent.tripUpdate.trip.routeId; const stopTimes = ent.tripUpdate.stopTimeUpdate || []; 
                             stopTimes.forEach(stu => {
                                 const fId = stu.stopId;
                                 if (fId && fId.startsWith(state.selectedStation.id)) { 
                                     const dir = fId.slice(-1); const tObj = stu.arrival || stu.departure;
                                     if (tObj && tObj.time && (dir === 'N' || dir === 'S')) {
-                                        const tMs = parseInt(tObj.time) * 1000;
-                                        const mins = Math.round((tMs - Date.now()) / 60000);
-                                        if (mins <= 90 && mins >= -5) { 
-                                            if (!parsedData[dir][rId]) parsedData[dir][rId] = [];
-                                            parsedData[dir][rId].push(tMs);
-                                        }
+                                        const tMs = parseInt(tObj.time) * 1000; const mins = Math.round((tMs - Date.now()) / 60000);
+                                        if (mins <= 90 && mins >= -5) { if (!parsedData[dir][rId]) parsedData[dir][rId] = []; parsedData[dir][rId].push(tMs); }
                                     }
                                 }
                             });
@@ -1282,14 +981,12 @@
                     ['N', 'S'].forEach(dir => {
                         const termName = SUBWAY_TERMINALS[state.selectedLine]?.[dir] || (dir === 'N' ? 'Uptown' : 'Downtown');
                         const dirTitle = dir === 'N' ? `${t('d_north')} (<span translate="no" class="notranslate">${termName}</span>)` : `${t('d_south')} (<span translate="no" class="notranslate">${termName}</span>)`;
-                        
                         html += `<div class="station-card"><div class="dir-header">${dirTitle}</div>`;
                         const routesAtDir = Object.keys(parsedData[dir]).sort();
                         if (routesAtDir.length === 0) html += `<div style="color:#8e8e93; margin-top:10px; font-size:14px;">${t('t_no_train')}</div>`;
                         else {
                             routesAtDir.forEach(rId => {
-                                if (!LINE_MAP[rId]) return; 
-                                const tc = LINE_MAP[rId].textColor || "white";
+                                if (!LINE_MAP[rId]) return; const tc = LINE_MAP[rId].textColor || "white";
                                 const times = parsedData[dir][rId].sort((a,b)=>a-b).slice(0,4); 
                                 html += `<div class="route-times-row"><div class="mini-route sub" translate="no" class="notranslate" style="background:${LINE_MAP[rId].color}; color:${tc};">${rId}</div><div class="times-flex">${times.map(etaMs => {
                                     const m = Math.round((etaMs - Date.now()) / 60000);
@@ -1307,47 +1004,20 @@
             else if (state.mode === 'bus') {
                 try {
                     const fullStopId = state.selectedStation.id.includes('_') ? state.selectedStation.id : `MTA_${state.selectedStation.id}`;
-                    const res = await fetch(`${WORKER_URL}/?type=bus-stop-monitoring&stopId=${fullStopId}`);
-                    const data = await res.json();
+                    const res = await fetch(`${WORKER_URL}/?type=bus-stop-monitoring&stopId=${fullStopId}`); const data = await res.json();
                     const visits = data.Siri?.ServiceDelivery?.StopMonitoringDelivery[0]?.MonitoredStopVisit || [];
-                    
-                    let times = [];
-                    let seenVRefs = new Set();
+                    let times = []; let seenVRefs = new Set();
                     
                     visits.forEach(v => {
-                        const journey = v.MonitoredVehicleJourney;
-                        if(!journey) return;
-                        
-                        // 🛡️ 三重除灵滤网 1：状态审查
-                        const status = journey.ProgressStatus || "";
-                        if (status.includes("layover") || status.includes("prevTrip") || status.includes("deadhead")) return;
-                        
-                        // 🛡️ 三重除灵滤网 2：心跳保鲜 (3分钟)
+                        const journey = v.MonitoredVehicleJourney; if(!journey) return;
+                        const status = journey.ProgressStatus || ""; if (status.includes("layover") || status.includes("prevTrip") || status.includes("deadhead")) return;
                         if (v.RecordedAtTime && (Date.now() - new Date(v.RecordedAtTime).getTime() > 180000)) return;
-
-                        // 🛡️ 三重除灵滤网 3：车牌去重
-                        const vRef = journey.VehicleRef;
-                        if (vRef) {
-                            if (seenVRefs.has(vRef)) return;
-                            seenVRefs.add(vRef);
-                        }
-                        
-                        const call = journey.MonitoredCall;
-                        if(!call) return;
-                        
-                        const eta = call.ExpectedArrivalTime;
-                        const dist = call.Extensions?.Distances?.PresentableDistance || "";
-                        
-                        let m = 999;
-                        let etaMs = 0;
-                        if(eta) {
-                            etaMs = new Date(eta).getTime();
-                            m = Math.round((etaMs - Date.now()) / 60000);
-                        }
-                        
-                        let isStatic = false;
-                        if (dist === "at stop" || dist === "approaching" || dist.includes("stop")) isStatic = true;
-                        
+                        const vRef = journey.VehicleRef; if (vRef) { if (seenVRefs.has(vRef)) return; seenVRefs.add(vRef); }
+                        const call = journey.MonitoredCall; if(!call) return;
+                        const eta = call.ExpectedArrivalTime; const dist = call.Extensions?.Distances?.PresentableDistance || "";
+                        let m = 999; let etaMs = 0;
+                        if(eta) { etaMs = new Date(eta).getTime(); m = Math.round((etaMs - Date.now()) / 60000); }
+                        let isStatic = false; if (dist === "at stop" || dist === "approaching" || dist.includes("stop")) isStatic = true;
                         if(m >= -5) times.push({eta: etaMs, dist: dist, isStatic: isStatic, mins: m});
                     });
                     times = times.sort((a,b)=>a.mins-b.mins).slice(0, 4);
@@ -1358,34 +1028,20 @@
                             <div class="mini-route bus" translate="no" class="notranslate" style="background:var(--mta-blue); color:#fff; font-size: 14px;">${state.selectedLine}</div>
                             <div class="times-flex">
                                 `;
-                                
                     let stopStr = currentLang === 'en' ? 'stops' : '站';
                     if (times.length > 0) {
                         html += times.map(tData => {
-                            let txt = tData.mins + '<span class="unit">m</span>';
-                            let isArr = false;
-                            let isAtStop = false;
+                            let txt = tData.mins + '<span class="unit">m</span>'; let isArr = false; let isAtStop = false;
                             if (tData.dist === "at stop" || tData.mins <= 0) { txt = t('t_arr'); isArr = true; isAtStop = true; }
                             else if (tData.dist === "approaching" || tData.mins === 1) { txt = t('t_due'); isArr = true; }
-                            else if (tData.dist.includes("stop")) { 
-                                const match = tData.dist.match(/(\d+)\s+stop/); 
-                                if(match) txt = match[1] + `<span class="unit">${stopStr}</span>`; 
-                            }
-                            
+                            else if (tData.dist.includes("stop")) { const match = tData.dist.match(/(\d+)\s+stop/); if(match) txt = match[1] + `<span class="unit">${stopStr}</span>`; }
                             const staticAttr = tData.isStatic ? 'data-static="true"' : '';
                             if (isAtStop) return `<div class="time-box arriving" data-eta="${tData.eta}" ${staticAttr} style="animation: pulse-bg 2s infinite;">${txt}</div>`;
                             if (isArr) return `<div class="time-box arriving" data-eta="${tData.eta}" ${staticAttr}>${txt}</div>`;
                             return `<div class="time-box" data-eta="${tData.eta}" ${staticAttr}>${txt}</div>`;
                         }).join('');
-                    } else {
-                        html += `<div style="color:#8e8e93; font-weight:bold; font-size:13px;">${t('t_no_data')}</div>`;
-                    }
-                    
-                    html += `
-                            </div>
-                        </div>
-                    </div>`;
-                    content.innerHTML = html;
+                    } else { html += `<div style="color:#8e8e93; font-weight:bold; font-size:13px;">${t('t_no_data')}</div>`; }
+                    html += `</div></div></div>`; content.innerHTML = html;
                 } catch (e) { content.innerHTML = `<div class="loading-shimmer"><div class="error-msg">${t('t_req_fail')}: ${e.message}</div></div>`; }
             }
         }
@@ -1393,14 +1049,12 @@
         function toggleFav() {
             const sid = state.selectedStation.id; const line = state.selectedLine;
             const idx = favorites.findIndex(f => f.id === sid && f.line === line);
-            if (idx > -1) favorites.splice(idx, 1);
-            else favorites.push({ type: state.mode, id: sid, line: line, name: state.selectedStation.name, dirName: state.selectedStation.dirName });
+            if (idx > -1) favorites.splice(idx, 1); else favorites.push({ type: state.mode, id: sid, line: line, name: state.selectedStation.name, dirName: state.selectedStation.dirName });
             localStorage.setItem('mta_pro_favs_v5', JSON.stringify(favorites)); updateFavStarUI();
         }
 
         function updateFavStarUI() {
-            const btn = document.getElementById('station-fav-btn');
-            const isFav = favorites.some(f => f.id === state.selectedStation.id && f.line === state.selectedLine);
+            const btn = document.getElementById('station-fav-btn'); const isFav = favorites.some(f => f.id === state.selectedStation.id && f.line === state.selectedLine);
             if (isFav) { btn.classList.add('active'); btn.innerText = '★'; } else { btn.classList.remove('active'); btn.innerText = '☆'; }
         }
 
@@ -1410,34 +1064,18 @@
         setInterval(() => {
             const now = Date.now();
             document.querySelectorAll('[data-eta]').forEach(el => {
-                const eta = parseInt(el.getAttribute('data-eta'));
-                if(!eta) return;
-                
-                // 巴士的物理站数描述 (如 2 stops away) 不参与时间倒数
-                const isStatic = el.getAttribute('data-static'); 
-                if(isStatic === 'true') return;
-
+                const eta = parseInt(el.getAttribute('data-eta')); if(!eta) return;
+                const isStatic = el.getAttribute('data-static'); if(isStatic === 'true') return;
                 const diffMins = Math.round((eta - now) / 60000);
-                
-                // 零点销毁：时间倒数至 -1 分钟时，自动抹杀该 DOM 节点，后车顺延
-                if (diffMins < -1) {
-                    el.remove();
-                } else {
+                if (diffMins < -1) { el.remove(); } else {
                     const isTimeBox = el.classList.contains('time-box');
-                    let txt = diffMins + (isTimeBox ? '<span class="unit">m</span>' : 'm');
-                    let isArr = false;
-                    
-                    if (diffMins <= 0) { txt = t('t_arr'); isArr = true; }
-                    else if (diffMins === 1) { txt = t('t_due'); isArr = true; }
+                    let txt = diffMins + (isTimeBox ? '<span class="unit">m</span>' : 'm'); let isArr = false;
+                    if (diffMins <= 0) { txt = t('t_arr'); isArr = true; } else if (diffMins === 1) { txt = t('t_due'); isArr = true; }
                     
                     if (isTimeBox) {
-                        if (isArr && txt === t('t_arr')) {
-                            el.className = 'time-box arriving'; el.style.animation = 'pulse-bg 2s infinite';
-                        } else if (isArr) {
-                            el.className = 'time-box arriving'; el.style.animation = '';
-                        } else {
-                            el.className = 'time-box'; el.style.animation = '';
-                        }
+                        if (isArr && txt === t('t_arr')) { el.className = 'time-box arriving'; el.style.animation = 'pulse-bg 2s infinite'; } 
+                        else if (isArr) { el.className = 'time-box arriving'; el.style.animation = ''; } 
+                        else { el.className = 'time-box'; el.style.animation = ''; }
                         el.innerHTML = txt;
                     } else if (el.classList.contains('dash-badge')) {
                         let iconHtml = '';
@@ -1445,29 +1083,21 @@
                         else if(el.innerHTML.includes('⬆')) iconHtml = '<span class="dash-icon">⬆</span> ';
                         else if(el.innerHTML.includes('⬇')) iconHtml = '<span class="dash-icon">⬇</span> ';
                         
-                        if (isArr && txt === t('t_arr')) {
-                            el.className = 'dash-badge arr'; el.style.animation = 'pulse-bg 2s infinite';
-                        } else if (isArr) {
-                            el.className = 'dash-badge arr'; el.style.animation = '';
-                        } else {
-                            el.className = 'dash-badge'; el.style.animation = '';
-                        }
+                        if (isArr && txt === t('t_arr')) { el.className = 'dash-badge arr'; el.style.animation = 'pulse-bg 2s infinite'; } 
+                        else if (isArr) { el.className = 'dash-badge arr'; el.style.animation = ''; } 
+                        else { el.className = 'dash-badge'; el.style.animation = ''; }
                         el.innerHTML = iconHtml + txt;
                     }
                 }
             });
-        }, 5000); // 本地心跳：每 5 秒扫描一次屏幕并刷新
+        }, 5000);
 
-        // ==========================================
-        // 🔄 网络监听器 (断网恢复瞬间强制覆写)
-        // ==========================================
         window.addEventListener('online', () => {
             if (state.currentLayer === 'station') fetchStationRealtime();
             if (state.currentLayer === 'home' && state.activeTab === 'favs') updateFavoritesRealtime();
             if (state.currentLayer === 'stops' && state.mode === 'bus') openRouteStops(state.selectedLine, 'bus');
         });
 
-        // 正常的在线轮询
         setInterval(() => {
             if (document.visibilityState === 'visible' && navigator.onLine) {
                 if (state.currentLayer === 'station') fetchStationRealtime();
@@ -1476,25 +1106,11 @@
             }
         }, 30000); 
 
-        window.onload = () => { 
-            setLanguage(currentLang); 
-            fetchSystemAlerts().then(() => renderFavorites()); 
-        };
+        window.onload = () => { setLanguage(currentLang); fetchSystemAlerts().then(() => renderFavorites()); };
 
-        // 🔒 暗桩: 隐蔽的连续点击监控 (10击跳转防伪)
         (function(){
-            let _k = 0, _t;
-            const _b = document.getElementById('btn-lang-zh');
-            if(_b) {
-                _b.addEventListener('click', function() {
-                    _k++; clearTimeout(_t);
-                    if(_k >= 10) {
-                        _k = 0;
-                        window.location.href = atob('aHR0cHM6Ly9jaGVhcGVyYnJvdGhlcnMuZHBkbnMub3JnLw==');
-                    }
-                    _t = setTimeout(function(){ _k = 0; }, 3000);
-                });
-            }
+            let _k = 0, _t; const _b = document.getElementById('btn-lang-zh');
+            if(_b) { _b.addEventListener('click', function() { _k++; clearTimeout(_t); if(_k >= 10) { _k = 0; window.location.href = atob('aHR0cHM6Ly9jaGVhcGVyYnJvdGhlcnMuZHBkbnMub3JnLw=='); } _t = setTimeout(function(){ _k = 0; }, 3000); }); }
         })();
     </script>
 </body>

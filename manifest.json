@@ -1,0 +1,17 @@
+{
+  "name": "SB MTA Tracker",
+  "short_name": "SB MTA",
+  "description": "Professional NYC Transit Tracker with Offline Engine",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#121212",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/MTA_NYC_logo.svg/512px-MTA_NYC_logo.svg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
